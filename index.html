@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwingBox Golf Simulator — Availability</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.10/index.global.min.js"></script>
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:         #0d1117;
+      --surface:    #161b22;
+      --surface-2:  #21262d;
+      --surface-3:  #2d333b;
+      --border:     rgba(255,255,255,0.08);
+      --border-2:   rgba(255,255,255,0.14);
+      --text:       #e6edf3;
+      --text-2:     #8b949e;
+      --text-3:     #484f58;
+      --green:      #3fb950;
+      --green-dim:  rgba(63,185,80,0.12);
+      --green-glow: rgba(63,185,80,0.25);
+      --amber:      #d29922;
+      --amber-dim:  rgba(210,153,34,0.12);
+      --blue:       #58a6ff;
+      --red:        #f85149;
+      --red-dim:    rgba(248,81,73,0.15);
+      --radius:     12px;
+      --radius-sm:  8px;
+      --shadow:     0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ─── LOADING ────────────────────────────────────────────── */
+    #loading {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+      transition: opacity 0.4s;
+    }
+    #loading.out { opacity: 0; pointer-events: none; }
+    .load-icon {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--green), var(--blue));
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .load-bar {
+      width: 180px; height: 2px;
+      background: var(--surface-2);
+      border-radius: 99px; overflow: hidden;
+    }
+    .load-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      border-radius: 99px;
+      animation: loadbar 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+    @keyframes loadbar { 0%{width:0%;margin-left:0} 60%{width:80%;margin-left:0} 100%{width:0%;margin-left:100%} }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .site-header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1400px; margin: 0 auto;
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #3fb950 0%, #58a6ff 100%);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-name { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .logo-sub  { font-size: 11px; color: var(--text-2); font-weight: 400; }
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--green-dim);
+      border: 1px solid rgba(63,185,80,0.3);
+      color: var(--green);
+      font-size: 12px; font-weight: 500;
+      padding: 5px 12px; border-radius: 99px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .page { max-width: 1400px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero { margin-bottom: 28px; }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; color: var(--green);
+      background: var(--green-dim);
+      border: 1px solid rgba(63,185,80,0.2);
+      padding: 4px 12px; border-radius: 99px;
+      margin-bottom: 14px;
+    }
+    .hero-title {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700; letter-spacing: -0.8px; line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .hero-title span {
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub { font-size: 14px; color: var(--text-2); font-weight: 400; }
+
+    /* ─── STATS ROW ──────────────────────────────────────────── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--border-2); }
+    .stat-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+    }
+    .stat-icon.green { background: var(--green-dim); }
+    .stat-icon.amber { background: var(--amber-dim); }
+    .stat-icon.blue  { background: rgba(88,166,255,0.1); }
+    .stat-body { min-width: 0; }
+    .stat-value { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .stat-label { font-size: 12px; color: var(--text-2); font-weight: 400; margin-top: 1px; }
+
+    /* ─── LEGEND ─────────────────────────────────────────────── */
+    .legend-row {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .leg {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 500; color: var(--text-2);
+    }
+    .leg-chip {
+      width: 28px; height: 10px; border-radius: 4px;
+    }
+    .leg-a    { background: var(--amber); }
+    .leg-b    { background: var(--green); }
+    .leg-free { background: var(--surface-3); border: 1px solid var(--border-2); }
+
+    /* ─── CALENDAR CARD ──────────────────────────────────────── */
+    .cal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ─── FULLCALENDAR OVERRIDES ─────────────────────────────── */
+    .fc {
+      --fc-border-color:               rgba(255,255,255,0.07);
+      --fc-button-bg-color:            var(--surface-2);
+      --fc-button-border-color:        var(--border-2);
+      --fc-button-text-color:          var(--text-2);
+      --fc-button-hover-bg-color:      var(--surface-3);
+      --fc-button-hover-border-color:  var(--border-2);
+      --fc-button-active-bg-color:     var(--green);
+      --fc-button-active-border-color: var(--green);
+      --fc-today-bg-color:             rgba(63,185,80,0.05);
+      --fc-page-bg-color:              transparent;
+      --fc-neutral-bg-color:           var(--surface-2);
+      --fc-highlight-color:            rgba(63,185,80,0.08);
+    }
+    .fc .fc-toolbar-title {
+      font-size: 16px; font-weight: 600; color: var(--text);
+      font-family: 'Inter', sans-serif; letter-spacing: -0.3px;
+    }
+    .fc .fc-button {
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+      border-radius: var(--radius-sm) !important; padding: 6px 14px;
+      transition: all 0.15s; text-transform: none; letter-spacing: 0;
+    }
+    .fc .fc-button:hover { color: var(--text); }
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+      color: #fff; font-weight: 600;
+      box-shadow: 0 0 0 2px rgba(63,185,80,0.3);
+    }
+    .fc .fc-col-header-cell {
+      background: var(--surface-2);
+      border-color: rgba(255,255,255,0.07);
+      padding: 10px 0;
+    }
+    .fc .fc-col-header-cell-cushion {
+      font-family: 'Inter', sans-serif; font-size: 12px;
+      font-weight: 600; color: var(--text-2);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+    .fc .fc-timegrid-slot        { height: 32px; border-color: rgba(255,255,255,0.04); }
+    .fc .fc-timegrid-slot-minor  { border-color: transparent; }
+    .fc .fc-timegrid-slot-label  {
+      font-family: 'Inter', sans-serif; font-size: 11px;
+      font-weight: 400; color: var(--text-3);
+    }
+    .fc .fc-scrollgrid            { border-color: rgba(255,255,255,0.07); }
+    .fc .fc-resource-area-header  { background: var(--surface-2); }
+    .fc .fc-timegrid-now-indicator-line  { border-color: var(--green); border-width: 1.5px; }
+    .fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--green); border-bottom-color: var(--green); }
+    .fc .fc-daygrid-day-number { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text-2); text-decoration: none; }
+    .fc .fc-day-today .fc-daygrid-day-number {
+      background: var(--green); color: #fff; border-radius: 6px;
+      width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+      font-weight: 600;
+    }
+    .fc .fc-daygrid-event, .fc .fc-timegrid-event { border-radius: var(--radius-sm) !important; border-width: 0 !important; }
+    .fc .fc-event { cursor: default !important; }
+    /* Resource column headers */
+    .fc .fc-resource-area .fc-scroller { background: var(--surface-2); }
+
+    /* ─── TOOLTIP ────────────────────────────────────────────── */
+    #tooltip {
+      position: fixed; display: none; z-index: 9000;
+      background: var(--surface-3);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-family: 'Inter', sans-serif; font-size: 12px;
+      pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      min-width: 160px;
+    }
+    .tip-bay   { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 3px; }
+    .tip-time  { color: var(--text-2); }
+    .tip-dot   { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .site-footer {
+      text-align: center;
+      padding: 32px 24px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-3); font-size: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+    .site-footer a { color: var(--text-2); text-decoration: none; }
+    .site-footer a:hover { color: var(--text); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .page { padding: 20px 16px 48px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .hero-sub { display: none; }
+      .cal-card { padding: 12px 8px; }
+      .fc .fc-toolbar { flex-wrap: wrap; gap: 8px; }
+      .fc .fc-toolbar-title { font-size: 14px; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="load-icon">⛳</div>
+  <div class="load-bar"><div class="load-bar-fill"></div></div>
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip"></div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">
+        <div class="logo-name">SwingBox</div>
+        <div class="logo-sub">Golf Simulator</div>
+      </div>
+    </a>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Live Availability
+    </div>
+  </div>
+</header>
+
+<!-- Page -->
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">⛳ Real-time Schedule</div>
+    <h1 class="hero-title">Bay Availability<br><span>Today & This Week</span></h1>
+    <p class="hero-sub">Check which bays are open. Contact our staff to reserve your slot.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon green">🟢</div>
+      <div class="stat-body">
+        <div class="stat-value" id="stat-free">—</div>
+        <div class="stat-label">Available Today</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon amber">📅</div>
+      <div class="stat-body">
+        <div class="stat-value" id="stat-booked">—</div>
+        <div class="stat-label">Booked Today</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">🏌️</div>
+      <div class="stat-body">
+        <div class="stat-value">2</div>
+        <div class="stat-label">Bays Available</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="leg"><div class="leg-chip leg-a"></div>Bay A — Occupied</div>
+    <div class="leg"><div class="leg-chip leg-b"></div>Bay B — Occupied</div>
+    <div class="leg"><div class="leg-chip leg-free"></div>Available</div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="cal-card">
+    <div id="calendar"></div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div>© 2025 SwingBox Golf Simulator &nbsp;·&nbsp; <a href="#">Contact Us</a></div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   ⚙  CONFIG — replace API_URL with your GAS web app URL
+   ════════════════════════════════════════════════════════════ */
+const API_URL = "https://script.google.com/macros/s/AKfycbwKgTpTSbA0J1jRhOAO7mgIMno9gE-8nha4QqCTb1nAjDxIlROklZ1BS4EaeqcfjNGG/exec";
+
+/* ─── Helpers ───────────────────────────────────────────────── */
+function cleanDate(v) {
+  if (!v) return '';
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  const s = String(v).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  return s;
+}
+function cleanTime(v) { return !v ? '00:00' : String(v).trim().slice(0, 5); }
+function normalise(raw) {
+  if (Array.isArray(raw))               return raw;
+  if (raw?.data && Array.isArray(raw.data))     return raw.data;
+  if (raw?.bookings)                    return raw.bookings;
+  if (raw?.headers && raw?.rows)
+    return raw.rows.map(r => Object.fromEntries(raw.headers.map((h,i) => [h, r[i]])));
+  return [];
+}
+function toEvents(bookings) {
+  return bookings.map(b => {
+    const bay  = String(b.bay || b.Bay || 'A').toUpperCase().trim();
+    const date = cleanDate(b.date || b.Date);
+    const st   = cleanTime(b.startTime || b['Start Time'] || b.start_time);
+    const et   = cleanTime(b.endTime   || b['End Time']   || b.end_time);
+    const isA  = bay === 'A';
+    return {
+      id:    String(b.id || b.ID || Math.random()),
+      title: `Bay ${bay} — BUSY`,
+      start: `${date}T${st}`,
+      end:   `${date}T${et}`,
+      resourceId: bay.toLowerCase(),
+      backgroundColor: isA ? 'rgba(210,153,34,0.18)' : 'rgba(63,185,80,0.15)',
+      borderColor:     isA ? '#d29922' : '#3fb950',
+      textColor:       isA ? '#f0c842' : '#7ee787',
+      extendedProps:   { bay, st, et }
+    };
+  });
+}
+
+/* ─── Stats ─────────────────────────────────────────────────── */
+function updateStats(events) {
+  const today = new Date().toISOString().slice(0, 10);
+  const todayBookings = events.filter(e => e.start.startsWith(today));
+  document.getElementById('stat-booked').textContent = todayBookings.length;
+  // 16 hrs (08:00-24:00) × 2 bays ÷ avg 1hr each = rough available
+  const busyHrs = todayBookings.reduce((acc, e) => {
+    const [sh, sm] = e.extendedProps.st.split(':').map(Number);
+    const [eh, em] = e.extendedProps.et.split(':').map(Number);
+    return acc + (eh + em/60) - (sh + sm/60);
+  }, 0);
+  const totalHrs = 16 * 2;
+  const freeHrs  = Math.max(0, totalHrs - busyHrs);
+  document.getElementById('stat-free').textContent = freeHrs.toFixed(0) + ' hrs';
+}
+
+/* ─── Fetch ─────────────────────────────────────────────────── */
+async function fetchBookings() {
+  try {
+    const r = await fetch(API_URL, { cache: 'no-store' });
+    return normalise(await r.json());
+  } catch(e) {
+    console.error('Fetch error:', e);
+    return [];
+  }
+}
+
+/* ─── Boot ──────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', async () => {
+  const loadEl = document.getElementById('loading');
+  const tipEl  = document.getElementById('tooltip');
+
+  const bookings = await fetchBookings();
+  const events   = toEvents(bookings);
+  updateStats(events);
+
+  loadEl.classList.add('out');
+  setTimeout(() => loadEl.style.display = 'none', 420);
+
+  const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+    schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+    initialView:  window.innerWidth < 768 ? 'timeGridDay' : 'resourceTimeGridDay',
+    headerToolbar: {
+      left:   'prev,next today',
+      center: 'title',
+      right:  'resourceTimeGridDay,timeGridWeek,dayGridMonth'
+    },
+    buttonText: {
+      today:               'Today',
+      resourceTimeGridDay: 'Day',
+      timeGridWeek:        'Week',
+      dayGridMonth:        'Month'
+    },
+    resources: [
+      { id: 'a', title: 'Bay A' },
+      { id: 'b', title: 'Bay B' }
+    ],
+    slotMinTime: '08:00:00', slotMaxTime: '24:00:00',
+    slotDuration: '00:30:00', slotLabelInterval: '01:00:00',
+    allDaySlot: false, scrollTime: '09:00:00',
+    height: 'auto', expandRows: true, nowIndicator: true,
+    events,
+    editable: false, selectable: false, eventClick: () => {},
+
+    eventDidMount(info) {
+      const { bay, st, et } = info.event.extendedProps;
+      const dotColor = bay === 'A' ? '#d29922' : '#3fb950';
+      info.el.addEventListener('mouseenter', e => {
+        tipEl.innerHTML = `
+          <div class="tip-bay"><span class="tip-dot" style="background:${dotColor}"></span>Bay ${bay}</div>
+          <div class="tip-time">${st} – ${et}</div>`;
+        tipEl.style.display = 'block'; moveTip(e);
+      });
+      info.el.addEventListener('mousemove', moveTip);
+      info.el.addEventListener('mouseleave', () => tipEl.style.display = 'none');
+    },
+
+    eventContent(arg) {
+      const { st, et, bay } = arg.event.extendedProps;
+      return { html:
+        `<div style="padding:4px 8px;overflow:hidden;">
+           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;letter-spacing:0.2px;">BUSY</div>
+           <div style="font-size:10px;opacity:0.7;margin-top:1px;font-family:Inter,sans-serif;">${st}–${et}</div>
+         </div>` };
+    }
+  });
+
+  calendar.render();
+
+  function moveTip(e) {
+    let x = e.clientX + 14, y = e.clientY - 8;
+    if (x + 180 > window.innerWidth) x = e.clientX - 180 - 14;
+    tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
+  }
+});
+</script>
+</body>
+</html>
