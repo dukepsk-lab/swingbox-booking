@@ -32,6 +32,8 @@
       --radius:     12px;
       --radius-sm:  8px;
       --panel-w:    320px;
+      --header-h:   60px;
+      --tabs-h:     52px;
     }
 
     /* ─── RESET ──────────────────────────────────────────────── */
@@ -52,161 +54,123 @@
       transition: opacity 0.4s;
     }
     #loading.out { opacity: 0; pointer-events: none; }
-    .load-icon {
-      width: 52px; height: 52px;
-      background: linear-gradient(135deg, var(--green), var(--blue));
-      border-radius: 16px;
-      display: flex; align-items: center; justify-content: center; font-size: 24px;
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-    .load-bar { width: 160px; height: 2px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+    .load-icon { width: 52px; height: 52px; background: linear-gradient(135deg,var(--green),var(--blue)); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; animation: pulse 1.4s ease-in-out infinite; }
+    .load-bar  { width: 160px; height: 2px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
     .load-fill { height: 100%; background: linear-gradient(90deg,var(--green),var(--blue)); border-radius: 99px; animation: loadbar 1.2s ease-in-out infinite; }
     @keyframes pulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
     @keyframes loadbar { 0%{width:0;margin-left:0} 60%{width:80%;margin-left:0} 100%{width:0%;margin-left:100%} }
 
     /* ─── GATE ───────────────────────────────────────────────── */
-    #gate {
-      position: fixed; inset: 0; z-index: 10000;
-      background: var(--bg);
-      display: flex; align-items: center; justify-content: center; padding: 24px;
-    }
+    #gate { position: fixed; inset: 0; z-index: 10000; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; }
     #gate.hidden { display: none; }
-    .gate-card {
-      width: 100%; max-width: 360px;
-      background: var(--surface); border: 1px solid var(--border-2);
-      border-radius: 18px; padding: 40px 32px 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      text-align: center;
-      animation: popIn 0.3s ease;
-    }
-    @keyframes popIn { from{opacity:0;transform:scale(.95)translateY(12px)} to{opacity:1;transform:none} }
-    .gate-icon { width: 52px; height: 52px; margin: 0 auto 18px; background: linear-gradient(135deg,var(--green),var(--blue)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .gate-card { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 18px; padding: 40px 32px 32px; box-shadow: 0 20px 60px rgba(0,0,0,.6); text-align: center; animation: popIn .3s ease; }
+    @keyframes popIn { from{opacity:0;transform:scale(.95) translateY(12px)} to{opacity:1;transform:none} }
+    .gate-icon  { width: 52px; height: 52px; margin: 0 auto 18px; background: linear-gradient(135deg,var(--green),var(--blue)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
     .gate-title { font-size: 20px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 4px; }
     .gate-sub   { font-size: 13px; color: var(--text-2); margin-bottom: 28px; }
     .gate-lbl   { display: block; text-align: left; font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 7px; }
-    .gate-input {
-      width: 100%; padding: 11px 16px;
-      background: var(--surface-2); border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm); color: var(--text);
-      font-family: 'Inter', sans-serif; font-size: 15px;
-      outline: none; transition: border-color .2s, box-shadow .2s;
-      text-align: center; letter-spacing: 4px;
-    }
+    .gate-input { width: 100%; padding: 11px 16px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Inter',sans-serif; font-size: 15px; outline: none; transition: border-color .2s, box-shadow .2s; text-align: center; letter-spacing: 4px; }
     .gate-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
-    .gate-btn {
-      margin-top: 14px; width: 100%; padding: 12px;
-      background: var(--green); border: none; border-radius: var(--radius-sm);
-      color: #0d1117; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all .2s;
-    }
+    .gate-btn   { margin-top: 14px; width: 100%; padding: 12px; background: var(--green); border: none; border-radius: var(--radius-sm); color: #0d1117; font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; }
     .gate-btn:hover { background: #57d46e; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(63,185,80,.3); }
-    .gate-err { margin-top: 12px; font-size: 12px; color: var(--red); min-height: 18px; }
+    .gate-err   { margin-top: 12px; font-size: 12px; color: var(--red); min-height: 18px; }
 
     /* ─── HEADER ─────────────────────────────────────────────── */
     .site-header {
-      position: sticky; top: 0; z-index: 200; height: 60px;
-      background: rgba(13,17,23,.9);
+      position: sticky; top: 0; z-index: 200; height: var(--header-h);
+      background: rgba(13,17,23,.92);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center;
     }
-    .header-inner {
-      width: 100%; padding: 0 20px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-mark { width: 34px; height: 34px; background: linear-gradient(135deg,#3fb950,#58a6ff); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; flex-shrink: 0; font-weight: 700; }
-    .logo-name { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
-    .logo-sub  { font-size: 11px; color: var(--text-2); }
+    .header-inner { width: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+    .logo       { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark  { width: 34px; height: 34px; background: linear-gradient(135deg,#3fb950,#58a6ff); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; flex-shrink: 0; font-weight: 700; }
+    .logo-name  { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+    .logo-sub   { font-size: 11px; color: var(--text-2); }
     .header-right { display: flex; align-items: center; gap: 8px; }
     .chip-admin { display: inline-flex; align-items: center; gap: 5px; background: var(--blue-dim); border: 1px solid rgba(88,166,255,.25); color: var(--blue); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 99px; }
-    .btn-ghost { background: transparent; border: 1px solid var(--border-2); color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; padding: 6px 13px; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border-2); color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; padding: 6px 13px; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; }
     .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
 
-    /* ─── DASHBOARD GRID ─────────────────────────────────────── */
+    /* ─── MOBILE TAB BAR (hidden on desktop) ─────────────────── */
+    .mobile-tabs {
+      display: none; /* shown only on mobile via media query */
+      position: sticky;
+      top: var(--header-h);
+      z-index: 150;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: var(--tabs-h);
+    }
+    .tab-inner { display: flex; height: 100%; }
+    .tab-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+      background: none; border: none;
+      font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--text-2); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .15s; position: relative;
+    }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+    .tab-badge {
+      position: absolute; top: 10px; right: calc(50% - 32px);
+      background: var(--green); color: #0d1117;
+      font-size: 9px; font-weight: 700;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+    }
+    .tab-badge.show { display: flex; }
+
+    /* ─── DESKTOP LAYOUT ─────────────────────────────────────── */
     .dashboard {
       display: grid;
       grid-template-columns: var(--panel-w) 1fr;
-      gap: 16px;
-      padding: 16px;
+      gap: 16px; padding: 16px;
       align-items: start;
-      min-height: calc(100vh - 60px);
     }
 
-    /* ─── LEFT PANEL ─────────────────────────────────────────── */
+    /* ─── LEFT PANEL (desktop sticky) ───────────────────────── */
     .side-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius);
-      position: sticky;
-      top: calc(60px + 16px);
-      max-height: calc(100vh - 60px - 32px);
-      overflow-y: auto;
-      overflow-x: hidden;
-      scrollbar-width: thin;
-      scrollbar-color: var(--surface-3) transparent;
+      position: sticky; top: calc(var(--header-h) + 16px);
+      max-height: calc(100vh - var(--header-h) - 32px);
+      overflow-y: auto; overflow-x: hidden;
+      scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent;
     }
     .side-panel::-webkit-scrollbar { width: 4px; }
     .side-panel::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 99px; }
 
-    /* Panel views (form vs detail) */
+    /* Panel views */
     .panel-view { display: none; }
     .panel-view.active { display: block; }
 
     /* ─── PANEL HEADER ───────────────────────────────────────── */
-    .panel-hd {
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 10;
-      background: var(--surface);
-    }
+    .panel-hd { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; background: var(--surface); }
     .panel-hd-top { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
-    .panel-hd-icon { width: 30px; height: 30px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .panel-hd-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
     .panel-hd-icon.green { background: var(--green-dim); }
     .panel-hd-icon.blue  { background: var(--blue-dim); }
     .panel-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; flex: 1; }
-    .panel-hint  { font-size: 11px; color: var(--text-3); margin-top: 2px; padding-left: 40px; }
-
-    /* Back button (detail view) */
-    .back-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: none; border: none; color: var(--text-2);
-      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500;
-      cursor: pointer; padding: 0; transition: color .15s;
-    }
+    .panel-hint  { font-size: 11px; color: var(--text-3); margin-top: 1px; padding-left: 38px; }
+    .back-btn    { display: inline-flex; align-items: center; gap: 5px; background: none; border: none; color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; padding: 0; transition: color .15s; }
     .back-btn:hover { color: var(--green); }
 
-    /* ─── SELECTED SLOT INDICATOR ────────────────────────────── */
-    #slot-indicator {
-      margin: 12px 14px 0;
-      display: none;
-    }
+    /* ─── SLOT INDICATOR ─────────────────────────────────────── */
+    #slot-indicator { margin: 10px 14px 0; display: none; }
     #slot-indicator.show { display: block; }
-    .slot-chip {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--green-dim);
-      border: 1px solid rgba(63,185,80,.25);
-      border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      font-size: 12px; color: var(--green);
-    }
-    .slot-chip-icon { font-size: 13px; }
+    .slot-chip { display: flex; align-items: center; gap: 8px; background: var(--green-dim); border: 1px solid rgba(63,185,80,.25); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; color: var(--green); }
     .slot-chip-text { flex: 1; font-weight: 500; line-height: 1.4; }
-    .slot-clear {
-      background: none; border: none; color: rgba(63,185,80,.6);
-      font-size: 14px; cursor: pointer; line-height: 1; padding: 0 2px;
-      transition: color .15s;
-    }
+    .slot-clear { background: none; border: none; color: rgba(63,185,80,.6); font-size: 14px; cursor: pointer; padding: 0 2px; transition: color .15s; }
     .slot-clear:hover { color: var(--green); }
 
-    /* ─── FORM BODY ──────────────────────────────────────────── */
-    .panel-body { padding: 14px 16px 20px; }
-
-    .form-group { margin-bottom: 14px; }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    /* ─── FORM ───────────────────────────────────────────────── */
+    .panel-body { padding: 12px 14px 18px; }
+    .form-group { margin-bottom: 13px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
     .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
     .req { color: var(--green); }
-
     .form-input, .form-select, .form-textarea {
       width: 100%; padding: 9px 12px;
       background: var(--surface-2); border: 1px solid var(--border-2);
@@ -215,96 +179,52 @@
       outline: none; transition: border-color .2s, box-shadow .2s;
       -webkit-appearance: none;
     }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--green); box-shadow: 0 0 0 3px rgba(63,185,80,.12);
-    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(63,185,80,.12); }
     .form-input.err, .form-select.err { border-color: var(--red); }
     .form-input::placeholder { color: var(--text-3); font-size: 13px; }
-    .form-select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer;
-    }
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
     .form-select option { background: #21262d; }
-    .form-textarea { resize: none; height: 72px; line-height: 1.5; }
+    .form-textarea { resize: none; height: 68px; line-height: 1.5; }
     .form-err { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
     .form-err.show { display: block; }
 
     /* Bay radio cards */
     .bay-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .bay-card input { display: none; }
-    .bay-card label {
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      padding: 9px 10px;
-      background: var(--surface-2); border: 1.5px solid var(--border-2);
-      border-radius: var(--radius-sm); cursor: pointer;
-      font-size: 13px; font-weight: 500; color: var(--text-2);
-      transition: all .15s;
-    }
-    .bay-card label:hover { border-color: var(--border-2); color: var(--text); background: var(--surface-3); }
+    .bay-card label { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 10px; background: var(--surface-2); border: 1.5px solid var(--border-2); border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-2); transition: all .15s; }
+    .bay-card label:hover { color: var(--text); background: var(--surface-3); }
     .bay-card input:checked + label { border-color: var(--green); background: var(--green-dim); color: var(--green); }
     .bay-dot { width: 9px; height: 9px; border-radius: 50%; }
     .bay-dot.a { background: var(--amber); }
     .bay-dot.b { background: var(--green); }
 
-    /* Submit button */
-    .btn-submit-full {
-      width: 100%; padding: 11px;
-      background: var(--green); border: none; border-radius: var(--radius-sm);
-      color: #0d1117; font-family: 'Inter',sans-serif;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all .2s;
-      margin-top: 4px;
-    }
+    /* Buttons */
+    .btn-submit-full { width: 100%; padding: 11px; background: var(--green); border: none; border-radius: var(--radius-sm); color: #0d1117; font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 4px; }
     .btn-submit-full:hover:not(:disabled) { background: #57d46e; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(63,185,80,.3); }
     .btn-submit-full:active { transform: translateY(0); }
     .btn-submit-full:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    /* Reset link */
-    .reset-link {
-      display: block; text-align: center; margin-top: 10px;
-      font-size: 12px; color: var(--text-3); cursor: pointer; transition: color .15s;
-    }
+    .reset-link { display: block; text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-3); cursor: pointer; transition: color .15s; }
     .reset-link:hover { color: var(--text-2); }
 
-    /* ─── DETAIL VIEW ─────────────────────────────────────────── */
-    .detail-bay-card {
-      margin: 0 16px 0;
-      background: var(--surface-2); border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      display: flex; align-items: center; gap: 12px;
-    }
+    /* ─── DETAIL VIEW ────────────────────────────────────────── */
+    .detail-bay-card { margin: 0 14px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 14px; display: flex; align-items: center; gap: 12px; }
     .detail-bay-icon { width: 42px; height: 42px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
     .detail-bay-icon.a { background: var(--amber-dim); }
     .detail-bay-icon.b { background: var(--green-dim);  }
     .detail-bay-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
     .detail-bay-time  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-    .detail-info { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
-    .detail-row  { display: grid; grid-template-columns: 80px 1fr; gap: 6px; }
+    .detail-info { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+    .detail-row  { display: grid; grid-template-columns: 76px 1fr; gap: 6px; }
     .detail-key  { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--text-3); padding-top: 1px; }
     .detail-val  { font-size: 13px; color: var(--text); word-break: break-word; }
-    .detail-note { font-size: 12px; color: var(--text-2); font-style: italic; }
-
-    .btn-delete-full {
-      width: calc(100% - 32px); margin: 4px 16px 20px;
-      padding: 10px;
-      background: var(--red-dim); border: 1px solid rgba(248,81,73,.25);
-      color: var(--red); font-family: 'Inter',sans-serif;
-      font-size: 13px; font-weight: 500;
-      border-radius: var(--radius-sm); cursor: pointer; transition: all .2s;
-    }
+    .btn-delete-full { width: calc(100% - 28px); margin: 4px 14px 18px; padding: 10px; background: var(--red-dim); border: 1px solid rgba(248,81,73,.25); color: var(--red); font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; transition: all .2s; }
     .btn-delete-full:hover { background: rgba(248,81,73,.2); border-color: rgba(248,81,73,.5); }
     .btn-delete-full:disabled { opacity: .4; cursor: not-allowed; }
 
     /* ─── CALENDAR PANEL ─────────────────────────────────────── */
-    .cal-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      min-width: 0;
-    }
+    .cal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; min-width: 0; }
 
-    /* ─── FULLCALENDAR OVERRIDES ─────────────────────────────── */
+    /* ─── FULLCALENDAR ───────────────────────────────────────── */
     .fc {
       --fc-border-color:               rgba(255,255,255,0.07);
       --fc-button-bg-color:            var(--surface-2);
@@ -320,15 +240,15 @@
       --fc-highlight-color:            rgba(63,185,80,0.12);
     }
     .fc .fc-toolbar-title { font-size: 15px; font-weight: 600; color: var(--text); font-family: 'Inter',sans-serif; letter-spacing: -.3px; }
-    .fc .fc-button { font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm) !important; padding: 6px 13px; transition: all .15s; text-transform: none; letter-spacing: 0; }
+    .fc .fc-button { font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm) !important; padding: 6px 12px; transition: all .15s; text-transform: none; letter-spacing: 0; }
     .fc .fc-button:hover { color: var(--text); }
     .fc .fc-button-primary:not(:disabled).fc-button-active { color: #fff; font-weight: 600; box-shadow: 0 0 0 2px rgba(63,185,80,.3); }
-    .fc .fc-col-header-cell { background: var(--surface-2); border-color: rgba(255,255,255,0.07); padding: 9px 0; }
+    .fc .fc-col-header-cell { background: var(--surface-2); border-color: rgba(255,255,255,.07); padding: 8px 0; }
     .fc .fc-col-header-cell-cushion { font-family: 'Inter',sans-serif; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .5px; text-decoration: none; }
-    .fc .fc-timegrid-slot { height: 30px; border-color: rgba(255,255,255,0.04); }
+    .fc .fc-timegrid-slot { height: 30px; border-color: rgba(255,255,255,.04); }
     .fc .fc-timegrid-slot-minor { border-color: transparent; }
     .fc .fc-timegrid-slot-label { font-family: 'Inter',sans-serif; font-size: 10px; color: var(--text-3); }
-    .fc .fc-scrollgrid { border-color: rgba(255,255,255,0.07); }
+    .fc .fc-scrollgrid { border-color: rgba(255,255,255,.07); }
     .fc .fc-resource-area-header { background: var(--surface-2); }
     .fc .fc-timegrid-now-indicator-line  { border-color: var(--green); border-width: 1.5px; }
     .fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--green); border-bottom-color: var(--green); }
@@ -336,44 +256,62 @@
     .fc .fc-day-today .fc-daygrid-day-number { background: var(--green); color: #fff; border-radius: 6px; font-weight: 600; }
     .fc .fc-daygrid-event, .fc .fc-timegrid-event { border-radius: 6px !important; border-width: 0 !important; }
     .fc .fc-event { cursor: pointer !important; transition: opacity .15s, transform .1s; }
-    .fc .fc-event:hover { opacity: .85; transform: scale(1.02); }
+    .fc .fc-event:hover { opacity: .85; transform: scale(1.015); }
 
     /* ─── TOAST ──────────────────────────────────────────────── */
-    #toast {
-      position: fixed; bottom: 20px; right: 20px; z-index: 9990;
-      min-width: 220px;
-      background: var(--surface-3); border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm); padding: 11px 15px;
-      font-size: 13px; font-weight: 500; color: var(--text);
-      display: flex; align-items: center; gap: 9px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.5);
-      transform: translateY(10px); opacity: 0; transition: all .3s;
-      pointer-events: none;
-    }
+    #toast { position: fixed; bottom: 20px; right: 20px; z-index: 9990; min-width: 220px; background: var(--surface-3); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 11px 15px; font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 9px; box-shadow: 0 8px 32px rgba(0,0,0,.5); transform: translateY(10px); opacity: 0; transition: all .3s; pointer-events: none; }
     #toast.show { transform: translateY(0); opacity: 1; }
     #toast.success { border-left: 3px solid var(--green); }
     #toast.error   { border-left: 3px solid var(--red); }
 
-    /* ─── RESPONSIVE ─────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      :root { --panel-w: 280px; }
-    }
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) { :root { --panel-w: 280px; } }
+
+    /* ── MOBILE (≤ 720px) ─── show tabs, stack layout ─────── */
     @media (max-width: 720px) {
+      .mobile-tabs { display: block; }   /* show tab bar */
+
       .dashboard {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        padding: 0;
+        gap: 0;
       }
+
+      /* On mobile, panels are controlled by JS tabs */
       .side-panel {
         position: static;
         max-height: none;
+        border: none;
+        border-radius: 0;
+        border-bottom: 1px solid var(--border);
       }
-      .form-row-2 { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 480px) {
-      .dashboard { padding: 10px; gap: 10px; }
-      .form-row-2 { grid-template-columns: 1fr; }
+      .cal-panel {
+        border: none;
+        border-radius: 0;
+        padding: 12px 8px 24px;
+      }
+
+      /* Hide/show sections via .mob-hidden */
+      .mob-hidden { display: none !important; }
+
+      /* Slot indicator on mobile */
+      #slot-indicator { margin: 8px 12px 0; }
+
+      .panel-hd { padding: 12px 14px 10px; }
+      .panel-body { padding: 10px 12px 16px; }
+      .btn-delete-full { width: calc(100% - 24px); margin: 4px 12px 16px; }
+      .detail-bay-card { margin: 0 12px; }
+      .detail-info { padding: 10px 12px; }
+
       .fc .fc-toolbar { flex-wrap: wrap; gap: 6px; }
-      .fc .fc-toolbar-title { font-size: 13px; }
+      .fc .fc-toolbar-title { font-size: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .form-row-2 { grid-template-columns: 1fr; }
+      .fc .fc-button { padding: 5px 9px; font-size: 11px; }
     }
   </style>
 </head>
@@ -415,70 +353,67 @@
   </div>
 </header>
 
+<!-- ─── Mobile Tab Bar (hidden on desktop) ───────────────────── -->
+<nav class="mobile-tabs" id="mobile-tabs">
+  <div class="tab-inner">
+    <button class="tab-btn" id="tab-cal" onclick="switchTab('cal')">
+      📅 Calendar
+    </button>
+    <button class="tab-btn" id="tab-form" onclick="switchTab('form')">
+      📋 Booking Form
+      <span class="tab-badge" id="tab-badge">!</span>
+    </button>
+  </div>
+</nav>
+
 <!-- ─── Dashboard ────────────────────────────────────────────── -->
 <div class="dashboard">
 
   <!-- ══ LEFT PANEL ════════════════════════════════════════════ -->
-  <aside class="side-panel">
+  <aside class="side-panel" id="side-panel">
 
-    <!-- VIEW 1: New Booking Form -->
+    <!-- VIEW: New Booking Form -->
     <div id="view-form" class="panel-view active">
       <div class="panel-hd">
         <div class="panel-hd-top">
           <div class="panel-hd-icon green">📋</div>
           <span class="panel-title">New Booking</span>
         </div>
-        <div class="panel-hint">Click a time slot to pre-fill ↗</div>
+        <div class="panel-hint">Tap a time slot on the calendar to pre-fill ↗</div>
       </div>
 
-      <!-- Slot indicator (shows selected time from calendar) -->
+      <!-- Selected slot indicator -->
       <div id="slot-indicator">
         <div class="slot-chip">
-          <span class="slot-chip-icon">📌</span>
+          <span>📌</span>
           <span class="slot-chip-text" id="slot-text">—</span>
-          <button class="slot-clear" onclick="clearSlot()" title="Clear selection">✕</button>
+          <button class="slot-clear" onclick="clearSlot()" title="Clear">✕</button>
         </div>
       </div>
 
       <div class="panel-body">
-
-        <!-- Name -->
         <div class="form-group">
           <label class="form-label">Customer Name <span class="req">*</span></label>
           <input id="f-name" class="form-input" type="text" placeholder="Full name" />
           <div class="form-err" id="err-name">Name is required.</div>
         </div>
-
-        <!-- Phone -->
         <div class="form-group">
           <label class="form-label">Phone <span class="req">*</span></label>
           <input id="f-phone" class="form-input" type="tel" placeholder="08x-xxx-xxxx" />
           <div class="form-err" id="err-phone">Phone is required.</div>
         </div>
-
-        <!-- Bay -->
         <div class="form-group">
           <label class="form-label">Bay <span class="req">*</span></label>
           <div class="bay-cards">
-            <div class="bay-card">
-              <input type="radio" name="bay" id="bay-a" value="A" checked />
-              <label for="bay-a"><span class="bay-dot a"></span>Bay A</label>
-            </div>
-            <div class="bay-card">
-              <input type="radio" name="bay" id="bay-b" value="B" />
-              <label for="bay-b"><span class="bay-dot b"></span>Bay B</label>
-            </div>
+            <div class="bay-card"><input type="radio" name="bay" id="bay-a" value="A" checked /><label for="bay-a"><span class="bay-dot a"></span>Bay A</label></div>
+            <div class="bay-card"><input type="radio" name="bay" id="bay-b" value="B" /><label for="bay-b"><span class="bay-dot b"></span>Bay B</label></div>
           </div>
         </div>
-
-        <!-- Date -->
         <div class="form-group">
           <label class="form-label">Date <span class="req">*</span></label>
           <input id="f-date" class="form-input" type="date" />
           <div class="form-err" id="err-date">Date is required.</div>
         </div>
-
-        <!-- Times -->
         <div class="form-row-2">
           <div>
             <label class="form-label">Start <span class="req">*</span></label>
@@ -489,36 +424,28 @@
             <input id="f-end" class="form-input" type="time" step="1800" />
           </div>
         </div>
-        <div class="form-err" id="err-time" style="margin-top:-8px;margin-bottom:12px;">Check start/end time.</div>
-
-        <!-- Note -->
+        <div class="form-err" id="err-time" style="margin-top:-6px;margin-bottom:12px;">Check start/end time.</div>
         <div class="form-group">
           <label class="form-label">Note <span style="color:var(--text-3);font-weight:400;text-transform:none;">(optional)</span></label>
           <textarea id="f-note" class="form-textarea" placeholder="Special requests…"></textarea>
         </div>
-
-        <button class="btn-submit-full" id="btn-create" onclick="submitBooking()">
-          Confirm Booking
-        </button>
+        <button class="btn-submit-full" id="btn-create" onclick="submitBooking()">Confirm Booking</button>
         <span class="reset-link" onclick="resetForm()">Clear form</span>
-
       </div>
-    </div><!-- /view-form -->
+    </div>
 
-    <!-- VIEW 2: Booking Detail -->
+    <!-- VIEW: Booking Detail -->
     <div id="view-detail" class="panel-view">
       <div class="panel-hd">
         <div class="panel-hd-top">
-          <button class="back-btn" onclick="showForm()">← Back</button>
+          <button class="back-btn" onclick="showFormView()">← Back to form</button>
         </div>
         <div class="panel-hd-top" style="margin-top:10px;">
           <div class="panel-hd-icon blue">📌</div>
           <span class="panel-title">Booking Details</span>
         </div>
       </div>
-
-      <div style="height:14px;"></div>
-
+      <div style="height:12px;"></div>
       <div class="detail-bay-card">
         <div class="detail-bay-icon" id="d-icon">⛳</div>
         <div>
@@ -526,50 +453,46 @@
           <div class="detail-bay-time"  id="d-time">—</div>
         </div>
       </div>
-
       <div class="detail-info">
         <div class="detail-row"><div class="detail-key">Customer</div><div class="detail-val" id="d-name">—</div></div>
         <div class="detail-row"><div class="detail-key">Phone</div>   <div class="detail-val" id="d-phone">—</div></div>
         <div class="detail-row"><div class="detail-key">Date</div>    <div class="detail-val" id="d-date">—</div></div>
-        <div class="detail-row" id="d-note-row">
-          <div class="detail-key">Note</div>
-          <div class="detail-val detail-note" id="d-note">—</div>
+        <div class="detail-row" id="d-note-row" style="display:none;">
+          <div class="detail-key">Note</div><div class="detail-val" id="d-note" style="font-style:italic;color:var(--text-2);">—</div>
         </div>
       </div>
-
-      <button class="btn-delete-full" id="btn-delete" onclick="deleteBooking()">
-        🗑 Delete This Booking
-      </button>
-    </div><!-- /view-detail -->
+      <button class="btn-delete-full" id="btn-delete" onclick="deleteBooking()">🗑 Delete This Booking</button>
+    </div>
 
   </aside>
 
   <!-- ══ CALENDAR PANEL ════════════════════════════════════════ -->
-  <div class="cal-panel">
+  <div class="cal-panel" id="cal-panel">
     <div id="calendar"></div>
   </div>
 
-</div><!-- /dashboard -->
+</div>
 
 <!-- ─── Toast ────────────────────────────────────────────────── -->
-<div id="toast">
-  <span id="toast-icon"></span>
-  <span id="toast-msg"></span>
-</div>
+<div id="toast"><span id="toast-icon"></span><span id="toast-msg"></span></div>
 
 <script>
 /* ════════════════════════════════════════════════════════════
    ⚙  CONFIG
    ════════════════════════════════════════════════════════════ */
-const ADMIN_PASSWORD = "swingbox2026";   // ← change this
-const API_URL = "https://script.google.com/macros/library/d/13sxlhKKfLzQLRdBvsKZLItsLaeubmvNxPiWmIps7CKMLiMvTNDKrGaJm/2";
+const ADMIN_PASSWORD = "swingbox2024";   // ← change password here
+const API_URL = "https://script.google.com/macros/s/AKfycbyfq3MHhXSBRLB4x2i4GCcceU3HwDgJVGvkIgLgS-5N__0quXW6qmQeDyAoPEHwCRM/exec";
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════════════ */
+let calendar = null;
+let activeEventId = null;
+let isMobile = () => window.innerWidth <= 720;
 
 /* ════════════════════════════════════════════════════════════
    AUTH
    ════════════════════════════════════════════════════════════ */
-let calendar = null;
-let activeEventId = null;
-
 function checkPw() {
   const pw = document.getElementById('gate-pw').value;
   if (pw === ADMIN_PASSWORD) {
@@ -590,6 +513,44 @@ if (sessionStorage.getItem('sb_auth') === '1') {
   document.getElementById('gate').classList.add('hidden');
   boot();
 }
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE TABS
+   ════════════════════════════════════════════════════════════ */
+let currentTab = 'cal';   // 'cal' | 'form'
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-cal').classList.toggle('active',  tab === 'cal');
+  document.getElementById('tab-form').classList.toggle('active', tab === 'form');
+  document.getElementById('side-panel').classList.toggle('mob-hidden', tab !== 'form');
+  document.getElementById('cal-panel').classList.toggle('mob-hidden',  tab !== 'cal');
+  // Clear badge when user opens form tab
+  if (tab === 'form') document.getElementById('tab-badge').classList.remove('show');
+}
+
+function goFormTab() {
+  if (isMobile()) switchTab('form');
+}
+function goCalTab() {
+  if (isMobile()) switchTab('cal');
+}
+
+// Init mobile tabs to calendar view
+function initMobileTabs() {
+  if (isMobile()) switchTab('cal');
+}
+
+// When window resizes, reset visibility
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    // Desktop: always show both
+    document.getElementById('side-panel').classList.remove('mob-hidden');
+    document.getElementById('cal-panel').classList.remove('mob-hidden');
+  } else {
+    switchTab(currentTab);
+  }
+});
 
 /* ════════════════════════════════════════════════════════════
    HELPERS
@@ -622,10 +583,9 @@ function toEvents(bookings) {
     const note  = b.note  || b.Note  || '';
     const isA   = bay === 'A';
     return {
-      id:    String(b.id || b.ID || Math.random()),
+      id: String(b.id || b.ID || Math.random()),
       title: name || `Bay ${bay}`,
-      start: `${date}T${st}`,
-      end:   `${date}T${et}`,
+      start: `${date}T${st}`, end: `${date}T${et}`,
       resourceId:      bay.toLowerCase(),
       backgroundColor: isA ? 'rgba(210,153,34,0.2)' : 'rgba(63,185,80,0.15)',
       borderColor:     isA ? '#d29922' : '#3fb950',
@@ -638,23 +598,35 @@ function fmtDate(d) {
   if (!d) return '—';
   return new Date(d + 'T00:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 }
+function fmtShort(d) {
+  if (!d) return '—';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
 
 /* ════════════════════════════════════════════════════════════
    PANEL VIEWS
    ════════════════════════════════════════════════════════════ */
-function showForm()   { document.getElementById('view-form').classList.add('active'); document.getElementById('view-detail').classList.remove('active'); }
-function showDetail() { document.getElementById('view-detail').classList.add('active'); document.getElementById('view-form').classList.remove('active'); }
+function showFormView() {
+  document.getElementById('view-form').classList.add('active');
+  document.getElementById('view-detail').classList.remove('active');
+}
+function showDetailView() {
+  document.getElementById('view-detail').classList.add('active');
+  document.getElementById('view-form').classList.remove('active');
+}
 
 /* ════════════════════════════════════════════════════════════
-   SLOT INDICATOR (calendar → form sync)
+   SLOT INDICATOR
    ════════════════════════════════════════════════════════════ */
 function setSlotIndicator(date, st, et, bay) {
-  const fmtD = fmtDate(date);
-  document.getElementById('slot-text').textContent = `${fmtD}  ·  ${st}–${et}  ·  Bay ${bay}`;
+  document.getElementById('slot-text').textContent = `${fmtShort(date)}  ·  ${st}–${et}  ·  Bay ${bay}`;
   document.getElementById('slot-indicator').classList.add('show');
+  // Show badge on mobile tab
+  if (isMobile()) document.getElementById('tab-badge').classList.add('show');
 }
 function clearSlot() {
   document.getElementById('slot-indicator').classList.remove('show');
+  document.getElementById('tab-badge').classList.remove('show');
   calendar && calendar.unselect();
 }
 
@@ -672,17 +644,16 @@ function resetForm() {
 }
 
 function prefillForm(date, st, bayId) {
-  showForm();
-  document.getElementById('f-date').value  = date;
-  document.getElementById('f-start').value = st;
-  // Auto end = start + 1 hr
+  showFormView();
+  document.getElementById('f-date').value  = date || '';
+  document.getElementById('f-start').value = st   || '';
   if (st) {
     const [h, m] = st.split(':').map(Number);
-    document.getElementById('f-end').value = `${String(h+1).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    const endH = Math.min(h + 1, 23);
+    document.getElementById('f-end').value = `${String(endH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
   }
   if (bayId) document.querySelector(`input[name="bay"][value="${bayId}"]`).checked = true;
-  // Focus first empty field
-  setTimeout(() => document.getElementById('f-name').focus(), 50);
+  setTimeout(() => document.getElementById('f-name').focus(), 80);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -702,8 +673,7 @@ async function postData(payload) {
   return r.json();
 }
 async function reload() {
-  const bk = await fetchBookings();
-  const ev = toEvents(bk);
+  const ev = toEvents(await fetchBookings());
   calendar.removeAllEvents();
   calendar.addEventSource(ev);
 }
@@ -712,8 +682,7 @@ async function reload() {
    OVERLAP CHECK
    ════════════════════════════════════════════════════════════ */
 function hasOverlap(bay, date, st, et) {
-  const ns = new Date(`${date}T${st}`);
-  const ne = new Date(`${date}T${et}`);
+  const ns = new Date(`${date}T${st}`), ne = new Date(`${date}T${et}`);
   return calendar.getEvents().some(ev => {
     if ((ev.extendedProps.bay||'').toUpperCase() !== bay) return false;
     return ev.start < ne && ev.end > ns;
@@ -733,14 +702,10 @@ async function submitBooking() {
   const note  = document.getElementById('f-note').value.trim();
 
   let ok = true;
-  const setE = (fid, eid, show) => {
-    document.getElementById(fid).classList.toggle('err', show);
-    document.getElementById(eid).classList.toggle('show', show);
-    if (show) ok = false;
-  };
-  setE('f-name',  'err-name',  !name);
-  setE('f-phone', 'err-phone', !phone);
-  setE('f-date',  'err-date',  !date);
+  const setE = (fid, eid, show) => { document.getElementById(fid).classList.toggle('err', show); document.getElementById(eid).classList.toggle('show', show); if (show) ok = false; };
+  setE('f-name', 'err-name', !name);
+  setE('f-phone','err-phone',!phone);
+  setE('f-date', 'err-date', !date);
 
   let timeErr = !start || !end || start >= end;
   if (!timeErr && hasOverlap(bay, date, start, end)) {
@@ -752,20 +717,18 @@ async function submitBooking() {
   document.getElementById('f-start').classList.toggle('err', timeErr);
   document.getElementById('err-time').classList.toggle('show', timeErr);
   if (timeErr) ok = false;
-
   if (!ok) return;
 
   const btn = document.getElementById('btn-create');
   btn.disabled = true; btn.textContent = 'Saving…';
-
   try {
     await postData({ action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note });
-    toast('success', 'Booking confirmed!');
+    toast('success','Booking confirmed!');
     resetForm();
     await reload();
+    if (isMobile()) switchTab('cal');   // go back to calendar on mobile
   } catch(e) {
-    console.error(e);
-    toast('error','Failed to save. Check API.');
+    console.error(e); toast('error','Failed to save.');
     btn.disabled = false; btn.textContent = 'Confirm Booking';
   }
 }
@@ -774,29 +737,23 @@ async function submitBooking() {
    DETAIL
    ════════════════════════════════════════════════════════════ */
 function openDetail(info) {
-  const ev = info.event;
-  const p  = ev.extendedProps;
+  const p   = info.event.extendedProps;
   const bay = (p.bay||'A').toUpperCase();
-  const isA = bay === 'A';
-
   const icon = document.getElementById('d-icon');
-  icon.textContent  = '⛳';
-  icon.className    = 'detail-bay-icon ' + bay.toLowerCase();
-
+  icon.textContent = '⛳'; icon.className = 'detail-bay-icon ' + bay.toLowerCase();
   document.getElementById('d-bay-name').textContent = `Bay ${bay}`;
   document.getElementById('d-time').textContent     = `${p.st} – ${p.et}`;
   document.getElementById('d-name').textContent     = p.name  || '—';
   document.getElementById('d-phone').textContent    = p.phone || '—';
   document.getElementById('d-date').textContent     = fmtDate(p.date);
-
-  const noteRow = document.getElementById('d-note-row');
-  if (p.note) { document.getElementById('d-note').textContent = p.note; noteRow.style.display='grid'; }
-  else { noteRow.style.display='none'; }
-
-  activeEventId = ev.id;
+  const nr = document.getElementById('d-note-row');
+  if (p.note) { document.getElementById('d-note').textContent = p.note; nr.style.display='grid'; }
+  else { nr.style.display='none'; }
+  activeEventId = info.event.id;
   const btn = document.getElementById('btn-delete');
   btn.disabled = false; btn.textContent = '🗑 Delete This Booking';
-  showDetail();
+  showDetailView();
+  goFormTab();   // switch to form tab on mobile to show detail
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -810,11 +767,12 @@ async function deleteBooking() {
   try {
     await postData({ action:'delete', id: activeEventId });
     toast('success','Booking deleted.');
-    showForm();
+    showFormView();
     await reload();
+    if (isMobile()) switchTab('cal');
   } catch(e) {
-    console.error(e);
-    toast('error','Could not delete.'); btn.disabled=false; btn.textContent='🗑 Delete This Booking';
+    console.error(e); toast('error','Could not delete.');
+    btn.disabled = false; btn.textContent = '🗑 Delete This Booking';
   }
 }
 
@@ -841,9 +799,11 @@ async function boot() {
   loadEl.classList.add('out');
   setTimeout(() => loadEl.style.display='none', 420);
 
+  initMobileTabs();
+
   calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-    initialView:  window.innerWidth < 720 ? 'timeGridDay' : 'resourceTimeGridDay',
+    initialView:  isMobile() ? 'timeGridDay' : 'resourceTimeGridDay',
     headerToolbar: {
       left:   'prev,next today',
       center: 'title',
@@ -861,17 +821,16 @@ async function boot() {
     events,
     editable:false, selectable:true,
 
-    // ── Click empty slot → pre-fill form ─────────────────────
     select(info) {
-      showForm();
       const date  = info.startStr.slice(0,10);
       const st    = info.startStr.length > 10 ? info.startStr.slice(11,16) : '';
       const bayId = info.resource ? info.resource.id.toUpperCase() : 'A';
       prefillForm(date, st, bayId);
-      setSlotIndicator(date, st, document.getElementById('f-end').value, bayId);
+      const et = document.getElementById('f-end').value;
+      setSlotIndicator(date, st, et, bayId);
+      goFormTab();   // auto-switch to form tab on mobile
     },
 
-    // ── Click existing event → show detail ───────────────────
     eventClick(info) { openDetail(info); },
 
     eventContent(arg) {
