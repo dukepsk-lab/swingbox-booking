@@ -335,7 +335,7 @@
   <div class="hero">
     <div class="hero-label">⛳ Real-time Schedule</div>
     <h1 class="hero-title">Bay Availability<br><span>Today & This Week</span></h1>
-    <p class="hero-sub">Check which bays are open. Contact our staff to reserve your slot.</p>
+    <p class="hero-sub">Open Mon–Sat &nbsp;·&nbsp; 13:00–22:00 &nbsp;·&nbsp; Contact our staff to reserve your slot.</p>
   </div>
 
   <!-- Stats -->
@@ -485,9 +485,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       { id: 'a', title: 'Bay A' },
       { id: 'b', title: 'Bay B' }
     ],
-    slotMinTime: '08:00:00', slotMaxTime: '24:00:00',
+    slotMinTime: '13:00:00', slotMaxTime: '22:00:00',
     slotDuration: '00:30:00', slotLabelInterval: '01:00:00',
-    allDaySlot: false, scrollTime: '09:00:00',
+    hiddenDays: [0],
+    allDaySlot: false, scrollTime: '13:00:00',
     height: 'auto', expandRows: true, nowIndicator: true,
     events,
     editable: false, selectable: false, eventClick: () => {},

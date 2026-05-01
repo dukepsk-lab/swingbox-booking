@@ -411,17 +411,17 @@
         </div>
         <div class="form-group">
           <label class="form-label">Date <span class="req">*</span></label>
-          <input id="f-date" class="form-input" type="date" />
+          <input id="f-date" class="form-input" type="date" onchange="validateDate(this)" />
           <div class="form-err" id="err-date">Date is required.</div>
         </div>
         <div class="form-row-2">
           <div>
             <label class="form-label">Start <span class="req">*</span></label>
-            <input id="f-start" class="form-input" type="time" step="1800" />
+            <select id="f-start" class="form-select" onchange="updateEndTimes()"></select>
           </div>
           <div>
             <label class="form-label">End <span class="req">*</span></label>
-            <input id="f-end" class="form-input" type="time" step="1800" />
+            <select id="f-end" class="form-select"></select>
           </div>
         </div>
         <div class="form-err" id="err-time" style="margin-top:-6px;margin-bottom:12px;">Check start/end time.</div>
@@ -481,7 +481,7 @@
    ⚙  CONFIG
    ════════════════════════════════════════════════════════════ */
 const ADMIN_PASSWORD = "swingbox2024";   // ← change password here
-const API_URL = "https://script.google.com/macros/s/AKfycbyfq3MHhXSBRLB4x2i4GCcceU3HwDgJVGvkIgLgS-5N__0quXW6qmQeDyAoPEHwCRM/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwKgTpTSbA0J1jRhOAO7mgIMno9gE-8nha4QqCTb1nAjDxIlROklZ1BS4EaeqcfjNGG/exec";
 
 /* ════════════════════════════════════════════════════════════
    STATE
@@ -633,9 +633,56 @@ function clearSlot() {
 /* ════════════════════════════════════════════════════════════
    FORM
    ════════════════════════════════════════════════════════════ */
+/* ─── Time slot helpers (13:00–22:00, every 30 min) ─────────── */
+const OPEN_TIME  = '13:00';
+const CLOSE_TIME = '22:00';
+
+function buildSlots() {
+  const slots = [];
+  for (let h = 13; h <= 22; h++) {
+    slots.push(`${String(h).padStart(2,'0')}:00`);
+    if (h < 22) slots.push(`${String(h).padStart(2,'0')}:30`);
+  }
+  return slots; // ['13:00','13:30',...,'21:30','22:00']
+}
+
+function initTimeSelects() {
+  const slots = buildSlots();
+  const startSel = document.getElementById('f-start');
+  // Start: 13:00 – 21:30 (must leave at least 30 min before close)
+  startSel.innerHTML = slots
+    .filter(t => t < CLOSE_TIME)
+    .map(t => `<option value="${t}">${t}</option>`).join('');
+  updateEndTimes();
+}
+
+function updateEndTimes(keepVal) {
+  const startVal = document.getElementById('f-start').value;
+  const endSel   = document.getElementById('f-end');
+  const prev     = keepVal || endSel.value;
+  const slots    = buildSlots();
+  // End: must be after start
+  const endSlots = slots.filter(t => t > startVal);
+  endSel.innerHTML = endSlots.map(t => `<option value="${t}">${t}</option>`).join('');
+  // Keep previous value if still valid, else default +1 hr
+  if (prev && endSlots.includes(prev)) {
+    endSel.value = prev;
+  } else {
+    const [h, m] = startVal.split(':').map(Number);
+    const target = `${String(h + 1).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    endSel.value = endSlots.includes(target) ? target : endSlots[0];
+  }
+}
+
+function isSunday(dateStr) {
+  return dateStr && new Date(dateStr + 'T00:00:00').getDay() === 0;
+}
+
 function resetForm() {
-  ['f-name','f-phone','f-date','f-start','f-end','f-note'].forEach(id => document.getElementById(id).value = '');
+  ['f-name','f-phone','f-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-date').value = '';
   document.getElementById('bay-a').checked = true;
+  initTimeSelects();
   ['f-name','f-phone','f-date','f-start','f-end'].forEach(id => document.getElementById(id).classList.remove('err'));
   ['err-name','err-phone','err-date','err-time'].forEach(id => document.getElementById(id).classList.remove('show'));
   document.getElementById('btn-create').disabled = false;
@@ -645,13 +692,12 @@ function resetForm() {
 
 function prefillForm(date, st, bayId) {
   showFormView();
-  document.getElementById('f-date').value  = date || '';
-  document.getElementById('f-start').value = st   || '';
-  if (st) {
-    const [h, m] = st.split(':').map(Number);
-    const endH = Math.min(h + 1, 23);
-    document.getElementById('f-end').value = `${String(endH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-  }
+  document.getElementById('f-date').value = date || '';
+  // Snap st to nearest valid slot >= OPEN_TIME
+  const slots = buildSlots().filter(t => t < CLOSE_TIME);
+  const snap  = st && slots.includes(st) ? st : (slots.find(t => t >= (st || OPEN_TIME)) || slots[0]);
+  document.getElementById('f-start').value = snap;
+  updateEndTimes();
   if (bayId) document.querySelector(`input[name="bay"][value="${bayId}"]`).checked = true;
   setTimeout(() => document.getElementById('f-name').focus(), 80);
 }
@@ -666,8 +712,10 @@ async function fetchBookings() {
   } catch(e) { console.error(e); toast('error','Could not load bookings.'); return []; }
 }
 async function postData(payload) {
+  // Use text/plain to avoid CORS preflight — GAS still reads e.postData.contents as JSON
   const r = await fetch(API_URL, {
-    method:'POST', headers:{'Content-Type':'application/json'},
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   });
   return r.json();
@@ -800,6 +848,22 @@ async function boot() {
   setTimeout(() => loadEl.style.display='none', 420);
 
   initMobileTabs();
+  initTimeSelects();
+
+  // Sunday validation helper
+  window.validateDate = function(input) {
+    if (isSunday(input.value)) {
+      input.value = '';
+      input.classList.add('err');
+      const err = document.getElementById('err-date');
+      err.textContent = 'We are closed on Sundays.';
+      err.classList.add('show');
+      setTimeout(() => { err.classList.remove('show'); input.classList.remove('err'); err.textContent = 'Date is required.'; }, 3000);
+    } else {
+      input.classList.remove('err');
+      document.getElementById('err-date').classList.remove('show');
+    }
+  };
 
   calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
@@ -814,9 +878,10 @@ async function boot() {
       { id:'a', title:'Bay A' },
       { id:'b', title:'Bay B' }
     ],
-    slotMinTime:'08:00:00', slotMaxTime:'24:00:00',
+    slotMinTime:'13:00:00', slotMaxTime:'22:00:00',
     slotDuration:'00:30:00', slotLabelInterval:'01:00:00',
-    allDaySlot:false, scrollTime:'09:00:00',
+    hiddenDays:[0],
+    allDaySlot:false, scrollTime:'13:00:00',
     height:'auto', expandRows:true, nowIndicator:true,
     events,
     editable:false, selectable:true,
