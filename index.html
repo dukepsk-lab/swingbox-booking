@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SwingBox Golf Simulator — Availability & Booking</title>
+  <title>SwingBox Golf Simulator — Book a Bay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.10/index.global.min.js"></script>
-  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    /* ─── TOKENS ─────────────────────────────────────────────── */
     :root {
       --bg:         #0d1117;
       --surface:    #161b22;
@@ -23,195 +21,140 @@
       --text-3:     #484f58;
       --green:      #3fb950;
       --green-dim:  rgba(63,185,80,0.12);
-      --green-glow: rgba(63,185,80,0.25);
+      --green-glow: rgba(63,185,80,0.2);
       --amber:      #d29922;
       --amber-dim:  rgba(210,153,34,0.12);
       --blue:       #58a6ff;
+      --blue-dim:   rgba(88,166,255,0.12);
       --red:        #f85149;
-      --red-dim:    rgba(248,81,73,0.15);
-      --line-green: #06c755;
-      --line-dim:   rgba(6,199,85,0.12);
+      --red-dim:    rgba(248,81,73,0.14);
+      --pending-bg: rgba(210,153,34,0.15);
+      --pending-bd: #c49020;
       --radius:     12px;
       --radius-sm:  8px;
-      --shadow:     0 8px 32px rgba(0,0,0,0.4);
+      --panel-w:    310px;
+      --header-h:   60px;
+      --tabs-h:     50px;
     }
-
-    /* ─── RESET ──────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    html { height: 100%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100%; font-size: 14px; line-height: 1.5; }
 
     /* ─── LOADING ────────────────────────────────────────────── */
-    #loading {
-      position: fixed; inset: 0; z-index: 9999;
-      background: var(--bg);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 20px;
-      transition: opacity 0.4s;
-    }
+    #loading { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity .4s; }
     #loading.out { opacity: 0; pointer-events: none; }
-    .load-icon {
-      width: 48px; height: 48px;
-      background: linear-gradient(135deg, var(--green), var(--blue));
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-    .load-bar {
-      width: 180px; height: 2px;
-      background: var(--surface-2);
-      border-radius: 99px; overflow: hidden;
-    }
-    .load-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--green), var(--blue));
-      border-radius: 99px;
-      animation: loadbar 1.2s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-    @keyframes loadbar { 0%{width:0%;margin-left:0} 60%{width:80%;margin-left:0} 100%{width:0%;margin-left:100%} }
+    .load-icon  { width: 52px; height: 52px; background: linear-gradient(135deg,var(--green),var(--blue)); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; animation: pulse 1.4s ease-in-out infinite; }
+    .load-bar   { width: 160px; height: 2px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+    .load-fill  { height: 100%; background: linear-gradient(90deg,var(--green),var(--blue)); border-radius: 99px; animation: loadbar 1.2s ease-in-out infinite; }
+    @keyframes pulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+    @keyframes loadbar { 0%{width:0;margin-left:0} 60%{width:80%;margin-left:0} 100%{width:0%;margin-left:100%} }
 
     /* ─── HEADER ─────────────────────────────────────────────── */
-    .site-header {
-      position: sticky; top: 0; z-index: 200;
-      background: rgba(13,17,23,0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .header-inner {
-      max-width: 1400px; margin: 0 auto;
-      padding: 0 24px; height: 64px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none;
-    }
-    .logo-mark {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #3fb950 0%, #58a6ff 100%);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; color: #fff;
-      flex-shrink: 0;
-    }
-    .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
-    .logo-name { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
-    .logo-sub  { font-size: 11px; color: var(--text-2); font-weight: 400; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
-    .header-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--green-dim);
-      border: 1px solid rgba(63,185,80,0.3);
-      color: var(--green);
-      font-size: 12px; font-weight: 500;
-      padding: 5px 12px; border-radius: 99px;
-    }
-    .badge-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green);
-      animation: blink 2s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .btn-book-cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--green); color: #0d1117;
-      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
-      padding: 7px 16px; border-radius: 99px;
-      text-decoration: none; transition: all 0.2s;
-      border: none; cursor: pointer; white-space: nowrap;
-    }
-    .btn-book-cta:hover { background: #57d46e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(63,185,80,.3); }
+    .site-header { position: sticky; top: 0; z-index: 200; height: var(--header-h); background: rgba(13,17,23,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+    .header-inner { width: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+    .logo       { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark  { width: 34px; height: 34px; background: linear-gradient(135deg,#3fb950,#58a6ff); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; flex-shrink: 0; font-weight: 700; }
+    .logo-name  { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+    .logo-sub   { font-size: 11px; color: var(--text-2); }
+    .header-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--green-dim); border: 1px solid rgba(63,185,80,.3); color: var(--green); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 99px; }
+    .badge-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ─── MOBILE TABS ────────────────────────────────────────── */
+    .mobile-tabs { display: none; position: sticky; top: var(--header-h); z-index: 150; background: var(--surface); border-bottom: 1px solid var(--border); height: var(--tabs-h); }
+    .tab-inner  { display: flex; height: 100%; }
+    .tab-btn    { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; background: none; border: none; font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; position: relative; }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+    .tab-badge  { position: absolute; top: 10px; right: calc(50% - 36px); background: var(--amber); color: #0d1117; font-size: 9px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
+    .tab-badge.show { display: flex; }
 
     /* ─── LAYOUT ─────────────────────────────────────────────── */
-    .page { max-width: 1400px; margin: 0 auto; padding: 32px 24px 60px; }
+    .dashboard { display: grid; grid-template-columns: var(--panel-w) 1fr; gap: 16px; padding: 16px; align-items: start; }
 
-    /* ─── HERO ───────────────────────────────────────────────── */
-    .hero { margin-bottom: 28px; }
-    .hero-label {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 500; color: var(--green);
-      background: var(--green-dim);
-      border: 1px solid rgba(63,185,80,0.2);
-      padding: 4px 12px; border-radius: 99px;
-      margin-bottom: 14px;
-    }
-    .hero-title {
-      font-size: clamp(24px, 4vw, 36px);
-      font-weight: 700; letter-spacing: -0.8px; line-height: 1.2;
-      color: var(--text);
-      margin-bottom: 10px;
-    }
-    .hero-title span {
-      background: linear-gradient(90deg, var(--green), var(--blue));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-sub { font-size: 14px; color: var(--text-2); font-weight: 400; }
+    /* ─── SIDE PANEL ─────────────────────────────────────────── */
+    .side-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
+    .side-panel::-webkit-scrollbar { width: 4px; }
+    .side-panel::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 99px; }
 
-    /* ─── STATS ROW ──────────────────────────────────────────── */
-    .stats-row {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px; margin-bottom: 24px;
-    }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      display: flex; align-items: center; gap: 14px;
-      transition: border-color 0.2s;
-    }
-    .stat-card:hover { border-color: var(--border-2); }
-    .stat-icon {
-      width: 36px; height: 36px; border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 17px; flex-shrink: 0;
-    }
-    .stat-icon.green { background: var(--green-dim); }
-    .stat-icon.amber { background: var(--amber-dim); }
-    .stat-icon.blue  { background: rgba(88,166,255,0.1); }
-    .stat-body { min-width: 0; }
-    .stat-value { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-    .stat-label { font-size: 12px; color: var(--text-2); font-weight: 400; margin-top: 1px; }
+    /* Panel views */
+    .panel-view { display: none; }
+    .panel-view.active { display: block; }
+
+    /* ─── PANEL HEADER ───────────────────────────────────────── */
+    .panel-hd { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; background: var(--surface); }
+    .panel-hd-row { display: flex; align-items: center; gap: 10px; }
+    .panel-hd-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+    .icon-green { background: var(--green-dim); }
+    .icon-amber { background: var(--amber-dim); }
+    .panel-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; flex: 1; }
+    .panel-hint  { font-size: 11px; color: var(--text-3); margin-top: 2px; padding-left: 38px; }
 
     /* ─── LEGEND ─────────────────────────────────────────────── */
-    .legend-row {
-      display: flex; align-items: center; gap: 16px;
-      margin-bottom: 20px; flex-wrap: wrap;
-    }
-    .leg {
-      display: inline-flex; align-items: center; gap: 7px;
-      font-size: 12px; font-weight: 500; color: var(--text-2);
-    }
-    .leg-chip {
-      width: 28px; height: 10px; border-radius: 4px;
-    }
-    .leg-a    { background: var(--amber); }
-    .leg-b    { background: var(--green); }
-    .leg-free { background: var(--surface-3); border: 1px solid var(--border-2); }
+    .legend-strip { display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .leg { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--text-2); }
+    .leg-chip { width: 22px; height: 8px; border-radius: 3px; }
+    .lc-pending  { background: var(--amber); }
+    .lc-busy     { background: #8b1a1a; }
+    .lc-free     { background: var(--surface-3); border: 1px solid var(--border-2); }
 
-    /* ─── CALENDAR CARD ──────────────────────────────────────── */
-    .cal-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
+    /* ─── SLOT INDICATOR ─────────────────────────────────────── */
+    #slot-indicator { margin: 10px 14px 0; display: none; }
+    #slot-indicator.show { display: block; }
+    .slot-chip { display: flex; align-items: center; gap: 8px; background: var(--green-dim); border: 1px solid rgba(63,185,80,.25); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; color: var(--green); }
+    .slot-chip-text { flex: 1; font-weight: 500; line-height: 1.4; }
+    .slot-clear { background: none; border: none; color: rgba(63,185,80,.6); font-size: 14px; cursor: pointer; padding: 0 2px; transition: color .15s; }
+    .slot-clear:hover { color: var(--green); }
 
-    /* ─── FULLCALENDAR OVERRIDES ─────────────────────────────── */
+    /* ─── FORM ───────────────────────────────────────────────── */
+    .panel-body  { padding: 12px 14px 18px; }
+    .form-group  { margin-bottom: 13px; }
+    .form-row-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
+    .form-label  { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
+    .req { color: var(--green); }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 9px 12px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Inter',sans-serif; font-size: 13px; outline: none; transition: border-color .2s, box-shadow .2s; -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(63,185,80,.12); }
+    .form-input.err, .form-select.err { border-color: var(--red); }
+    .form-input::placeholder { color: var(--text-3); font-size: 13px; }
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
+    .form-select option { background: #21262d; }
+    .form-err  { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
+    .form-err.show { display: block; }
+
+    /* Bay radio cards */
+    .bay-cards   { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .bay-card input { display: none; }
+    .bay-card label { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 10px; background: var(--surface-2); border: 1.5px solid var(--border-2); border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-2); transition: all .15s; }
+    .bay-card label:hover { color: var(--text); background: var(--surface-3); }
+    .bay-card input:checked + label { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+    .bay-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .bay-dot.a { background: var(--amber); }
+    .bay-dot.b { background: var(--green); }
+
+    /* Submit button */
+    .btn-submit-full { width: 100%; padding: 11px; background: var(--green); border: none; border-radius: var(--radius-sm); color: #0d1117; font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 4px; }
+    .btn-submit-full:hover:not(:disabled) { background: #57d46e; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(63,185,80,.3); }
+    .btn-submit-full:active { transform: translateY(0); }
+    .btn-submit-full:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+    .reset-link { display: block; text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-3); cursor: pointer; transition: color .15s; }
+    .reset-link:hover { color: var(--text-2); }
+
+    /* ─── SUCCESS STATE ──────────────────────────────────────── */
+    .success-body { padding: 28px 20px 24px; text-align: center; }
+    .success-icon { font-size: 44px; margin-bottom: 14px; animation: popIn .4s ease; }
+    @keyframes popIn { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
+    .success-title { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -.3px; margin-bottom: 8px; }
+    .success-msg   { font-size: 12px; color: var(--text-2); line-height: 1.6; margin-bottom: 6px; }
+    .success-detail { font-size: 12px; color: var(--amber); background: var(--amber-dim); border: 1px solid rgba(210,153,34,.25); border-radius: var(--radius-sm); padding: 10px 12px; margin: 14px 0; text-align: left; line-height: 1.7; }
+    .success-detail strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; color: var(--amber); }
+    .btn-book-again { width: 100%; padding: 10px; background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; margin-top: 6px; }
+    .btn-book-again:hover { background: var(--surface-3); color: var(--text); }
+
+    /* ─── CALENDAR PANEL ─────────────────────────────────────── */
+    .cal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; min-width: 0; }
+
+    /* ─── FULLCALENDAR ───────────────────────────────────────── */
     .fc {
       --fc-border-color:               rgba(255,255,255,0.07);
       --fc-button-bg-color:            var(--surface-2);
@@ -221,760 +164,570 @@
       --fc-button-hover-border-color:  var(--border-2);
       --fc-button-active-bg-color:     var(--green);
       --fc-button-active-border-color: var(--green);
-      --fc-today-bg-color:             rgba(63,185,80,0.05);
+      --fc-today-bg-color:             rgba(63,185,80,0.04);
       --fc-page-bg-color:              transparent;
       --fc-neutral-bg-color:           var(--surface-2);
-      --fc-highlight-color:            rgba(63,185,80,0.08);
+      --fc-highlight-color:            rgba(63,185,80,0.12);
     }
-    .fc .fc-toolbar-title {
-      font-size: 16px; font-weight: 600; color: var(--text);
-      font-family: 'Inter', sans-serif; letter-spacing: -0.3px;
-    }
-    .fc .fc-button {
-      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
-      border-radius: var(--radius-sm) !important; padding: 6px 14px;
-      transition: all 0.15s; text-transform: none; letter-spacing: 0;
-    }
+    .fc .fc-toolbar-title { font-size: 15px; font-weight: 600; color: var(--text); font-family: 'Inter',sans-serif; letter-spacing: -.3px; }
+    .fc .fc-button { font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm) !important; padding: 6px 12px; transition: all .15s; text-transform: none; letter-spacing: 0; }
     .fc .fc-button:hover { color: var(--text); }
-    .fc .fc-button-primary:not(:disabled).fc-button-active {
-      color: #fff; font-weight: 600;
-      box-shadow: 0 0 0 2px rgba(63,185,80,0.3);
-    }
-    .fc .fc-col-header-cell {
-      background: var(--surface-2);
-      border-color: rgba(255,255,255,0.07);
-      padding: 10px 0;
-    }
-    .fc .fc-col-header-cell-cushion {
-      font-family: 'Inter', sans-serif; font-size: 12px;
-      font-weight: 600; color: var(--text-2);
-      text-transform: uppercase; letter-spacing: 0.5px;
-      text-decoration: none;
-    }
-    .fc .fc-timegrid-slot        { height: 32px; border-color: rgba(255,255,255,0.04); }
-    .fc .fc-timegrid-slot-minor  { border-color: transparent; }
-    .fc .fc-timegrid-slot-label  {
-      font-family: 'Inter', sans-serif; font-size: 11px;
-      font-weight: 400; color: var(--text-3);
-    }
-    .fc .fc-scrollgrid            { border-color: rgba(255,255,255,0.07); }
-    .fc .fc-resource-area-header  { background: var(--surface-2); }
+    .fc .fc-button-primary:not(:disabled).fc-button-active { color: #fff; font-weight: 600; box-shadow: 0 0 0 2px rgba(63,185,80,.3); }
+    .fc .fc-col-header-cell { background: var(--surface-2); border-color: rgba(255,255,255,.07); padding: 8px 0; }
+    .fc .fc-col-header-cell-cushion { font-family: 'Inter',sans-serif; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .5px; text-decoration: none; }
+    .fc .fc-timegrid-slot { height: 30px; border-color: rgba(255,255,255,.04); }
+    .fc .fc-timegrid-slot-minor { border-color: transparent; }
+    .fc .fc-timegrid-slot-label { font-family: 'Inter',sans-serif; font-size: 10px; color: var(--text-3); }
+    .fc .fc-scrollgrid { border-color: rgba(255,255,255,.07); }
+    .fc .fc-resource-area-header { background: var(--surface-2); }
     .fc .fc-timegrid-now-indicator-line  { border-color: var(--green); border-width: 1.5px; }
     .fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--green); border-bottom-color: var(--green); }
-    .fc .fc-daygrid-day-number { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text-2); text-decoration: none; }
-    .fc .fc-day-today .fc-daygrid-day-number {
-      background: var(--green); color: #fff; border-radius: 6px;
-      width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
-      font-weight: 600;
-    }
-    .fc .fc-daygrid-event, .fc .fc-timegrid-event { border-radius: var(--radius-sm) !important; border-width: 0 !important; }
-    .fc .fc-event { cursor: default !important; }
-    .fc .fc-resource-area .fc-scroller { background: var(--surface-2); }
+    .fc .fc-daygrid-day-number { font-family: 'Inter',sans-serif; font-size: 12px; color: var(--text-2); text-decoration: none; padding: 4px 6px; }
+    .fc .fc-day-today .fc-daygrid-day-number { background: var(--green); color: #fff; border-radius: 6px; font-weight: 600; }
+    .fc .fc-daygrid-event, .fc .fc-timegrid-event { border-radius: 6px !important; border-width: 0 !important; }
+    .fc .fc-event { cursor: pointer !important; transition: opacity .15s; }
+    .fc .fc-event:hover { opacity: .85; }
+    /* Dim past / out-of-range days */
+    .fc .fc-day-disabled { background: rgba(0,0,0,.25) !important; }
 
     /* ─── TOOLTIP ────────────────────────────────────────────── */
-    #tooltip {
-      position: fixed; display: none; z-index: 9000;
-      background: var(--surface-3);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      font-family: 'Inter', sans-serif; font-size: 12px;
-      pointer-events: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      min-width: 160px;
-    }
-    .tip-bay   { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 3px; }
-    .tip-time  { color: var(--text-2); }
-    .tip-dot   { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    #tooltip { position: fixed; display: none; z-index: 9000; background: var(--surface-3); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 10px 14px; font-family: 'Inter',sans-serif; font-size: 12px; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,.5); min-width: 160px; }
+    .tip-top  { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+    .tip-time { color: var(--text-2); }
 
-    /* ─── SELF-BOOKING SECTION ───────────────────────────────── */
-    .book-section { margin-top: 48px; scroll-margin-top: 80px; }
-    .book-hd { margin-bottom: 22px; }
-    .book-title {
-      font-size: clamp(20px, 3vw, 28px);
-      font-weight: 700; letter-spacing: -0.6px; color: var(--text);
-      margin-bottom: 8px;
-    }
-    .book-title span {
-      background: linear-gradient(90deg, var(--line-green), var(--blue));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .book-sub { font-size: 14px; color: var(--text-2); }
-
-    /* Success card */
-    .book-success {
-      background: var(--surface);
-      border: 1px solid rgba(63,185,80,0.3);
-      border-radius: var(--radius);
-      padding: 48px 24px; text-align: center;
-      box-shadow: var(--shadow);
-    }
-    .book-success-icon { font-size: 44px; margin-bottom: 14px; }
-    .book-success-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-    .book-success-sub {
-      font-size: 14px; color: var(--text-2); margin-bottom: 24px;
-      line-height: 1.7; max-width: 400px; margin-left: auto; margin-right: auto;
-    }
-    .book-success-detail {
-      display: inline-flex; flex-direction: column; align-items: flex-start;
-      gap: 6px; background: var(--surface-2);
-      border: 1px solid var(--border); border-radius: var(--radius-sm);
-      padding: 14px 20px; margin-bottom: 24px;
-      text-align: left;
-    }
-    .book-success-detail-row { font-size: 13px; color: var(--text-2); }
-    .book-success-detail-row strong { color: var(--text); font-weight: 500; }
-    .btn-again {
-      padding: 10px 26px; background: transparent;
-      border: 1px solid var(--border-2); color: var(--text-2);
-      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
-      border-radius: var(--radius-sm); cursor: pointer; transition: all .15s;
-    }
-    .btn-again:hover { background: var(--surface-2); color: var(--text); }
-
-    /* Form card */
-    .book-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    /* LINE status strip */
-    .line-status {
-      display: flex; align-items: center; gap: 10px;
-      border-radius: var(--radius-sm); padding: 10px 14px;
-      margin-bottom: 20px; font-size: 13px;
-    }
-    .line-status.notice {
-      background: rgba(6,199,85,0.08); border: 1px solid rgba(6,199,85,0.2);
-      color: var(--line-green);
-    }
-    .line-status.connected {
-      background: rgba(6,199,85,0.1); border: 1px solid rgba(6,199,85,0.3);
-    }
-    .line-status.no-line {
-      background: var(--surface-2); border: 1px solid var(--border);
-      color: var(--text-2);
-    }
-    .line-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-    .line-status-text { flex: 1; }
-    .line-status-name { font-weight: 600; color: var(--text); font-size: 13px; }
-    .line-status-hint { font-size: 11px; color: var(--text-2); margin-top: 1px; }
-
-    /* Form grid */
-    .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-    .book-group { display: flex; flex-direction: column; gap: 6px; }
-    .book-group.full { grid-column: 1 / -1; }
-    .book-label {
-      font-size: 11px; font-weight: 600; color: var(--text-2);
-      text-transform: uppercase; letter-spacing: .4px;
-    }
-    .req { color: var(--green); }
-    .book-input, .book-select, .book-textarea {
-      padding: 9px 12px;
-      background: var(--surface-2); border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm); color: var(--text);
-      font-family: 'Inter', sans-serif; font-size: 13px;
-      outline: none; transition: border-color .2s, box-shadow .2s;
-      width: 100%; -webkit-appearance: none;
-    }
-    .book-input:focus, .book-select:focus, .book-textarea:focus {
-      border-color: var(--green); box-shadow: 0 0 0 3px rgba(63,185,80,.12);
-    }
-    .book-input.err, .book-select.err { border-color: var(--red); }
-    .book-input::placeholder { color: var(--text-3); }
-    .book-select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 10px center;
-      padding-right: 30px; cursor: pointer;
-    }
-    .book-select option { background: #21262d; }
-    .book-textarea { resize: none; height: 72px; line-height: 1.5; }
-    .book-field-err { font-size: 11px; color: var(--red); display: none; }
-    .book-field-err.show { display: block; }
-
-    /* Bay radio cards */
-    .b-bay-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .b-bay-card input { display: none; }
-    .b-bay-card label {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 9px 8px; background: var(--surface-2);
-      border: 1.5px solid var(--border-2); border-radius: var(--radius-sm);
-      cursor: pointer; font-size: 12px; font-weight: 500;
-      color: var(--text-2); transition: all .15s; user-select: none;
-    }
-    .b-bay-card label:hover { color: var(--text); background: var(--surface-3); }
-    .b-bay-card input:checked + label {
-      border-color: var(--green); background: var(--green-dim); color: var(--green);
-    }
-    .b-bay-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .b-bay-dot.a { background: var(--amber); }
-    .b-bay-dot.b { background: var(--green); }
-
-    /* Submit button */
-    .btn-book-submit {
-      width: 100%; padding: 12px;
-      background: var(--green); border: none;
-      border-radius: var(--radius-sm); color: #0d1117;
-      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all .2s;
-    }
-    .btn-book-submit:hover:not(:disabled) {
-      background: #57d46e; transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(63,185,80,.3);
-    }
-    .btn-book-submit:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
-    .book-policy {
-      margin-top: 12px; text-align: center;
-      font-size: 11px; color: var(--text-3); line-height: 1.6;
-    }
-
-    /* ─── FOOTER ─────────────────────────────────────────────── */
-    .site-footer {
-      text-align: center;
-      padding: 32px 24px 24px;
-      border-top: 1px solid var(--border);
-      color: var(--text-3); font-size: 12px;
-      font-family: 'Inter', sans-serif;
-    }
-    .site-footer a { color: var(--text-2); text-decoration: none; }
-    .site-footer a:hover { color: var(--text); }
+    /* ─── TOAST ──────────────────────────────────────────────── */
+    #toast { position: fixed; bottom: 20px; right: 20px; z-index: 9990; min-width: 240px; background: var(--surface-3); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 11px 15px; font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 9px; box-shadow: 0 8px 32px rgba(0,0,0,.5); transform: translateY(10px); opacity: 0; transition: all .3s; pointer-events: none; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-left: 3px solid var(--green); }
+    #toast.error   { border-left: 3px solid var(--red); }
 
     /* ─── RESPONSIVE ─────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .page { padding: 20px 16px 48px; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .hero-sub { display: none; }
-      .cal-card { padding: 12px 8px; }
-      .fc .fc-toolbar { flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 900px) { :root { --panel-w: 280px; } }
+    @media (max-width: 720px) {
+      .mobile-tabs { display: block; }
+      .dashboard { grid-template-columns: 1fr; padding: 0; gap: 0; }
+      .side-panel { position: static; max-height: none; border: none; border-radius: 0; border-bottom: 1px solid var(--border); }
+      .cal-panel  { border: none; border-radius: 0; padding: 10px 8px 24px; }
+      .mob-hidden { display: none !important; }
+      .panel-body { padding: 10px 12px 16px; }
+      .fc .fc-toolbar { flex-wrap: wrap; gap: 6px; }
       .fc .fc-toolbar-title { font-size: 14px; }
-      .book-grid { grid-template-columns: 1fr; }
-      .book-group.full { grid-column: auto; }
-      .btn-book-cta { display: none; }
     }
     @media (max-width: 480px) {
-      .stats-row { grid-template-columns: 1fr; }
+      .form-row-2 { grid-template-columns: 1fr; }
+      .fc .fc-button { padding: 5px 9px; font-size: 11px; }
     }
   </style>
 </head>
 <body>
 
 <!-- Loading -->
-<div id="loading">
-  <div class="load-icon">⛳</div>
-  <div class="load-bar"><div class="load-bar-fill"></div></div>
-</div>
-
+<div id="loading"><div class="load-icon">⛳</div><div class="load-bar"><div class="load-fill"></div></div></div>
 <!-- Tooltip -->
 <div id="tooltip"></div>
+<!-- Toast -->
+<div id="toast"><span id="toast-icon"></span><span id="toast-msg"></span></div>
 
 <!-- Header -->
 <header class="site-header">
   <div class="header-inner">
     <a class="logo" href="#">
       <div class="logo-mark">S</div>
-      <div class="logo-text">
-        <div class="logo-name">SwingBox</div>
-        <div class="logo-sub">Golf Simulator</div>
-      </div>
+      <div><div class="logo-name">SwingBox Golf Simulator</div><div class="logo-sub">Book a Bay</div></div>
     </a>
-    <div class="header-right">
-      <a class="btn-book-cta" href="#booking">📝 Book Now</a>
-      <div class="header-badge">
-        <div class="badge-dot"></div>
-        Live Availability
-      </div>
-    </div>
+    <div class="header-badge"><div class="badge-dot"></div>Open Mon–Sat · 13:00–22:00</div>
   </div>
 </header>
 
-<!-- Page -->
-<div class="page">
-
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-label">⛳ Real-time Schedule</div>
-    <h1 class="hero-title">Bay Availability<br><span>Today & This Week</span></h1>
-    <p class="hero-sub">Open Mon–Sat &nbsp;·&nbsp; 13:00–22:00 &nbsp;·&nbsp; Book online below or call our staff to reserve your slot.</p>
+<!-- Mobile Tabs -->
+<nav class="mobile-tabs" id="mobile-tabs">
+  <div class="tab-inner">
+    <button class="tab-btn active" id="tab-cal"  onclick="switchTab('cal')">📅 Schedule</button>
+    <button class="tab-btn"        id="tab-form" onclick="switchTab('form')">
+      📝 Book Now
+      <span class="tab-badge" id="tab-badge">!</span>
+    </button>
   </div>
+</nav>
 
-  <!-- Stats -->
-  <div class="stats-row" id="stats-row">
-    <div class="stat-card">
-      <div class="stat-icon green">🟢</div>
-      <div class="stat-body">
-        <div class="stat-value" id="stat-free">—</div>
-        <div class="stat-label">Available Today</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon amber">📅</div>
-      <div class="stat-body">
-        <div class="stat-value" id="stat-booked">—</div>
-        <div class="stat-label">Booked Today</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon blue">🏌️</div>
-      <div class="stat-body">
-        <div class="stat-value">2</div>
-        <div class="stat-label">Bays Available</div>
-      </div>
-    </div>
-  </div>
+<!-- Dashboard -->
+<div class="dashboard">
 
-  <!-- Legend -->
-  <div class="legend-row">
-    <div class="leg"><div class="leg-chip leg-a"></div>Bay A — Occupied</div>
-    <div class="leg"><div class="leg-chip leg-b"></div>Bay B — Occupied</div>
-    <div class="leg"><div class="leg-chip leg-free"></div>Available</div>
-  </div>
+  <!-- LEFT PANEL -->
+  <aside class="side-panel" id="side-panel">
 
-  <!-- Calendar -->
-  <div class="cal-card">
+    <!-- VIEW: Booking Form -->
+    <div id="view-form" class="panel-view active">
+      <div class="panel-hd">
+        <div class="panel-hd-row">
+          <div class="panel-hd-icon icon-green">📝</div>
+          <span class="panel-title">Book a Bay</span>
+        </div>
+        <div class="panel-hint">Select a time on the calendar to pre-fill →</div>
+      </div>
+
+      <!-- Legend strip -->
+      <div class="legend-strip">
+        <div class="leg"><div class="leg-chip lc-pending"></div>⏳ รอยืนยัน</div>
+        <div class="leg"><div class="leg-chip lc-busy"></div>ไม่ว่าง</div>
+        <div class="leg"><div class="leg-chip lc-free"></div>ว่าง</div>
+      </div>
+
+      <!-- Slot indicator -->
+      <div id="slot-indicator">
+        <div class="slot-chip">
+          <span>📌</span>
+          <span class="slot-chip-text" id="slot-text">—</span>
+          <button class="slot-clear" onclick="clearSlot()">✕</button>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="form-group">
+          <label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label>
+          <input id="f-name" class="form-input" type="text" placeholder="ชื่อ นามสกุล" />
+          <div class="form-err" id="err-name">กรุณากรอกชื่อ</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">เบอร์โทร <span class="req">*</span></label>
+          <input id="f-phone" class="form-input" type="tel" placeholder="08x-xxx-xxxx" />
+          <div class="form-err" id="err-phone">กรุณากรอกเบอร์โทร</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">เลือกเบย์ <span class="req">*</span></label>
+          <div class="bay-cards">
+            <div class="bay-card"><input type="radio" name="bay" id="bay-a" value="A" checked /><label for="bay-a"><span class="bay-dot a"></span>Bay A</label></div>
+            <div class="bay-card"><input type="radio" name="bay" id="bay-b" value="B" /><label for="bay-b"><span class="bay-dot b"></span>Bay B</label></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">วันที่ <span class="req">*</span></label>
+          <input id="f-date" class="form-input" type="date" onchange="validateDate(this)" />
+          <div class="form-err" id="err-date">กรุณาเลือกวันที่</div>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">เวลาเริ่ม <span class="req">*</span></label>
+            <select id="f-start" class="form-select" onchange="updateEndTimes()"></select>
+          </div>
+          <div>
+            <label class="form-label">เวลาสิ้นสุด <span class="req">*</span></label>
+            <select id="f-end" class="form-select"></select>
+          </div>
+        </div>
+        <div class="form-err" id="err-time" style="margin-top:-6px;margin-bottom:12px;">กรุณาตรวจสอบเวลา</div>
+        <div class="form-group">
+          <label class="form-label">หมายเหตุ <span style="color:var(--text-3);font-weight:400;text-transform:none;">(ถ้ามี)</span></label>
+          <input id="f-note" class="form-input" type="text" placeholder="ข้อมูลเพิ่มเติม..." />
+        </div>
+        <button class="btn-submit-full" id="btn-submit" onclick="submitBooking()">ส่งคำขอจอง</button>
+        <span class="reset-link" onclick="resetForm()">ล้างข้อมูล</span>
+      </div>
+    </div><!-- /view-form -->
+
+    <!-- VIEW: Success -->
+    <div id="view-success" class="panel-view">
+      <div class="success-body">
+        <div class="success-icon">📬</div>
+        <div class="success-title">ส่งคำขอจองแล้ว!</div>
+        <div class="success-msg">เราได้รับคำขอจองของคุณแล้ว<br>รอเจ้าหน้าที่ยืนยันการจอง</div>
+        <div class="success-detail" id="success-detail">
+          <strong>รายละเอียดการจอง</strong>
+          <span id="s-bay">—</span><br>
+          <span id="s-date">—</span> · <span id="s-time">—</span><br>
+          <span id="s-name">—</span> · <span id="s-phone">—</span>
+        </div>
+        <p style="font-size:11px;color:var(--text-3);line-height:1.6;">
+          สถานะ "⏳ รอยืนยัน" จะแสดงบนปฏิทินทันที<br>
+          เมื่อยืนยันแล้วจะเปลี่ยนเป็น "ไม่ว่าง"
+        </p>
+        <button class="btn-book-again" onclick="showFormView()">+ จองเพิ่ม</button>
+      </div>
+    </div><!-- /view-success -->
+
+  </aside>
+
+  <!-- CALENDAR PANEL -->
+  <div class="cal-panel" id="cal-panel">
     <div id="calendar"></div>
   </div>
 
-  <!-- ═══════════════════ SELF-BOOKING SECTION ═══════════════════ -->
-  <div class="book-section" id="booking">
-
-    <div class="book-hd">
-      <div class="hero-label">📝 Self Booking</div>
-      <h2 class="book-title">Request Your <span>Session</span></h2>
-      <p class="book-sub">Submit a request — admin will review and confirm. You'll receive a LINE notification once approved.</p>
-    </div>
-
-    <!-- Success state (hidden until submitted) -->
-    <div class="book-success" id="book-success" style="display:none;">
-      <div class="book-success-icon">✅</div>
-      <div class="book-success-title">Request Submitted!</div>
-      <p class="book-success-sub">
-        Our staff will review your request shortly.<br>
-        <span id="success-line-note">You'll be notified via LINE once your booking is confirmed.</span>
-      </p>
-      <div class="book-success-detail" id="success-detail"></div>
-      <button class="btn-again" onclick="resetBookingForm()">Submit Another Request</button>
-    </div>
-
-    <!-- Form card -->
-    <div class="book-card" id="book-form-card">
-
-      <!-- LINE connection status -->
-      <div id="line-status-strip"></div>
-
-      <div class="book-grid">
-        <div class="book-group">
-          <label class="book-label">Your Name <span class="req">*</span></label>
-          <input id="b-name" class="book-input" type="text" placeholder="Full name" />
-          <div class="book-field-err" id="b-err-name">Name is required.</div>
-        </div>
-        <div class="book-group">
-          <label class="book-label">Phone <span class="req">*</span></label>
-          <input id="b-phone" class="book-input" type="tel" placeholder="08x-xxx-xxxx" />
-          <div class="book-field-err" id="b-err-phone">Phone is required.</div>
-        </div>
-        <div class="book-group full">
-          <label class="book-label">Bay Preference <span class="req">*</span></label>
-          <div class="b-bay-cards">
-            <div class="b-bay-card">
-              <input type="radio" name="b-bay" id="b-bay-a" value="A" checked />
-              <label for="b-bay-a"><span class="b-bay-dot a"></span>Bay A</label>
-            </div>
-            <div class="b-bay-card">
-              <input type="radio" name="b-bay" id="b-bay-b" value="B" />
-              <label for="b-bay-b"><span class="b-bay-dot b"></span>Bay B</label>
-            </div>
-            <div class="b-bay-card">
-              <input type="radio" name="b-bay" id="b-bay-any" value="Any" />
-              <label for="b-bay-any">Any Bay</label>
-            </div>
-          </div>
-        </div>
-        <div class="book-group">
-          <label class="book-label">Date <span class="req">*</span></label>
-          <input id="b-date" class="book-input" type="date" onchange="validateBookDate(this)" />
-          <div class="book-field-err" id="b-err-date">Please select a valid date.</div>
-        </div>
-        <div class="book-group"><!-- spacer --></div>
-        <div class="book-group">
-          <label class="book-label">Start Time <span class="req">*</span></label>
-          <select id="b-start" class="book-select" onchange="updateBookEndTimes()"></select>
-        </div>
-        <div class="book-group">
-          <label class="book-label">End Time <span class="req">*</span></label>
-          <select id="b-end" class="book-select"></select>
-        </div>
-        <div class="book-field-err" id="b-err-time" style="grid-column:1/-1;margin-top:-8px;">Please check time selection.</div>
-        <div class="book-group full">
-          <label class="book-label">Note <span style="color:var(--text-3);font-weight:400;text-transform:none;">(optional)</span></label>
-          <textarea id="b-note" class="book-textarea" placeholder="Special requests or anything we should know…"></textarea>
-        </div>
-      </div>
-
-      <button class="btn-book-submit" id="btn-b-submit" onclick="submitSelfBooking()">
-        Submit Booking Request
-      </button>
-      <p class="book-policy">
-        Open Mon–Sat · 13:00–22:00 · We are closed on Sundays<br>
-        Admin will review and confirm within business hours
-      </p>
-    </div>
-
-  </div>
-
 </div>
-
-<!-- Footer -->
-<footer class="site-footer">
-  <div>© 2025 SwingBox Golf Simulator &nbsp;·&nbsp; <a href="#">Contact Us</a></div>
-</footer>
 
 <script>
 /* ════════════════════════════════════════════════════════════
    ⚙  CONFIG
    ════════════════════════════════════════════════════════════ */
-const API_URL   = "https://script.google.com/macros/s/AKfycbwKgTpTSbA0J1jRhOAO7mgIMno9gE-8nha4QqCTb1nAjDxIlROklZ1BS4EaeqcfjNGG/exec";
-const LIFF_APP_ID = "YOUR_LIFF_APP_ID";  // ← Set your LIFF App ID from LINE Developers console
+const API_URL = "https://script.google.com/macros/s/AKfycbzPRqEoA_yAeomm5GF6XKAD_H-tcQIxnaeQuE3N8X859_cFxwWaDDUu9QPEAka5ipjG/exec";
 
-/* ─── State ──────────────────────────────────────────────── */
-let lineUserId      = null;
-let lineDisplayName = null;
-let confirmedBookings = [];
+/* ════════════════════════════════════════════════════════════
+   DATE HELPERS
+   ════════════════════════════════════════════════════════════ */
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function maxDateStr() {
+  const d = new Date();
+  d.setDate(d.getDate() + 7);
+  return d.toISOString().slice(0, 10);
+}
+function validEndStr() {  // FullCalendar validRange end is exclusive (+8 days)
+  const d = new Date();
+  d.setDate(d.getDate() + 8);
+  return d.toISOString().slice(0, 10);
+}
+function isSunday(dateStr) { return dateStr && new Date(dateStr + 'T00:00:00').getDay() === 0; }
+function fmtShort(d) {
+  if (!d) return '—';
+  return new Date(d + 'T00:00:00').toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric' });
+}
 
-/* ─── Helpers ───────────────────────────────────────────────── */
-function cleanDate(v) {
-  if (!v) return '';
-  if (v instanceof Date) return v.toISOString().slice(0, 10);
-  const s = String(v).trim();
-  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
-  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+/* ════════════════════════════════════════════════════════════
+   MOBILE TABS
+   ════════════════════════════════════════════════════════════ */
+let currentTab = 'cal';
+function isMobile() { return window.innerWidth <= 720; }
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-cal').classList.toggle('active',  tab === 'cal');
+  document.getElementById('tab-form').classList.toggle('active', tab === 'form');
+  document.getElementById('side-panel').classList.toggle('mob-hidden', tab !== 'form');
+  document.getElementById('cal-panel').classList.toggle('mob-hidden',  tab !== 'cal');
+  if (tab === 'form') document.getElementById('tab-badge').classList.remove('show');
+}
+function goFormTab() { if (isMobile()) switchTab('form'); }
+function goCalTab()  { if (isMobile()) switchTab('cal');  }
+
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    document.getElementById('side-panel').classList.remove('mob-hidden');
+    document.getElementById('cal-panel').classList.remove('mob-hidden');
+  } else { switchTab(currentTab); }
+});
+
+/* ════════════════════════════════════════════════════════════
+   PANEL VIEWS
+   ════════════════════════════════════════════════════════════ */
+function showFormView() {
+  document.getElementById('view-form').classList.add('active');
+  document.getElementById('view-success').classList.remove('active');
+}
+function showSuccessView(booking) {
+  const bay = booking.bay === 'A' ? '⛳ Bay A' : '⛳ Bay B';
+  document.getElementById('s-bay').textContent   = bay;
+  document.getElementById('s-date').textContent  = fmtShort(booking.date);
+  document.getElementById('s-time').textContent  = `${booking.startTime} – ${booking.endTime}`;
+  document.getElementById('s-name').textContent  = booking.customerName;
+  document.getElementById('s-phone').textContent = booking.phone;
+  document.getElementById('view-form').classList.remove('active');
+  document.getElementById('view-success').classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TIME SELECTS
+   ════════════════════════════════════════════════════════════ */
+function buildSlots() {
+  const s = [];
+  for (let h = 13; h <= 22; h++) {
+    s.push(`${String(h).padStart(2,'0')}:00`);
+    if (h < 22) s.push(`${String(h).padStart(2,'0')}:30`);
+  }
   return s;
 }
-function cleanTime(v) { return !v ? '00:00' : String(v).trim().slice(0, 5); }
-function normalise(raw) {
-  if (Array.isArray(raw))               return raw;
-  if (raw?.data && Array.isArray(raw.data))     return raw.data;
-  if (raw?.bookings)                    return raw.bookings;
-  if (raw?.headers && raw?.rows)
-    return raw.rows.map(r => Object.fromEntries(raw.headers.map((h,i) => [h, r[i]])));
-  return [];
-}
-function toEvents(bookings) {
-  return bookings.map(b => {
-    const bay  = String(b.bay || b.Bay || 'A').toUpperCase().trim();
-    const date = cleanDate(b.date || b.Date);
-    const st   = cleanTime(b.startTime || b['Start Time'] || b.start_time);
-    const et   = cleanTime(b.endTime   || b['End Time']   || b.end_time);
-    const isA  = bay === 'A';
-    return {
-      id:    String(b.id || b.ID || Math.random()),
-      title: `Bay ${bay} — BUSY`,
-      start: `${date}T${st}`,
-      end:   `${date}T${et}`,
-      resourceId: bay.toLowerCase(),
-      backgroundColor: isA ? 'rgba(210,153,34,0.18)' : 'rgba(63,185,80,0.15)',
-      borderColor:     isA ? '#d29922' : '#3fb950',
-      textColor:       isA ? '#f0c842' : '#7ee787',
-      extendedProps:   { bay, st, et }
-    };
-  });
-}
-
-/* ─── Stats ─────────────────────────────────────────────────── */
-function updateStats(events) {
-  const today = new Date().toISOString().slice(0, 10);
-  const todayBookings = events.filter(e => e.start.startsWith(today));
-  document.getElementById('stat-booked').textContent = todayBookings.length;
-  const busyHrs = todayBookings.reduce((acc, e) => {
-    const [sh, sm] = e.extendedProps.st.split(':').map(Number);
-    const [eh, em] = e.extendedProps.et.split(':').map(Number);
-    return acc + (eh + em/60) - (sh + sm/60);
-  }, 0);
-  const freeHrs = Math.max(0, 16 * 2 - busyHrs);
-  document.getElementById('stat-free').textContent = freeHrs.toFixed(0) + ' hrs';
-}
-
-/* ─── Fetch ─────────────────────────────────────────────────── */
-async function fetchBookings() {
-  try {
-    const r = await fetch(API_URL, { cache: 'no-store' });
-    return normalise(await r.json());
-  } catch(e) {
-    console.error('Fetch error:', e);
-    return [];
-  }
-}
-
-/* ─── LIFF Init ─────────────────────────────────────────────── */
-async function initLiff() {
-  const strip = document.getElementById('line-status-strip');
-  try {
-    if (!LIFF_APP_ID || LIFF_APP_ID === 'YOUR_LIFF_APP_ID') {
-      renderLineNotice(strip);
-      return;
-    }
-    await liff.init({ liffId: LIFF_APP_ID });
-    if (!liff.isLoggedIn()) {
-      renderLineNotice(strip);
-      return;
-    }
-    const profile = await liff.getProfile();
-    lineUserId      = profile.userId;
-    lineDisplayName = profile.displayName;
-    renderLineConnected(strip, profile);
-    document.getElementById('b-name').value = profile.displayName;
-  } catch(e) {
-    console.warn('LIFF init failed:', e);
-    renderLineNotice(strip);
-  }
-}
-
-function renderLineConnected(strip, profile) {
-  strip.innerHTML = `
-    <div class="line-status connected">
-      <img class="line-avatar" src="${profile.pictureUrl || ''}" alt="" onerror="this.style.display='none'" />
-      <div class="line-status-text">
-        <div class="line-status-name">✅ ${profile.displayName}</div>
-        <div class="line-status-hint">Connected via LINE — you'll receive a notification when your booking is confirmed</div>
-      </div>
-    </div>`;
-}
-
-function renderLineNotice(strip) {
-  strip.innerHTML = `
-    <div class="line-status notice">
-      <span style="font-size:18px;">💬</span>
-      <div class="line-status-text">
-        Open this page from the <strong>LINE app</strong> to receive an automatic booking confirmation notification
-      </div>
-    </div>`;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SELF-BOOKING FORM
-   ═══════════════════════════════════════════════════════════════ */
-const B_OPEN  = '13:00';
-const B_CLOSE = '22:00';
-
-function buildSlots() {
-  const slots = [];
-  for (let h = 13; h <= 22; h++) {
-    slots.push(`${String(h).padStart(2,'0')}:00`);
-    if (h < 22) slots.push(`${String(h).padStart(2,'0')}:30`);
-  }
-  return slots;
-}
-
-function initBookTimeSelects() {
+function initTimeSelects() {
   const slots    = buildSlots();
-  const startSel = document.getElementById('b-start');
-  startSel.innerHTML = slots
-    .filter(t => t < B_CLOSE)
-    .map(t => `<option value="${t}">${t}</option>`).join('');
-  updateBookEndTimes();
+  const startSel = document.getElementById('f-start');
+  startSel.innerHTML = slots.filter(t => t < '22:00').map(t => `<option value="${t}">${t}</option>`).join('');
+  updateEndTimes();
 }
-
-function updateBookEndTimes() {
-  const startVal = document.getElementById('b-start').value;
-  const endSel   = document.getElementById('b-end');
-  const prev     = endSel.value;
+function updateEndTimes(keepVal) {
+  const startVal = document.getElementById('f-start').value;
+  const endSel   = document.getElementById('f-end');
+  const prev     = keepVal || endSel.value;
   const endSlots = buildSlots().filter(t => t > startVal);
   endSel.innerHTML = endSlots.map(t => `<option value="${t}">${t}</option>`).join('');
-  if (prev && endSlots.includes(prev)) {
-    endSel.value = prev;
-  } else {
+  if (prev && endSlots.includes(prev)) { endSel.value = prev; }
+  else {
     const [h, m] = startVal.split(':').map(Number);
     const target = `${String(h+1).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
     endSel.value = endSlots.includes(target) ? target : endSlots[0];
   }
 }
 
-function validateBookDate(input) {
-  const d = new Date(input.value + 'T00:00:00');
-  const day = d.getDay();
-  const err = document.getElementById('b-err-date');
-  if (day === 0) {
+/* ════════════════════════════════════════════════════════════
+   DATE VALIDATION
+   ════════════════════════════════════════════════════════════ */
+function validateDate(input) {
+  const errEl = document.getElementById('err-date');
+  if (isSunday(input.value)) {
     input.value = '';
     input.classList.add('err');
-    err.textContent = 'We are closed on Sundays.';
-    err.classList.add('show');
-    setTimeout(() => { err.classList.remove('show'); input.classList.remove('err'); err.textContent = 'Please select a valid date.'; }, 3000);
-  } else {
-    input.classList.remove('err');
-    err.classList.remove('show');
+    errEl.textContent = 'ร้านปิดวันอาทิตย์';
+    errEl.classList.add('show');
+    setTimeout(() => { errEl.classList.remove('show'); input.classList.remove('err'); errEl.textContent = 'กรุณาเลือกวันที่'; }, 3000);
+    return false;
   }
+  input.classList.remove('err'); errEl.classList.remove('show');
+  return true;
 }
 
-function hasConflict(bay, date, st, et) {
-  if (bay === 'Any') return false;
+/* ════════════════════════════════════════════════════════════
+   SLOT INDICATOR
+   ════════════════════════════════════════════════════════════ */
+let calendarRef = null;
+function setSlotIndicator(date, st, et, bay) {
+  document.getElementById('slot-text').textContent = `${fmtShort(date)}  ·  ${st}–${et}  ·  Bay ${bay}`;
+  document.getElementById('slot-indicator').classList.add('show');
+  if (isMobile()) document.getElementById('tab-badge').classList.add('show');
+}
+function clearSlot() {
+  document.getElementById('slot-indicator').classList.remove('show');
+  document.getElementById('tab-badge').classList.remove('show');
+  calendarRef && calendarRef.unselect();
+}
+
+/* ════════════════════════════════════════════════════════════
+   FORM
+   ════════════════════════════════════════════════════════════ */
+function resetForm() {
+  ['f-name','f-phone','f-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-date').value = '';
+  document.getElementById('bay-a').checked = true;
+  initTimeSelects();
+  ['f-name','f-phone','f-date','f-start','f-end'].forEach(id => document.getElementById(id).classList.remove('err'));
+  ['err-name','err-phone','err-date','err-time'].forEach(id => document.getElementById(id).classList.remove('show'));
+  document.getElementById('btn-submit').disabled = false;
+  document.getElementById('btn-submit').textContent = 'ส่งคำขอจอง';
+  clearSlot();
+}
+
+function prefillForm(date, st, bayId) {
+  showFormView();
+  document.getElementById('f-date').value = date || '';
+  const slots = buildSlots().filter(t => t < '22:00');
+  const snap  = slots.includes(st) ? st : (slots.find(t => t >= (st||'13:00')) || slots[0]);
+  document.getElementById('f-start').value = snap;
+  updateEndTimes();
+  if (bayId) document.querySelector(`input[name="bay"][value="${bayId}"]`).checked = true;
+  setTimeout(() => document.getElementById('f-name').focus(), 80);
+}
+
+/* ════════════════════════════════════════════════════════════
+   OVERLAP CHECK
+   ════════════════════════════════════════════════════════════ */
+function hasOverlap(bay, date, st, et) {
+  if (!calendarRef) return false;
   const ns = new Date(`${date}T${st}`), ne = new Date(`${date}T${et}`);
-  return confirmedBookings.some(b => {
-    const bBay = String(b.bay || b.Bay || '').toUpperCase();
-    if (bBay !== bay) return false;
-    const bDate = cleanDate(b.date || b.Date);
-    if (bDate !== date) return false;
-    const bSt = cleanTime(b.startTime || b['Start Time'] || b.start_time);
-    const bEt = cleanTime(b.endTime   || b['End Time']   || b.end_time);
-    const bs  = new Date(`${date}T${bSt}`), be = new Date(`${date}T${bEt}`);
-    return bs < ne && be > ns;
+  return calendarRef.getEvents().some(ev => {
+    if ((ev.extendedProps.bay||'').toUpperCase() !== bay) return false;
+    return ev.start < ne && ev.end > ns;
   });
 }
 
-function fmtDisplayDate(dateStr) {
-  if (!dateStr) return '—';
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('th-TH', {
-    weekday:'long', day:'numeric', month:'long', year:'numeric'
+/* ════════════════════════════════════════════════════════════
+   API
+   ════════════════════════════════════════════════════════════ */
+function cleanDate(v) {
+  if (!v) return '';
+  if (v instanceof Date) return v.toISOString().slice(0,10);
+  const s = String(v).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  return s;
+}
+function cleanTime(v) { return !v ? '00:00' : String(v).trim().slice(0,5); }
+function normalise(raw) {
+  if (Array.isArray(raw))        return raw;
+  if (raw?.data)                 return raw.data;
+  if (raw?.bookings)             return raw.bookings;
+  if (raw?.headers && raw?.rows) return raw.rows.map(r => Object.fromEntries(raw.headers.map((h,i)=>[h,r[i]])));
+  return [];
+}
+
+function toEvents(bookings) {
+  return bookings.map(b => {
+    const bay    = String(b.bay || b.Bay || 'A').toUpperCase().trim();
+    const date   = cleanDate(b.date || b.Date);
+    const st     = cleanTime(b.startTime || b['Start Time'] || b.start_time);
+    const et     = cleanTime(b.endTime   || b['End Time']   || b.end_time);
+    const status = b.status || b.Status || 'confirmed';
+    const isPending = status === 'pending';
+
+    return {
+      id:    String(b.id || b.ID || Math.random()),
+      title: isPending ? '⏳ รอยืนยัน' : 'ไม่ว่าง',
+      start: `${date}T${st}`, end: `${date}T${et}`,
+      resourceId:      bay.toLowerCase(),
+      backgroundColor: isPending ? 'rgba(210,153,34,0.18)' : 'rgba(139,26,26,0.55)',
+      borderColor:     isPending ? '#c49020'  : '#9b2020',
+      textColor:       isPending ? '#f0c050'  : '#ffaaaa',
+      extendedProps:   { bay, st, et, status }
+    };
   });
 }
 
-async function submitSelfBooking() {
-  const name  = document.getElementById('b-name').value.trim();
-  const phone = document.getElementById('b-phone').value.trim();
-  const bay   = document.querySelector('input[name="b-bay"]:checked').value;
-  const date  = document.getElementById('b-date').value;
-  const start = document.getElementById('b-start').value;
-  const end   = document.getElementById('b-end').value;
-  const note  = document.getElementById('b-note').value.trim();
-
-  let ok = true;
-  const setE = (fid, eid, show, msg) => {
-    document.getElementById(fid)?.classList.toggle('err', show);
-    const errEl = document.getElementById(eid);
-    if (errEl) {
-      if (msg) errEl.textContent = msg;
-      errEl.classList.toggle('show', show);
-    }
-    if (show) ok = false;
-  };
-
-  setE('b-name',  'b-err-name',  !name);
-  setE('b-phone', 'b-err-phone', !phone);
-  setE('b-date',  'b-err-date',  !date);
-
-  let timeErr = !start || !end || start >= end;
-  if (!timeErr && bay !== 'Any' && hasConflict(bay, date, start, end)) {
-    timeErr = true;
-    document.getElementById('b-err-time').textContent = `Bay ${bay} appears to be booked at this time. Please choose another slot or select "Any Bay".`;
-  } else if (!timeErr) {
-    document.getElementById('b-err-time').textContent = 'Please check time selection.';
-  }
-  document.getElementById('b-err-time').classList.toggle('show', timeErr);
-  if (timeErr) ok = false;
-  if (!ok) return;
-
-  const btn = document.getElementById('btn-b-submit');
-  btn.disabled = true;
-  btn.textContent = 'Submitting…';
-
+async function fetchBookings() {
   try {
-    await postPending({ action: 'createPending', customerName: name, phone, bay, date, startTime: start, endTime: end, note, lineUserId: lineUserId || '', lineDisplayName: lineDisplayName || '' });
-    showBookingSuccess({ name, bay, date, start, end });
-  } catch(e) {
-    console.error(e);
-    alert('Failed to submit request. Please try again or contact us directly.');
-    btn.disabled = false;
-    btn.textContent = 'Submit Booking Request';
-  }
+    const r = await fetch(API_URL, { cache: 'no-store' });
+    return normalise(await r.json());
+  } catch(e) { console.error(e); return []; }
 }
-
-async function postPending(payload) {
+async function postBooking(payload) {
   const r = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
+    method: 'POST', headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   });
   return r.json();
 }
-
-function showBookingSuccess({ name, bay, date, start, end }) {
-  document.getElementById('book-form-card').style.display = 'none';
-
-  const hasLine = !!lineUserId;
-  document.getElementById('success-line-note').textContent = hasLine
-    ? 'You will receive a LINE notification once your booking is confirmed.'
-    : 'Our staff will contact you via the phone number provided.';
-
-  document.getElementById('success-detail').innerHTML = `
-    <div class="book-success-detail-row">📋 <strong>Name:</strong> ${name}</div>
-    <div class="book-success-detail-row">🏌️ <strong>Bay:</strong> ${bay}</div>
-    <div class="book-success-detail-row">📅 <strong>Date:</strong> ${fmtDisplayDate(date)}</div>
-    <div class="book-success-detail-row">⏰ <strong>Time:</strong> ${start} – ${end}</div>`;
-
-  document.getElementById('book-success').style.display = 'block';
-  document.getElementById('book-success').scrollIntoView({ behavior: 'smooth', block: 'start' });
+async function reload() {
+  const ev = toEvents(await fetchBookings());
+  calendarRef.removeAllEvents();
+  calendarRef.addEventSource(ev);
 }
 
-function resetBookingForm() {
-  document.getElementById('book-form-card').style.display = 'block';
-  document.getElementById('book-success').style.display   = 'none';
-  ['b-name','b-phone','b-note'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('b-date').value = '';
-  document.getElementById('b-bay-a').checked = true;
-  initBookTimeSelects();
-  ['b-name','b-phone','b-date'].forEach(id => document.getElementById(id).classList.remove('err'));
-  ['b-err-name','b-err-phone','b-err-date','b-err-time'].forEach(id => document.getElementById(id).classList.remove('show'));
-  const btn = document.getElementById('btn-b-submit');
-  btn.disabled = false;
-  btn.textContent = 'Submit Booking Request';
-  if (lineDisplayName) document.getElementById('b-name').value = lineDisplayName;
+/* ════════════════════════════════════════════════════════════
+   SUBMIT
+   ════════════════════════════════════════════════════════════ */
+async function submitBooking() {
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const bay   = document.querySelector('input[name="bay"]:checked').value;
+  const date  = document.getElementById('f-date').value;
+  const start = document.getElementById('f-start').value;
+  const end   = document.getElementById('f-end').value;
+  const note  = document.getElementById('f-note').value.trim();
+
+  let ok = true;
+  const setE = (fid, eid, show) => { document.getElementById(fid).classList.toggle('err', show); document.getElementById(eid).classList.toggle('show', show); if (show) ok = false; };
+  setE('f-name',  'err-name',  !name);
+  setE('f-phone', 'err-phone', !phone);
+
+  if (!date || isSunday(date)) {
+    document.getElementById('f-date').classList.add('err');
+    const errEl = document.getElementById('err-date');
+    errEl.textContent = !date ? 'กรุณาเลือกวันที่' : 'ร้านปิดวันอาทิตย์';
+    errEl.classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('f-date').classList.remove('err');
+    document.getElementById('err-date').classList.remove('show');
+  }
+
+  let timeErr = !start || !end || start >= end;
+  if (!timeErr && hasOverlap(bay, date, start, end)) {
+    document.getElementById('err-time').textContent = `Bay ${bay} ไม่ว่างในช่วงเวลานี้`;
+    timeErr = true;
+  } else if (!timeErr) {
+    document.getElementById('err-time').textContent = 'กรุณาตรวจสอบเวลา';
+  }
+  document.getElementById('f-start').classList.toggle('err', timeErr);
+  document.getElementById('err-time').classList.toggle('show', timeErr);
+  if (timeErr) ok = false;
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true; btn.textContent = 'กำลังส่ง…';
+
+  try {
+    await postBooking({ action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, status:'pending' });
+    showSuccessView({ bay, date, startTime:start, endTime:end, customerName:name, phone });
+    await reload();
+    goCalTab();
+  } catch(e) {
+    console.error(e);
+    toast('error', 'ไม่สามารถส่งคำขอได้ กรุณาลองใหม่');
+    btn.disabled = false; btn.textContent = 'ส่งคำขอจอง';
+  }
 }
 
-/* ─── Boot ──────────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+   TOAST
+   ════════════════════════════════════════════════════════════ */
+function toast(type, msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = type === 'success' ? '✅' : '⚠️';
+  document.getElementById('toast-msg').textContent  = msg;
+  el.className = 'show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 3500);
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOOT
+   ════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
   const loadEl = document.getElementById('loading');
-  const tipEl  = document.getElementById('tooltip');
 
-  // Fetch confirmed bookings and init LIFF in parallel
-  const [bookings] = await Promise.all([
-    fetchBookings(),
-    initLiff()
-  ]);
+  // Set date constraints (next 7 days only)
+  const dateInput = document.getElementById('f-date');
+  dateInput.min = todayStr();
+  dateInput.max = maxDateStr();
 
-  confirmedBookings = bookings;
-  const events = toEvents(bookings);
-  updateStats(events);
-  initBookTimeSelects();
+  // Init time selects
+  initTimeSelects();
+
+  // Fetch bookings
+  const bookings = await fetchBookings();
+  const events   = toEvents(bookings);
 
   loadEl.classList.add('out');
   setTimeout(() => loadEl.style.display = 'none', 420);
 
-  const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+  // Init mobile tabs
+  if (isMobile()) switchTab('cal');
+
+  calendarRef = new FullCalendar.Calendar(document.getElementById('calendar'), {
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-    initialView:  window.innerWidth < 768 ? 'timeGridDay' : 'resourceTimeGridDay',
+    initialView:  isMobile() ? 'timeGridDay' : 'resourceTimeGridDay',
     headerToolbar: {
       left:   'prev,next today',
       center: 'title',
       right:  'resourceTimeGridDay,timeGridWeek,dayGridMonth'
     },
-    buttonText: {
-      today:               'Today',
-      resourceTimeGridDay: 'Day',
-      timeGridWeek:        'Week',
-      dayGridMonth:        'Month'
-    },
+    buttonText: { today:'Today', resourceTimeGridDay:'Day', timeGridWeek:'Week', dayGridMonth:'Month' },
+
     resources: [
-      { id: 'a', title: 'Bay A' },
-      { id: 'b', title: 'Bay B' }
+      { id:'a', title:'Bay A' },
+      { id:'b', title:'Bay B' }
     ],
-    slotMinTime: '13:00:00', slotMaxTime: '22:00:00',
+
+    // Business hours & restrictions
+    slotMinTime:  '13:00:00', slotMaxTime: '22:00:00',
     slotDuration: '00:30:00', slotLabelInterval: '01:00:00',
-    hiddenDays: [0],
-    allDaySlot: false, scrollTime: '13:00:00',
+    hiddenDays:   [0],  // Sunday
+    allDaySlot:   false, scrollTime: '13:00:00',
+
+    // Limit navigation to next 7 days
+    validRange: { start: todayStr(), end: validEndStr() },
+
     height: 'auto', expandRows: true, nowIndicator: true,
     events,
-    editable: false, selectable: false, eventClick: () => {},
+    editable: false, selectable: true,
+
+    // Click empty slot → pre-fill form
+    select(info) {
+      const date  = info.startStr.slice(0,10);
+      const st    = info.startStr.length > 10 ? info.startStr.slice(11,16) : '13:00';
+      const bayId = info.resource ? info.resource.id.toUpperCase() : 'A';
+      prefillForm(date, st, bayId);
+      const et = document.getElementById('f-end').value;
+      setSlotIndicator(date, st, et, bayId);
+      goFormTab();
+    },
+
+    // Click event → show tooltip only (no detail modal for customers)
+    eventClick(info) {
+      const p = info.event.extendedProps;
+      const status = p.status === 'pending' ? '⏳ รอยืนยัน' : '🔴 ไม่ว่าง';
+      toast(p.status === 'pending' ? 'error' : 'error', `Bay ${p.bay} · ${p.st}–${p.et} · ${status}`);
+    },
 
     eventDidMount(info) {
-      const { bay, st, et } = info.event.extendedProps;
-      const dotColor = bay === 'A' ? '#d29922' : '#3fb950';
+      const { bay, st, et, status } = info.event.extendedProps;
+      const tipEl = document.getElementById('tooltip');
+      const statusLabel = status === 'pending' ? '⏳ รอยืนยัน' : '🔴 ไม่ว่าง';
       info.el.addEventListener('mouseenter', e => {
-        tipEl.innerHTML = `
-          <div class="tip-bay"><span class="tip-dot" style="background:${dotColor}"></span>Bay ${bay}</div>
-          <div class="tip-time">${st} – ${et}</div>`;
+        tipEl.innerHTML = `<div class="tip-top"><span>Bay ${bay}</span></div><div class="tip-time">${st} – ${et}</div><div class="tip-time" style="margin-top:3px;">${statusLabel}</div>`;
         tipEl.style.display = 'block'; moveTip(e);
       });
       info.el.addEventListener('mousemove', moveTip);
@@ -982,21 +735,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     },
 
     eventContent(arg) {
-      const { st, et, bay } = arg.event.extendedProps;
+      const p = arg.event.extendedProps;
+      const isPending = p.status === 'pending';
       return { html:
-        `<div style="padding:4px 8px;overflow:hidden;">
-           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;letter-spacing:0.2px;">BUSY</div>
-           <div style="font-size:10px;opacity:0.7;margin-top:1px;font-family:Inter,sans-serif;">${st}–${et}</div>
+        `<div style="padding:3px 7px;overflow:hidden;">
+           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;">${isPending ? '⏳' : '🔴'} ${isPending ? 'รอยืนยัน' : 'ไม่ว่าง'}</div>
+           <div style="font-size:10px;opacity:0.75;margin-top:1px;font-family:Inter,sans-serif;">${p.st}–${p.et}</div>
          </div>` };
     }
   });
 
-  calendar.render();
+  calendarRef.render();
 
   function moveTip(e) {
+    const el = document.getElementById('tooltip');
     let x = e.clientX + 14, y = e.clientY - 8;
     if (x + 180 > window.innerWidth) x = e.clientX - 180 - 14;
-    tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
+    el.style.left = x + 'px'; el.style.top = y + 'px';
   }
 });
 </script>

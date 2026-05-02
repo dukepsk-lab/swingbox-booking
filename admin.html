@@ -29,8 +29,6 @@
       --blue-dim:   rgba(88,166,255,0.12);
       --red:        #f85149;
       --red-dim:    rgba(248,81,73,0.12);
-      --line-green: #06c755;
-      --line-dim:   rgba(6,199,85,0.12);
       --radius:     12px;
       --radius-sm:  8px;
       --panel-w:    320px;
@@ -94,51 +92,35 @@
     .chip-admin { display: inline-flex; align-items: center; gap: 5px; background: var(--blue-dim); border: 1px solid rgba(88,166,255,.25); color: var(--blue); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 99px; }
     .btn-ghost  { background: transparent; border: 1px solid var(--border-2); color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; padding: 6px 13px; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; }
     .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
-    /* Pending badge in header */
-    .btn-pending-hd {
-      position: relative; display: inline-flex; align-items: center; gap: 6px;
-      background: transparent; border: 1px solid var(--border-2);
-      color: var(--text-2); font-family: 'Inter',sans-serif;
-      font-size: 12px; font-weight: 500; padding: 6px 13px;
-      border-radius: var(--radius-sm); cursor: pointer; transition: all .15s;
-    }
-    .btn-pending-hd:hover { background: var(--surface-2); color: var(--text); }
-    .btn-pending-hd.has-pending { border-color: rgba(210,153,34,.4); color: var(--amber); }
-    .pending-hd-badge {
-      background: var(--amber); color: #0d1117;
-      font-size: 9px; font-weight: 700;
-      min-width: 16px; height: 16px; border-radius: 99px;
-      display: none; align-items: center; justify-content: center;
-      padding: 0 4px;
-    }
-    .pending-hd-badge.show { display: flex; }
 
-    /* ─── MOBILE TAB BAR ─────────────────────────────────────── */
+    /* ─── MOBILE TAB BAR (hidden on desktop) ─────────────────── */
     .mobile-tabs {
-      display: none;
-      position: sticky; top: var(--header-h); z-index: 150;
-      background: var(--surface); border-bottom: 1px solid var(--border);
+      display: none; /* shown only on mobile via media query */
+      position: sticky;
+      top: var(--header-h);
+      z-index: 150;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       height: var(--tabs-h);
     }
     .tab-inner { display: flex; height: 100%; }
     .tab-btn {
       flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
-      background: none; border: none; font-family: 'Inter',sans-serif;
-      font-size: 13px; font-weight: 500; color: var(--text-2);
-      cursor: pointer; border-bottom: 2px solid transparent;
+      background: none; border: none;
+      font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--text-2); cursor: pointer;
+      border-bottom: 2px solid transparent;
       transition: all .15s; position: relative;
     }
     .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
-    .tab-btn.active-amber { color: var(--amber); border-bottom-color: var(--amber); }
     .tab-badge {
-      position: absolute; top: 10px; right: calc(50% - 36px);
+      position: absolute; top: 10px; right: calc(50% - 32px);
       background: var(--green); color: #0d1117;
       font-size: 9px; font-weight: 700;
       width: 16px; height: 16px; border-radius: 50%;
       display: none; align-items: center; justify-content: center;
     }
     .tab-badge.show { display: flex; }
-    .tab-badge.amber { background: var(--amber); }
 
     /* ─── DESKTOP LAYOUT ─────────────────────────────────────── */
     .dashboard {
@@ -148,7 +130,7 @@
       align-items: start;
     }
 
-    /* ─── LEFT PANEL ─────────────────────────────────────────── */
+    /* ─── LEFT PANEL (desktop sticky) ───────────────────────── */
     .side-panel {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -160,6 +142,7 @@
     .side-panel::-webkit-scrollbar { width: 4px; }
     .side-panel::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 99px; }
 
+    /* Panel views */
     .panel-view { display: none; }
     .panel-view.active { display: block; }
 
@@ -167,9 +150,8 @@
     .panel-hd { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; background: var(--surface); }
     .panel-hd-top { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
     .panel-hd-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
-    .panel-hd-icon.green  { background: var(--green-dim); }
-    .panel-hd-icon.blue   { background: var(--blue-dim); }
-    .panel-hd-icon.amber  { background: var(--amber-dim); }
+    .panel-hd-icon.green { background: var(--green-dim); }
+    .panel-hd-icon.blue  { background: var(--blue-dim); }
     .panel-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; flex: 1; }
     .panel-hint  { font-size: 11px; color: var(--text-3); margin-top: 1px; padding-left: 38px; }
     .back-btn    { display: inline-flex; align-items: center; gap: 5px; background: none; border: none; color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; padding: 0; transition: color .15s; }
@@ -239,54 +221,21 @@
     .btn-delete-full:hover { background: rgba(248,81,73,.2); border-color: rgba(248,81,73,.5); }
     .btn-delete-full:disabled { opacity: .4; cursor: not-allowed; }
 
-    /* ─── PENDING VIEW ───────────────────────────────────────── */
-    .pending-empty {
-      padding: 40px 20px; text-align: center;
-      color: var(--text-3); font-size: 13px;
-    }
-    .pending-empty-icon { font-size: 32px; margin-bottom: 10px; }
-    .pending-list { padding: 10px 12px 16px; display: flex; flex-direction: column; gap: 10px; }
-    .pending-card {
-      background: var(--surface-2); border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm); padding: 12px;
-      transition: border-color .15s;
-    }
-    .pending-card:hover { border-color: rgba(210,153,34,.3); }
-    .pending-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-    .pending-card-name { font-size: 13px; font-weight: 600; color: var(--text); }
-    .pending-card-time { font-size: 11px; color: var(--text-2); margin-top: 2px; }
-    .pending-card-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: var(--amber-dim); border: 1px solid rgba(210,153,34,.3);
-      color: var(--amber); font-size: 10px; font-weight: 600;
-      padding: 3px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0;
-    }
-    .pending-card-meta { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-    .pending-card-row { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 5px; }
-    .pending-card-row strong { color: var(--text); font-weight: 500; }
-    .line-tag {
-      display: inline-flex; align-items: center; gap: 3px;
-      font-size: 10px; font-weight: 600; color: var(--line-green);
-      background: var(--line-dim); border: 1px solid rgba(6,199,85,.2);
-      padding: 2px 7px; border-radius: 99px; margin-top: 4px; width: fit-content;
-    }
-    .pending-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .btn-approve {
-      padding: 9px; background: var(--green-dim);
-      border: 1px solid rgba(63,185,80,.3); color: var(--green);
-      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 600;
-      border-radius: var(--radius-sm); cursor: pointer; transition: all .2s;
-    }
-    .btn-approve:hover:not(:disabled) { background: rgba(63,185,80,.2); border-color: rgba(63,185,80,.5); }
-    .btn-approve:disabled { opacity: .4; cursor: not-allowed; }
-    .btn-reject {
-      padding: 9px; background: var(--red-dim);
-      border: 1px solid rgba(248,81,73,.25); color: var(--red);
-      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500;
-      border-radius: var(--radius-sm); cursor: pointer; transition: all .2s;
-    }
-    .btn-reject:hover:not(:disabled) { background: rgba(248,81,73,.2); border-color: rgba(248,81,73,.5); }
-    .btn-reject:disabled { opacity: .4; cursor: not-allowed; }
+    /* ─── PENDING NOTICE ─────────────────────────────────────── */
+    .pending-bar { display:none; margin:10px 14px 0; padding:9px 12px; background:rgba(210,153,34,0.1); border:1px solid rgba(210,153,34,0.28); border-radius:var(--radius-sm); }
+    .pending-bar.show { display:flex; align-items:center; gap:8px; font-size:12px; color:#e6b84a; font-weight:500; }
+    .pending-count-badge { background:#d29922; color:#0d1117; font-size:10px; font-weight:700; padding:1px 7px; border-radius:99px; flex-shrink:0; }
+
+    /* ─── STATUS BADGES ──────────────────────────────────────── */
+    .status-badge    { display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 9px; border-radius:99px; }
+    .status-pending  { background:rgba(210,153,34,0.15); border:1px solid rgba(210,153,34,0.4); color:#e6b84a; }
+    .status-confirmed{ background:var(--green-dim); border:1px solid rgba(63,185,80,0.35); color:var(--green); }
+
+    /* ─── CONFIRM BUTTON ─────────────────────────────────────── */
+    .btn-confirm-full { display:none; width:calc(100% - 28px); margin:8px 14px 4px; padding:10px; background:var(--green); border:none; color:#0d1117; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; }
+    .btn-confirm-full.show { display:block; }
+    .btn-confirm-full:hover:not(:disabled) { background:#57d46e; transform:translateY(-1px); box-shadow:0 4px 14px rgba(63,185,80,.3); }
+    .btn-confirm-full:disabled { opacity:.45; cursor:not-allowed; transform:none; box-shadow:none; }
 
     /* ─── CALENDAR PANEL ─────────────────────────────────────── */
     .cal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; min-width: 0; }
@@ -330,28 +279,51 @@
     #toast.show { transform: translateY(0); opacity: 1; }
     #toast.success { border-left: 3px solid var(--green); }
     #toast.error   { border-left: 3px solid var(--red); }
-    #toast.info    { border-left: 3px solid var(--blue); }
 
     /* ═══════════════════════════════════════════════════════════
        RESPONSIVE
     ═══════════════════════════════════════════════════════════ */
     @media (max-width: 900px) { :root { --panel-w: 280px; } }
 
+    /* ── MOBILE (≤ 720px) ─── show tabs, stack layout ─────── */
     @media (max-width: 720px) {
-      .mobile-tabs { display: block; }
-      .dashboard { grid-template-columns: 1fr; padding: 0; gap: 0; }
-      .side-panel { position: static; max-height: none; border: none; border-radius: 0; border-bottom: 1px solid var(--border); }
-      .cal-panel  { border: none; border-radius: 0; padding: 12px 8px 24px; }
+      .mobile-tabs { display: block; }   /* show tab bar */
+
+      .dashboard {
+        grid-template-columns: 1fr;
+        padding: 0;
+        gap: 0;
+      }
+
+      /* On mobile, panels are controlled by JS tabs */
+      .side-panel {
+        position: static;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .cal-panel {
+        border: none;
+        border-radius: 0;
+        padding: 12px 8px 24px;
+      }
+
+      /* Hide/show sections via .mob-hidden */
       .mob-hidden { display: none !important; }
+
+      /* Slot indicator on mobile */
       #slot-indicator { margin: 8px 12px 0; }
+
       .panel-hd { padding: 12px 14px 10px; }
       .panel-body { padding: 10px 12px 16px; }
       .btn-delete-full { width: calc(100% - 24px); margin: 4px 12px 16px; }
+      .btn-confirm-full { width:calc(100% - 24px); margin:8px 12px 4px; }
       .detail-bay-card { margin: 0 12px; }
       .detail-info { padding: 10px 12px; }
+
       .fc .fc-toolbar { flex-wrap: wrap; gap: 6px; }
       .fc .fc-toolbar-title { font-size: 14px; }
-      .btn-pending-hd { display: none; }
     }
 
     @media (max-width: 480px) {
@@ -392,27 +364,21 @@
       </div>
     </a>
     <div class="header-right">
-      <button class="btn-pending-hd" id="btn-pending-hd" onclick="showPendingView()">
-        🔔 Pending
-        <span class="pending-hd-badge" id="pending-hd-badge"></span>
-      </button>
       <span class="chip-admin">⚙ Admin</span>
       <button class="btn-ghost" onclick="logout()">Sign Out</button>
     </div>
   </div>
 </header>
 
-<!-- ─── Mobile Tab Bar ────────────────────────────────────────── -->
+<!-- ─── Mobile Tab Bar (hidden on desktop) ───────────────────── -->
 <nav class="mobile-tabs" id="mobile-tabs">
   <div class="tab-inner">
-    <button class="tab-btn" id="tab-cal"     onclick="switchTab('cal')">📅 Calendar</button>
-    <button class="tab-btn" id="tab-form"    onclick="switchTab('form')">
+    <button class="tab-btn" id="tab-cal" onclick="switchTab('cal')">
+      📅 Calendar
+    </button>
+    <button class="tab-btn" id="tab-form" onclick="switchTab('form')">
       📋 Booking Form
       <span class="tab-badge" id="tab-badge">!</span>
-    </button>
-    <button class="tab-btn" id="tab-pending" onclick="switchTab('pending')">
-      🔔 Pending
-      <span class="tab-badge amber" id="tab-pending-badge"></span>
     </button>
   </div>
 </nav>
@@ -423,16 +389,23 @@
   <!-- ══ LEFT PANEL ════════════════════════════════════════════ -->
   <aside class="side-panel" id="side-panel">
 
-    <!-- VIEW: New Booking Form (admin books for customer who called) -->
+    <!-- VIEW: New Booking Form -->
     <div id="view-form" class="panel-view active">
       <div class="panel-hd">
         <div class="panel-hd-top">
           <div class="panel-hd-icon green">📋</div>
           <span class="panel-title">New Booking</span>
         </div>
-        <div class="panel-hint">For phone-in bookings — tap a time slot on the calendar to pre-fill ↗</div>
+        <div class="panel-hint">Tap a time slot on the calendar to pre-fill ↗</div>
       </div>
 
+      <!-- Pending bookings notice -->
+      <div class="pending-bar" id="pending-bar">
+        <span>⏳</span>
+        <span id="pending-bar-text">รายการรอยืนยัน</span>
+      </div>
+
+      <!-- Selected slot indicator -->
       <div id="slot-indicator">
         <div class="slot-chip">
           <span>📌</span>
@@ -504,6 +477,7 @@
         </div>
       </div>
       <div class="detail-info">
+        <div class="detail-row"><div class="detail-key">Status</div>  <div class="detail-val"><span id="d-status-badge" class="status-badge status-pending">⏳ รอยืนยัน</span></div></div>
         <div class="detail-row"><div class="detail-key">Customer</div><div class="detail-val" id="d-name">—</div></div>
         <div class="detail-row"><div class="detail-key">Phone</div>   <div class="detail-val" id="d-phone">—</div></div>
         <div class="detail-row"><div class="detail-key">Date</div>    <div class="detail-val" id="d-date">—</div></div>
@@ -511,27 +485,8 @@
           <div class="detail-key">Note</div><div class="detail-val" id="d-note" style="font-style:italic;color:var(--text-2);">—</div>
         </div>
       </div>
+      <button class="btn-confirm-full" id="btn-confirm" onclick="confirmBooking()">✅ ยืนยันการจอง</button>
       <button class="btn-delete-full" id="btn-delete" onclick="deleteBooking()">🗑 Delete This Booking</button>
-    </div>
-
-    <!-- VIEW: Pending Requests -->
-    <div id="view-pending" class="panel-view">
-      <div class="panel-hd">
-        <div class="panel-hd-top">
-          <button class="back-btn" onclick="showFormView()">← Back to form</button>
-        </div>
-        <div class="panel-hd-top" style="margin-top:10px;">
-          <div class="panel-hd-icon amber">🔔</div>
-          <span class="panel-title">Pending Requests</span>
-        </div>
-        <div class="panel-hint">Approve or reject customer self-booking requests</div>
-      </div>
-      <div id="pending-list-container">
-        <div class="pending-empty">
-          <div class="pending-empty-icon">🎉</div>
-          <div>No pending requests</div>
-        </div>
-      </div>
     </div>
 
   </aside>
@@ -549,20 +504,15 @@
 <script>
 /* ════════════════════════════════════════════════════════════
    ⚙  CONFIG
-   ════════════════════════════════════════════════════════════
-   GAS Script Properties (set in GAS editor → Project Settings → Script Properties):
-     LINE_CHANNEL_ACCESS_TOKEN  →  Your LINE Messaging API Channel Access Token
-   The GAS backend handles LINE push messages when action:'approve' is called.
    ════════════════════════════════════════════════════════════ */
 const ADMIN_PASSWORD = "swingbox352407";   // ← change password here
-const API_URL = "https://script.google.com/macros/s/AKfycbwKgTpTSbA0J1jRhOAO7mgIMno9gE-8nha4QqCTb1nAjDxIlROklZ1BS4EaeqcfjNGG/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzPRqEoA_yAeomm5GF6XKAD_H-tcQIxnaeQuE3N8X859_cFxwWaDDUu9QPEAka5ipjG/exec";
 
 /* ════════════════════════════════════════════════════════════
    STATE
    ════════════════════════════════════════════════════════════ */
-let calendar    = null;
+let calendar = null;
 let activeEventId = null;
-let pendingData   = [];
 let isMobile = () => window.innerWidth <= 720;
 
 /* ════════════════════════════════════════════════════════════
@@ -592,33 +542,34 @@ if (sessionStorage.getItem('sb_auth') === '1') {
 /* ════════════════════════════════════════════════════════════
    MOBILE TABS
    ════════════════════════════════════════════════════════════ */
-let currentTab = 'cal';
+let currentTab = 'cal';   // 'cal' | 'form'
 
 function switchTab(tab) {
   currentTab = tab;
-  document.getElementById('tab-cal').classList.toggle('active',     tab === 'cal');
-  document.getElementById('tab-form').classList.toggle('active',    tab === 'form');
-  document.getElementById('tab-pending').classList.toggle('active-amber', tab === 'pending');
-  document.getElementById('side-panel').classList.toggle('mob-hidden', tab === 'cal');
+  document.getElementById('tab-cal').classList.toggle('active',  tab === 'cal');
+  document.getElementById('tab-form').classList.toggle('active', tab === 'form');
+  document.getElementById('side-panel').classList.toggle('mob-hidden', tab !== 'form');
   document.getElementById('cal-panel').classList.toggle('mob-hidden',  tab !== 'cal');
-
-  if (tab === 'form') {
-    document.getElementById('tab-badge').classList.remove('show');
-    showFormView();
-  }
-  if (tab === 'pending') {
-    showPendingView();
-  }
+  // Clear badge when user opens form tab
+  if (tab === 'form') document.getElementById('tab-badge').classList.remove('show');
 }
 
-function goFormTab()    { if (isMobile()) switchTab('form'); }
-function goCalTab()     { if (isMobile()) switchTab('cal'); }
-function goPendingTab() { if (isMobile()) switchTab('pending'); }
+function goFormTab() {
+  if (isMobile()) switchTab('form');
+}
+function goCalTab() {
+  if (isMobile()) switchTab('cal');
+}
 
-function initMobileTabs() { if (isMobile()) switchTab('cal'); }
+// Init mobile tabs to calendar view
+function initMobileTabs() {
+  if (isMobile()) switchTab('cal');
+}
 
+// When window resizes, reset visibility
 window.addEventListener('resize', () => {
   if (!isMobile()) {
+    // Desktop: always show both
     document.getElementById('side-panel').classList.remove('mob-hidden');
     document.getElementById('cal-panel').classList.remove('mob-hidden');
   } else {
@@ -648,23 +599,37 @@ function normalise(raw) {
 }
 function toEvents(bookings) {
   return bookings.map(b => {
-    const bay   = String(b.bay || b.Bay || 'A').toUpperCase().trim();
-    const date  = cleanDate(b.date || b.Date);
-    const st    = cleanTime(b.startTime || b['Start Time'] || b.start_time);
-    const et    = cleanTime(b.endTime   || b['End Time']   || b.end_time);
-    const name  = b.customerName || b['Customer Name'] || b.name || '';
-    const phone = b.phone || b.Phone || '';
-    const note  = b.note  || b.Note  || '';
-    const isA   = bay === 'A';
+    const bay    = String(b.bay || b.Bay || 'A').toUpperCase().trim();
+    const date   = cleanDate(b.date || b.Date);
+    const st     = cleanTime(b.startTime || b['Start Time'] || b.start_time);
+    const et     = cleanTime(b.endTime   || b['End Time']   || b.end_time);
+    const name   = b.customerName || b['Customer Name'] || b.name || '';
+    const phone  = b.phone || b.Phone || '';
+    const note   = b.note  || b.Note  || '';
+    const status = b.status || b.Status || 'confirmed';
+    const isPending = status === 'pending';
+    const isA    = bay === 'A';
+
+    let bgColor, bdColor, txColor;
+    if (isPending) {
+      bgColor = 'rgba(210,153,34,0.09)';
+      bdColor = '#c49020';
+      txColor = '#e6b84a';
+    } else {
+      bgColor = isA ? 'rgba(210,153,34,0.22)' : 'rgba(63,185,80,0.18)';
+      bdColor = isA ? '#d29922' : '#3fb950';
+      txColor = isA ? '#f0c842' : '#7ee787';
+    }
+
     return {
       id: String(b.id || b.ID || Math.random()),
       title: name || `Bay ${bay}`,
       start: `${date}T${st}`, end: `${date}T${et}`,
       resourceId:      bay.toLowerCase(),
-      backgroundColor: isA ? 'rgba(210,153,34,0.2)' : 'rgba(63,185,80,0.15)',
-      borderColor:     isA ? '#d29922' : '#3fb950',
-      textColor:       isA ? '#f0c842' : '#7ee787',
-      extendedProps:   { bay, st, et, date, name, phone, note }
+      backgroundColor: bgColor,
+      borderColor:     bdColor,
+      textColor:       txColor,
+      extendedProps:   { bay, st, et, date, name, phone, note, status }
     };
   });
 }
@@ -676,10 +641,6 @@ function fmtShort(d) {
   if (!d) return '—';
   return new Date(d + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 }
-function fmtThai(d) {
-  if (!d) return '—';
-  return new Date(d + 'T00:00:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-}
 
 /* ════════════════════════════════════════════════════════════
    PANEL VIEWS
@@ -687,21 +648,10 @@ function fmtThai(d) {
 function showFormView() {
   document.getElementById('view-form').classList.add('active');
   document.getElementById('view-detail').classList.remove('active');
-  document.getElementById('view-pending').classList.remove('active');
 }
 function showDetailView() {
   document.getElementById('view-detail').classList.add('active');
   document.getElementById('view-form').classList.remove('active');
-  document.getElementById('view-pending').classList.remove('active');
-}
-function showPendingView() {
-  document.getElementById('view-pending').classList.add('active');
-  document.getElementById('view-form').classList.remove('active');
-  document.getElementById('view-detail').classList.remove('active');
-  if (!isMobile()) {
-    // On desktop, ensure side panel is visible
-    document.getElementById('side-panel').classList.remove('mob-hidden');
-  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -710,6 +660,7 @@ function showPendingView() {
 function setSlotIndicator(date, st, et, bay) {
   document.getElementById('slot-text').textContent = `${fmtShort(date)}  ·  ${st}–${et}  ·  Bay ${bay}`;
   document.getElementById('slot-indicator').classList.add('show');
+  // Show badge on mobile tab
   if (isMobile()) document.getElementById('tab-badge').classList.add('show');
 }
 function clearSlot() {
@@ -719,8 +670,9 @@ function clearSlot() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   FORM — time slot helpers (13:00–22:00, every 30 min)
+   FORM
    ════════════════════════════════════════════════════════════ */
+/* ─── Time slot helpers (13:00–22:00, every 30 min) ─────────── */
 const OPEN_TIME  = '13:00';
 const CLOSE_TIME = '22:00';
 
@@ -730,12 +682,13 @@ function buildSlots() {
     slots.push(`${String(h).padStart(2,'0')}:00`);
     if (h < 22) slots.push(`${String(h).padStart(2,'0')}:30`);
   }
-  return slots;
+  return slots; // ['13:00','13:30',...,'21:30','22:00']
 }
 
 function initTimeSelects() {
-  const slots    = buildSlots();
+  const slots = buildSlots();
   const startSel = document.getElementById('f-start');
+  // Start: 13:00 – 21:30 (must leave at least 30 min before close)
   startSel.innerHTML = slots
     .filter(t => t < CLOSE_TIME)
     .map(t => `<option value="${t}">${t}</option>`).join('');
@@ -746,8 +699,11 @@ function updateEndTimes(keepVal) {
   const startVal = document.getElementById('f-start').value;
   const endSel   = document.getElementById('f-end');
   const prev     = keepVal || endSel.value;
-  const endSlots = buildSlots().filter(t => t > startVal);
+  const slots    = buildSlots();
+  // End: must be after start
+  const endSlots = slots.filter(t => t > startVal);
   endSel.innerHTML = endSlots.map(t => `<option value="${t}">${t}</option>`).join('');
+  // Keep previous value if still valid, else default +1 hr
   if (prev && endSlots.includes(prev)) {
     endSel.value = prev;
   } else {
@@ -776,6 +732,7 @@ function resetForm() {
 function prefillForm(date, st, bayId) {
   showFormView();
   document.getElementById('f-date').value = date || '';
+  // Snap st to nearest valid slot >= OPEN_TIME
   const slots = buildSlots().filter(t => t < CLOSE_TIME);
   const snap  = st && slots.includes(st) ? st : (slots.find(t => t >= (st || OPEN_TIME)) || slots[0]);
   document.getElementById('f-start').value = snap;
@@ -794,6 +751,7 @@ async function fetchBookings() {
   } catch(e) { console.error(e); toast('error','Could not load bookings.'); return []; }
 }
 async function postData(payload) {
+  // Use text/plain to avoid CORS preflight — GAS still reads e.postData.contents as JSON
   const r = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
@@ -802,9 +760,11 @@ async function postData(payload) {
   return r.json();
 }
 async function reload() {
-  const ev = toEvents(await fetchBookings());
+  const bk = await fetchBookings();
+  const ev = toEvents(bk);
   calendar.removeAllEvents();
   calendar.addEventSource(ev);
+  updatePendingCount(ev);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -819,7 +779,7 @@ function hasOverlap(bay, date, st, et) {
 }
 
 /* ════════════════════════════════════════════════════════════
-   SUBMIT (admin direct booking — for phone-in customers)
+   SUBMIT
    ════════════════════════════════════════════════════════════ */
 async function submitBooking() {
   const name  = document.getElementById('f-name').value.trim();
@@ -831,11 +791,7 @@ async function submitBooking() {
   const note  = document.getElementById('f-note').value.trim();
 
   let ok = true;
-  const setE = (fid, eid, show) => {
-    document.getElementById(fid).classList.toggle('err', show);
-    document.getElementById(eid).classList.toggle('show', show);
-    if (show) ok = false;
-  };
+  const setE = (fid, eid, show) => { document.getElementById(fid).classList.toggle('err', show); document.getElementById(eid).classList.toggle('show', show); if (show) ok = false; };
   setE('f-name', 'err-name', !name);
   setE('f-phone','err-phone',!phone);
   setE('f-date', 'err-date', !date);
@@ -855,11 +811,11 @@ async function submitBooking() {
   const btn = document.getElementById('btn-create');
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
-    await postData({ action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note });
+    await postData({ action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, status:'confirmed' });
     toast('success','Booking confirmed!');
     resetForm();
     await reload();
-    if (isMobile()) switchTab('cal');
+    if (isMobile()) switchTab('cal');   // go back to calendar on mobile
   } catch(e) {
     console.error(e); toast('error','Failed to save.');
     btn.disabled = false; btn.textContent = 'Confirm Booking';
@@ -882,11 +838,58 @@ function openDetail(info) {
   const nr = document.getElementById('d-note-row');
   if (p.note) { document.getElementById('d-note').textContent = p.note; nr.style.display='grid'; }
   else { nr.style.display='none'; }
+
+  // Status badge
+  const isPending = p.status === 'pending';
+  const badge = document.getElementById('d-status-badge');
+  badge.textContent = isPending ? '⏳ รอยืนยัน' : '✅ ยืนยันแล้ว';
+  badge.className   = 'status-badge ' + (isPending ? 'status-pending' : 'status-confirmed');
+
+  // Confirm button — only for pending
+  const btnConfirm = document.getElementById('btn-confirm');
+  btnConfirm.classList.toggle('show', isPending);
+  btnConfirm.disabled = false;
+  btnConfirm.textContent = '✅ ยืนยันการจอง';
+
   activeEventId = info.event.id;
   const btn = document.getElementById('btn-delete');
   btn.disabled = false; btn.textContent = '🗑 Delete This Booking';
   showDetailView();
-  goFormTab();
+  goFormTab();   // switch to form tab on mobile to show detail
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONFIRM (pending → confirmed)
+   ════════════════════════════════════════════════════════════ */
+async function confirmBooking() {
+  if (!activeEventId) return;
+  const btn = document.getElementById('btn-confirm');
+  btn.disabled = true; btn.textContent = 'กำลังยืนยัน…';
+  try {
+    await postData({ action:'confirm', id: activeEventId });
+    toast('success', 'ยืนยันการจองเรียบร้อย!');
+    showFormView();
+    await reload();
+    if (isMobile()) switchTab('cal');
+  } catch(e) {
+    console.error(e); toast('error', 'ยืนยันไม่สำเร็จ กรุณาลองใหม่');
+    btn.disabled = false; btn.textContent = '✅ ยืนยันการจอง';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   PENDING COUNT BANNER
+   ════════════════════════════════════════════════════════════ */
+function updatePendingCount(events) {
+  const count = events.filter(ev => ev.extendedProps && ev.extendedProps.status === 'pending').length;
+  const bar  = document.getElementById('pending-bar');
+  const txt  = document.getElementById('pending-bar-text');
+  if (count > 0) {
+    txt.innerHTML = `<span class="pending-count-badge">${count}</span>&nbsp; คำขอจองรอยืนยัน — คลิกกิจกรรมสีจางเพื่อยืนยัน`;
+    bar.classList.add('show');
+  } else {
+    bar.classList.remove('show');
+  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -910,133 +913,11 @@ async function deleteBooking() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   PENDING REQUESTS
-   ════════════════════════════════════════════════════════════ */
-async function fetchPending() {
-  try {
-    const r = await fetch(API_URL + '?action=getPending', { cache: 'no-store' });
-    const data = await r.json();
-    return Array.isArray(data) ? data
-         : Array.isArray(data?.pending) ? data.pending
-         : [];
-  } catch(e) {
-    console.warn('Could not load pending requests:', e);
-    return [];
-  }
-}
-
-function updatePendingBadge(count) {
-  const hdBadge  = document.getElementById('pending-hd-badge');
-  const tabBadge = document.getElementById('tab-pending-badge');
-  const hdBtn    = document.getElementById('btn-pending-hd');
-
-  if (count > 0) {
-    hdBadge.textContent  = count;
-    tabBadge.textContent = count;
-    hdBadge.classList.add('show');
-    tabBadge.classList.add('show');
-    hdBtn.classList.add('has-pending');
-  } else {
-    hdBadge.classList.remove('show');
-    tabBadge.classList.remove('show');
-    hdBtn.classList.remove('has-pending');
-  }
-}
-
-function renderPendingList(list) {
-  const container = document.getElementById('pending-list-container');
-  if (!list.length) {
-    container.innerHTML = `
-      <div class="pending-empty">
-        <div class="pending-empty-icon">🎉</div>
-        <div>No pending requests</div>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = `<div class="pending-list">${list.map(p => {
-    const id   = p.id || p.ID || '';
-    const name = p.customerName || p['Customer Name'] || p.name || '—';
-    const phone= p.phone || p.Phone || '—';
-    const bay  = String(p.bay || p.Bay || '—').toUpperCase();
-    const date = cleanDate(p.date || p.Date);
-    const st   = cleanTime(p.startTime || p['Start Time'] || p.start_time);
-    const et   = cleanTime(p.endTime   || p['End Time']   || p.end_time);
-    const note = p.note || p.Note || '';
-    const hasLine = !!(p.lineUserId || p.lineuid);
-    return `
-      <div class="pending-card" id="pc-${id}">
-        <div class="pending-card-top">
-          <div>
-            <div class="pending-card-name">${name}</div>
-            <div class="pending-card-time">${st} – ${et}</div>
-          </div>
-          <span class="pending-card-badge">⏳ Pending</span>
-        </div>
-        <div class="pending-card-meta">
-          <div class="pending-card-row">🏌️ <strong>Bay ${bay}</strong></div>
-          <div class="pending-card-row">📅 ${fmtThai(date)}</div>
-          <div class="pending-card-row">📞 ${phone}</div>
-          ${note ? `<div class="pending-card-row">📝 ${note}</div>` : ''}
-          ${hasLine ? `<span class="line-tag">💬 LINE connected — will notify</span>` : `<div class="pending-card-row" style="color:var(--text-3);font-size:11px;">No LINE ID — contact via phone</div>`}
-        </div>
-        <div class="pending-actions">
-          <button class="btn-approve" id="btn-approve-${id}" onclick="approvePending('${id}')">✅ Approve</button>
-          <button class="btn-reject"  id="btn-reject-${id}"  onclick="rejectPending('${id}')">✕ Reject</button>
-        </div>
-      </div>`;
-  }).join('')}</div>`;
-}
-
-async function loadPending() {
-  pendingData = await fetchPending();
-  updatePendingBadge(pendingData.length);
-  renderPendingList(pendingData);
-}
-
-async function approvePending(id) {
-  if (!confirm('Approve this booking request? A LINE notification will be sent to the customer.')) return;
-  const btnA = document.getElementById(`btn-approve-${id}`);
-  const btnR = document.getElementById(`btn-reject-${id}`);
-  if (btnA) { btnA.disabled = true; btnA.textContent = 'Approving…'; }
-  if (btnR)   btnR.disabled = true;
-  try {
-    await postData({ action: 'approve', id });
-    toast('success', 'Booking approved! LINE notification sent.');
-    await Promise.all([loadPending(), reload()]);
-  } catch(e) {
-    console.error(e);
-    toast('error', 'Failed to approve. Please try again.');
-    if (btnA) { btnA.disabled = false; btnA.textContent = '✅ Approve'; }
-    if (btnR)   btnR.disabled = false;
-  }
-}
-
-async function rejectPending(id) {
-  if (!confirm('Reject this booking request? The customer will be notified via LINE if connected.')) return;
-  const btnA = document.getElementById(`btn-approve-${id}`);
-  const btnR = document.getElementById(`btn-reject-${id}`);
-  if (btnA) btnA.disabled = true;
-  if (btnR) { btnR.disabled = true; btnR.textContent = 'Rejecting…'; }
-  try {
-    await postData({ action: 'reject', id });
-    toast('info', 'Request rejected.');
-    await loadPending();
-  } catch(e) {
-    console.error(e);
-    toast('error', 'Failed to reject. Please try again.');
-    if (btnA) btnA.disabled = false;
-    if (btnR) { btnR.disabled = false; btnR.textContent = '✕ Reject'; }
-  }
-}
-
-/* ════════════════════════════════════════════════════════════
    TOAST
    ════════════════════════════════════════════════════════════ */
 function toast(type, msg) {
   const el = document.getElementById('toast');
-  const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
-  document.getElementById('toast-icon').textContent = icons[type] || '📢';
+  document.getElementById('toast-icon').textContent = type==='success' ? '✅' : '⚠️';
   document.getElementById('toast-msg').textContent  = msg;
   el.className = 'show ' + type;
   clearTimeout(el._t);
@@ -1048,11 +929,7 @@ function toast(type, msg) {
    ════════════════════════════════════════════════════════════ */
 async function boot() {
   const loadEl = document.getElementById('loading');
-
-  const [bk] = await Promise.all([
-    fetchBookings(),
-    loadPending()
-  ]);
+  const bk     = await fetchBookings();
   const events = toEvents(bk);
 
   loadEl.classList.add('out');
@@ -1060,7 +937,9 @@ async function boot() {
 
   initMobileTabs();
   initTimeSelects();
+  updatePendingCount(events);
 
+  // Sunday validation helper
   window.validateDate = function(input) {
     if (isSunday(input.value)) {
       input.value = '';
@@ -1103,25 +982,23 @@ async function boot() {
       prefillForm(date, st, bayId);
       const et = document.getElementById('f-end').value;
       setSlotIndicator(date, st, et, bayId);
-      goFormTab();
+      goFormTab();   // auto-switch to form tab on mobile
     },
 
     eventClick(info) { openDetail(info); },
 
     eventContent(arg) {
       const p = arg.event.extendedProps;
+      const isPending = p.status === 'pending';
       return { html:
         `<div style="padding:3px 7px;overflow:hidden;">
-           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name||'Booking'}</div>
+           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${isPending ? '⏳ ' : ''}${p.name||'Booking'}</div>
            <div style="font-size:10px;opacity:0.7;margin-top:1px;font-family:Inter,sans-serif;">${p.st}–${p.et}</div>
          </div>` };
     }
   });
 
   calendar.render();
-
-  // Poll for new pending requests every 60 seconds
-  setInterval(loadPending, 60000);
 }
 </script>
 </body>
