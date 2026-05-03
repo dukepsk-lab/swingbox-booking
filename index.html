@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.10/index.global.min.js"></script>
   <style>
     :root {
@@ -40,7 +42,6 @@
     html { height: 100%; }
     body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100%; font-size: 14px; line-height: 1.5; }
 
-    /* ─── LOADING ────────────────────────────────────────────── */
     #loading { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity .4s; }
     #loading.out { opacity: 0; pointer-events: none; }
     .load-icon  { width: 52px; height: 52px; background: linear-gradient(135deg,var(--green),var(--blue)); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; animation: pulse 1.4s ease-in-out infinite; }
@@ -49,18 +50,28 @@
     @keyframes pulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
     @keyframes loadbar { 0%{width:0;margin-left:0} 60%{width:80%;margin-left:0} 100%{width:0%;margin-left:100%} }
 
-    /* ─── HEADER ─────────────────────────────────────────────── */
     .site-header { position: sticky; top: 0; z-index: 200; height: var(--header-h); background: rgba(13,17,23,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
     .header-inner { width: 100%; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
     .logo       { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-mark  { width: 34px; height: 34px; background: linear-gradient(135deg,#3fb950,#58a6ff); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; flex-shrink: 0; font-weight: 700; }
     .logo-name  { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
     .logo-sub   { font-size: 11px; color: var(--text-2); }
-    .header-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--green-dim); border: 1px solid rgba(63,185,80,.3); color: var(--green); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 99px; }
-    .badge-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s ease-in-out infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    
+    .lang-switcher select {
+      background-color: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 4px 20px 4px 10px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
 
-    /* ─── MOBILE TABS ────────────────────────────────────────── */
     .mobile-tabs { display: none; position: sticky; top: var(--header-h); z-index: 150; background: var(--surface); border-bottom: 1px solid var(--border); height: var(--tabs-h); }
     .tab-inner  { display: flex; height: 100%; }
     .tab-btn    { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; background: none; border: none; font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; position: relative; }
@@ -68,28 +79,22 @@
     .tab-badge  { position: absolute; top: 10px; right: calc(50% - 36px); background: var(--amber); color: #0d1117; font-size: 9px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
     .tab-badge.show { display: flex; }
 
-    /* ─── LAYOUT ─────────────────────────────────────────────── */
     .dashboard { display: grid; grid-template-columns: var(--panel-w) 1fr; gap: 16px; padding: 16px; align-items: start; }
 
-    /* ─── SIDE PANEL ─────────────────────────────────────────── */
     .side-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
     .side-panel::-webkit-scrollbar { width: 4px; }
     .side-panel::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 99px; }
 
-    /* Panel views */
     .panel-view { display: none; }
     .panel-view.active { display: block; }
 
-    /* ─── PANEL HEADER ───────────────────────────────────────── */
     .panel-hd { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; background: var(--surface); }
     .panel-hd-row { display: flex; align-items: center; gap: 10px; }
     .panel-hd-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
     .icon-green { background: var(--green-dim); }
-    .icon-amber { background: var(--amber-dim); }
     .panel-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; flex: 1; }
     .panel-hint  { font-size: 11px; color: var(--text-3); margin-top: 2px; padding-left: 38px; }
 
-    /* ─── LEGEND ─────────────────────────────────────────────── */
     .legend-strip { display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--border); }
     .leg { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--text-2); }
     .leg-chip { width: 22px; height: 8px; border-radius: 3px; }
@@ -97,7 +102,6 @@
     .lc-busy     { background: #8b1a1a; }
     .lc-free     { background: var(--surface-3); border: 1px solid var(--border-2); }
 
-    /* ─── SLOT INDICATOR ─────────────────────────────────────── */
     #slot-indicator { margin: 10px 14px 0; display: none; }
     #slot-indicator.show { display: block; }
     .slot-chip { display: flex; align-items: center; gap: 8px; background: var(--green-dim); border: 1px solid rgba(63,185,80,.25); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; color: var(--green); }
@@ -105,13 +109,12 @@
     .slot-clear { background: none; border: none; color: rgba(63,185,80,.6); font-size: 14px; cursor: pointer; padding: 0 2px; transition: color .15s; }
     .slot-clear:hover { color: var(--green); }
 
-    /* ─── FORM ───────────────────────────────────────────────── */
     .panel-body  { padding: 12px 14px 18px; }
     .form-group  { margin-bottom: 13px; }
     .form-row-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
     .form-label  { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
     .req { color: var(--green); }
-    .form-input, .form-select, .form-textarea {
+    .form-input, .form-select {
       width: 100%; padding: 9px 12px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Inter',sans-serif; font-size: 13px; outline: none; transition: border-color .2s, box-shadow .2s; -webkit-appearance: none;
     }
     .form-input:focus, .form-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(63,185,80,.12); }
@@ -122,7 +125,6 @@
     .form-err  { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
     .form-err.show { display: block; }
 
-    /* Bay radio cards */
     .bay-cards   { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .bay-card input { display: none; }
     .bay-card label { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 10px; background: var(--surface-2); border: 1.5px solid var(--border-2); border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-2); transition: all .15s; }
@@ -132,15 +134,12 @@
     .bay-dot.a { background: var(--amber); }
     .bay-dot.b { background: var(--green); }
 
-    /* Submit button */
     .btn-submit-full { width: 100%; padding: 11px; background: var(--green); border: none; border-radius: var(--radius-sm); color: #0d1117; font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 4px; }
     .btn-submit-full:hover:not(:disabled) { background: #57d46e; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(63,185,80,.3); }
-    .btn-submit-full:active { transform: translateY(0); }
     .btn-submit-full:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
     .reset-link { display: block; text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-3); cursor: pointer; transition: color .15s; }
     .reset-link:hover { color: var(--text-2); }
 
-    /* ─── SUCCESS STATE ──────────────────────────────────────── */
     .success-body { padding: 28px 20px 24px; text-align: center; }
     .success-icon { font-size: 44px; margin-bottom: 14px; animation: popIn .4s ease; }
     @keyframes popIn { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
@@ -151,57 +150,40 @@
     .btn-book-again { width: 100%; padding: 10px; background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text-2); font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; margin-top: 6px; }
     .btn-book-again:hover { background: var(--surface-3); color: var(--text); }
 
-    /* ─── CALENDAR PANEL ─────────────────────────────────────── */
     .cal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; min-width: 0; }
 
-    /* ─── FULLCALENDAR ───────────────────────────────────────── */
     .fc {
       --fc-border-color:               rgba(255,255,255,0.07);
       --fc-button-bg-color:            var(--surface-2);
       --fc-button-border-color:        var(--border-2);
       --fc-button-text-color:          var(--text-2);
       --fc-button-hover-bg-color:      var(--surface-3);
-      --fc-button-hover-border-color:  var(--border-2);
       --fc-button-active-bg-color:     var(--green);
-      --fc-button-active-border-color: var(--green);
       --fc-today-bg-color:             rgba(63,185,80,0.04);
       --fc-page-bg-color:              transparent;
       --fc-neutral-bg-color:           var(--surface-2);
       --fc-highlight-color:            rgba(63,185,80,0.12);
     }
     .fc .fc-toolbar-title { font-size: 15px; font-weight: 600; color: var(--text); font-family: 'Inter',sans-serif; letter-spacing: -.3px; }
-    .fc .fc-button { font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm) !important; padding: 6px 12px; transition: all .15s; text-transform: none; letter-spacing: 0; }
-    .fc .fc-button:hover { color: var(--text); }
-    .fc .fc-button-primary:not(:disabled).fc-button-active { color: #fff; font-weight: 600; box-shadow: 0 0 0 2px rgba(63,185,80,.3); }
-    .fc .fc-col-header-cell { background: var(--surface-2); border-color: rgba(255,255,255,.07); padding: 8px 0; }
-    .fc .fc-col-header-cell-cushion { font-family: 'Inter',sans-serif; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .5px; text-decoration: none; }
+    .fc .fc-button { font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm) !important; padding: 6px 12px; transition: all .15s; text-transform: none; }
+    .fc .fc-col-header-cell-cushion { font-family: 'Inter',sans-serif; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; text-decoration: none; }
     .fc .fc-timegrid-slot { height: 30px; border-color: rgba(255,255,255,.04); }
-    .fc .fc-timegrid-slot-minor { border-color: transparent; }
     .fc .fc-timegrid-slot-label { font-family: 'Inter',sans-serif; font-size: 10px; color: var(--text-3); }
-    .fc .fc-scrollgrid { border-color: rgba(255,255,255,.07); }
-    .fc .fc-resource-area-header { background: var(--surface-2); }
     .fc .fc-timegrid-now-indicator-line  { border-color: var(--green); border-width: 1.5px; }
-    .fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--green); border-bottom-color: var(--green); }
     .fc .fc-daygrid-day-number { font-family: 'Inter',sans-serif; font-size: 12px; color: var(--text-2); text-decoration: none; padding: 4px 6px; }
-    .fc .fc-day-today .fc-daygrid-day-number { background: var(--green); color: #fff; border-radius: 6px; font-weight: 600; }
     .fc .fc-daygrid-event, .fc .fc-timegrid-event { border-radius: 6px !important; border-width: 0 !important; }
     .fc .fc-event { cursor: pointer !important; transition: opacity .15s; }
-    .fc .fc-event:hover { opacity: .85; }
-    /* Dim past / out-of-range days */
     .fc .fc-day-disabled { background: rgba(0,0,0,.25) !important; }
 
-    /* ─── TOOLTIP ────────────────────────────────────────────── */
     #tooltip { position: fixed; display: none; z-index: 9000; background: var(--surface-3); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 10px 14px; font-family: 'Inter',sans-serif; font-size: 12px; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,.5); min-width: 160px; }
     .tip-top  { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
     .tip-time { color: var(--text-2); }
 
-    /* ─── TOAST ──────────────────────────────────────────────── */
     #toast { position: fixed; bottom: 20px; right: 20px; z-index: 9990; min-width: 240px; background: var(--surface-3); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 11px 15px; font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 9px; box-shadow: 0 8px 32px rgba(0,0,0,.5); transform: translateY(10px); opacity: 0; transition: all .3s; pointer-events: none; }
     #toast.show { transform: translateY(0); opacity: 1; }
     #toast.success { border-left: 3px solid var(--green); }
     #toast.error   { border-left: 3px solid var(--red); }
 
-    /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 900px) { :root { --panel-w: 280px; } }
     @media (max-width: 720px) {
       .mobile-tabs { display: block; }
@@ -213,67 +195,59 @@
       .fc .fc-toolbar { flex-wrap: wrap; gap: 6px; }
       .fc .fc-toolbar-title { font-size: 14px; }
     }
-    @media (max-width: 480px) {
-      .form-row-2 { grid-template-columns: 1fr; }
-      .fc .fc-button { padding: 5px 9px; font-size: 11px; }
-    }
   </style>
 </head>
 <body>
 
-<!-- Loading -->
 <div id="loading"><div class="load-icon">⛳</div><div class="load-bar"><div class="load-fill"></div></div></div>
-<!-- Tooltip -->
 <div id="tooltip"></div>
-<!-- Toast -->
 <div id="toast"><span id="toast-icon"></span><span id="toast-msg"></span></div>
 
-<!-- Header -->
 <header class="site-header">
   <div class="header-inner">
     <a class="logo" href="#">
       <div class="logo-mark">S</div>
-      <div><div class="logo-name">SwingBox Golf Simulator</div><div class="logo-sub">Book a Bay</div></div>
+      <div><div class="logo-name">SwingBox Golf Simulator</div><div class="logo-sub" data-i18n="headerSub">Book a Bay</div></div>
     </a>
-    <div class="header-badge"><div class="badge-dot"></div>Open Mon–Sat · 13:00–22:00</div>
+    <div class="lang-switcher">
+      <select id="lang-select" onchange="setLanguage(this.value)">
+        <option value="th">🇹🇭 TH</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="jp">🇯🇵 JP</option>
+        <option value="cn">🇨🇳 CN</option>
+      </select>
+    </div>
   </div>
 </header>
 
-<!-- Mobile Tabs -->
 <nav class="mobile-tabs" id="mobile-tabs">
   <div class="tab-inner">
-    <button class="tab-btn active" id="tab-cal"  onclick="switchTab('cal')">📅 Schedule</button>
+    <button class="tab-btn active" id="tab-cal"  onclick="switchTab('cal')"><span data-i18n="tabCal">📅 Schedule</span></button>
     <button class="tab-btn"        id="tab-form" onclick="switchTab('form')">
-      📝 Book Now
+      <span data-i18n="tabForm">📝 Book Now</span>
       <span class="tab-badge" id="tab-badge">!</span>
     </button>
   </div>
 </nav>
 
-<!-- Dashboard -->
 <div class="dashboard">
 
-  <!-- LEFT PANEL -->
   <aside class="side-panel" id="side-panel">
-
-    <!-- VIEW: Booking Form -->
     <div id="view-form" class="panel-view active">
       <div class="panel-hd">
         <div class="panel-hd-row">
           <div class="panel-hd-icon icon-green">📝</div>
-          <span class="panel-title">Book a Bay</span>
+          <span class="panel-title" data-i18n="formTitle">Book a Bay</span>
         </div>
-        <div class="panel-hint">Select a time on the calendar to pre-fill →</div>
+        <div class="panel-hint" data-i18n="formHint">Select a time on the calendar to pre-fill →</div>
       </div>
 
-      <!-- Legend strip -->
       <div class="legend-strip">
-        <div class="leg"><div class="leg-chip lc-pending"></div>⏳ รอยืนยัน</div>
-        <div class="leg"><div class="leg-chip lc-busy"></div>ไม่ว่าง</div>
-        <div class="leg"><div class="leg-chip lc-free"></div>ว่าง</div>
+        <div class="leg"><div class="leg-chip lc-pending"></div><span data-i18n="legPending">⏳ รอยืนยัน</span></div>
+        <div class="leg"><div class="leg-chip lc-busy"></div><span data-i18n="legBusy">ไม่ว่าง</span></div>
+        <div class="leg"><div class="leg-chip lc-free"></div><span data-i18n="legFree">ว่าง</span></div>
       </div>
 
-      <!-- Slot indicator -->
       <div id="slot-indicator">
         <div class="slot-chip">
           <span>📌</span>
@@ -284,70 +258,68 @@
 
       <div class="panel-body">
         <div class="form-group">
-          <label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label>
-          <input id="f-name" class="form-input" type="text" placeholder="ชื่อ นามสกุล" />
-          <div class="form-err" id="err-name">กรุณากรอกชื่อ</div>
+          <label class="form-label"><span data-i18n="lbl_name">ชื่อ-นามสกุล</span> <span class="req">*</span></label>
+          <input id="f-name" class="form-input" type="text" data-i18n-placeholder="ph_name" placeholder="ชื่อ นามสกุล" />
+          <div class="form-err" id="err-name" data-i18n="err_name">กรุณากรอกชื่อ</div>
         </div>
         <div class="form-group">
-          <label class="form-label">เบอร์โทร <span class="req">*</span></label>
-          <input id="f-phone" class="form-input" type="tel" placeholder="08x-xxx-xxxx" />
-          <div class="form-err" id="err-phone">กรุณากรอกเบอร์โทร</div>
+          <label class="form-label"><span data-i18n="lbl_phone">เบอร์โทร</span> <span class="req">*</span></label>
+          <input id="f-phone" class="form-input" type="tel" data-i18n-placeholder="ph_phone" placeholder="08x-xxx-xxxx" />
+          <div class="form-err" id="err-phone" data-i18n="err_phone">กรุณากรอกเบอร์โทร</div>
         </div>
         <div class="form-group">
-          <label class="form-label">เลือกเบย์ <span class="req">*</span></label>
+          <label class="form-label"><span data-i18n="lbl_bay">เลือกเบย์</span> <span class="req">*</span></label>
           <div class="bay-cards">
             <div class="bay-card"><input type="radio" name="bay" id="bay-a" value="A" checked /><label for="bay-a"><span class="bay-dot a"></span>Bay A</label></div>
             <div class="bay-card"><input type="radio" name="bay" id="bay-b" value="B" /><label for="bay-b"><span class="bay-dot b"></span>Bay B</label></div>
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">วันที่ <span class="req">*</span></label>
+          <label class="form-label"><span data-i18n="lbl_date">วันที่</span> <span class="req">*</span></label>
           <input id="f-date" class="form-input" type="date" onchange="validateDate(this)" />
-          <div class="form-err" id="err-date">กรุณาเลือกวันที่</div>
+          <div class="form-err" id="err-date" data-i18n="err_date">กรุณาเลือกวันที่</div>
         </div>
         <div class="form-row-2">
           <div>
-            <label class="form-label">เวลาเริ่ม <span class="req">*</span></label>
+            <label class="form-label"><span data-i18n="lbl_start">เวลาเริ่ม</span> <span class="req">*</span></label>
             <select id="f-start" class="form-select" onchange="updateEndTimes()"></select>
           </div>
           <div>
-            <label class="form-label">เวลาสิ้นสุด <span class="req">*</span></label>
+            <label class="form-label"><span data-i18n="lbl_end">เวลาสิ้นสุด</span> <span class="req">*</span></label>
             <select id="f-end" class="form-select"></select>
           </div>
         </div>
-        <div class="form-err" id="err-time" style="margin-top:-6px;margin-bottom:12px;">กรุณาตรวจสอบเวลา</div>
+        <div class="form-err" id="err-time" style="margin-top:-6px;margin-bottom:12px;" data-i18n="err_time">กรุณาตรวจสอบเวลา</div>
         <div class="form-group">
-          <label class="form-label">หมายเหตุ <span style="color:var(--text-3);font-weight:400;text-transform:none;">(ถ้ามี)</span></label>
-          <input id="f-note" class="form-input" type="text" placeholder="ข้อมูลเพิ่มเติม..." />
+          <label class="form-label"><span data-i18n="lbl_note">หมายเหตุ</span> <span style="color:var(--text-3);font-weight:400;text-transform:none;" data-i18n="lbl_note_opt">(ถ้ามี)</span></label>
+          <input id="f-note" class="form-input" type="text" data-i18n-placeholder="ph_note" placeholder="ข้อมูลเพิ่มเติม..." />
         </div>
-        <button class="btn-submit-full" id="btn-submit" onclick="submitBooking()">ส่งคำขอจอง</button>
-        <span class="reset-link" onclick="resetForm()">ล้างข้อมูล</span>
+        <button class="btn-submit-full" id="btn-submit" onclick="submitBooking()" data-i18n="btn_submit">ส่งคำขอจอง</button>
+        <span class="reset-link" onclick="resetForm()" data-i18n="btn_clear">ล้างข้อมูล</span>
       </div>
-    </div><!-- /view-form -->
+    </div>
 
-    <!-- VIEW: Success -->
     <div id="view-success" class="panel-view">
       <div class="success-body">
         <div class="success-icon">📬</div>
-        <div class="success-title">ส่งคำขอจองแล้ว!</div>
-        <div class="success-msg">เราได้รับคำขอจองของคุณแล้ว<br>รอเจ้าหน้าที่ยืนยันการจอง</div>
+        <div class="success-title" data-i18n="suc_title">ส่งคำขอจองแล้ว!</div>
+        <div class="success-msg" id="suc_msg">เราได้รับคำขอจองของคุณแล้ว<br>รอเจ้าหน้าที่ยืนยันการจอง</div>
         <div class="success-detail" id="success-detail">
-          <strong>รายละเอียดการจอง</strong>
+          <strong data-i18n="suc_detail_title">รายละเอียดการจอง</strong>
           <span id="s-bay">—</span><br>
           <span id="s-date">—</span> · <span id="s-time">—</span><br>
           <span id="s-name">—</span> · <span id="s-phone">—</span>
         </div>
-        <p style="font-size:11px;color:var(--text-3);line-height:1.6;">
+        <p style="font-size:11px;color:var(--text-3);line-height:1.6;" id="suc_hint">
           สถานะ "⏳ รอยืนยัน" จะแสดงบนปฏิทินทันที<br>
           เมื่อยืนยันแล้วจะเปลี่ยนเป็น "ไม่ว่าง"
         </p>
-        <button class="btn-book-again" onclick="showFormView()">+ จองเพิ่ม</button>
+        <button class="btn-book-again" onclick="showFormView()" data-i18n="btn_book_again">+ จองเพิ่ม</button>
       </div>
-    </div><!-- /view-success -->
+    </div>
 
   </aside>
 
-  <!-- CALENDAR PANEL -->
   <div class="cal-panel" id="cal-panel">
     <div id="calendar"></div>
   </div>
@@ -356,24 +328,92 @@
 
 <script>
 /* ════════════════════════════════════════════════════════════
-   ⚙  CONFIG
+   ⚙  CONFIG & LIFF
    ════════════════════════════════════════════════════════════ */
-const API_URL = "https://script.google.com/macros/s/AKfycbzPRqEoA_yAeomm5GF6XKAD_H-tcQIxnaeQuE3N8X859_cFxwWaDDUu9QPEAka5ipjG/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzkDAeDPZCo5zIzHNz32GGVvDSHJX--Ao52oedB5ytlNYMtMaycb6ZowldOqWT5nI5r/exec"; // นำ URL จาก Google Apps Script มาใส่
+const LIFF_ID = "2009962546-uLTZ7jx0"; // นำ LIFF ID จาก LINE Developers มาใส่
+
+let lineUserId = "";
+
+// ── Multi-language Dictionary ──
+const translations = {
+  th: {
+    headerSub: "Book a Bay", tabCal: "📅 ปฏิทิน", tabForm: "📝 จองเบย์", formTitle: "จองเบย์",
+    formHint: "เลือกเวลาจากปฏิทินเพื่อจอง →", legPending: "⏳ รอยืนยัน", legBusy: "ไม่ว่าง", legFree: "ว่าง",
+    lbl_name: "ชื่อ-นามสกุล", ph_name: "ชื่อ นามสกุล", err_name: "กรุณากรอกชื่อ",
+    lbl_phone: "เบอร์โทร", ph_phone: "08x-xxx-xxxx", err_phone: "กรุณากรอกเบอร์โทร",
+    lbl_bay: "เลือกเบย์", lbl_date: "วันที่", err_date: "กรุณาเลือกวันที่",
+    lbl_start: "เวลาเริ่ม", lbl_end: "เวลาสิ้นสุด", err_time: "กรุณาตรวจสอบเวลา",
+    lbl_note: "หมายเหตุ", lbl_note_opt: "(ถ้ามี)", ph_note: "ข้อมูลเพิ่มเติม...",
+    btn_submit: "ส่งคำขอจอง", btn_clear: "ล้างข้อมูล", suc_title: "ส่งคำขอจองแล้ว!",
+    suc_detail_title: "รายละเอียดการจอง", btn_book_again: "+ จองเพิ่ม"
+  },
+  en: {
+    headerSub: "Book a Bay", tabCal: "📅 Schedule", tabForm: "📝 Book Now", formTitle: "Book a Bay",
+    formHint: "Select a time on the calendar to pre-fill →", legPending: "⏳ Pending", legBusy: "Busy", legFree: "Free",
+    lbl_name: "Full Name", ph_name: "Your Name", err_name: "Name is required",
+    lbl_phone: "Phone Number", ph_phone: "Phone Number", err_phone: "Phone is required",
+    lbl_bay: "Select Bay", lbl_date: "Date", err_date: "Date is required",
+    lbl_start: "Start Time", lbl_end: "End Time", err_time: "Check start/end time",
+    lbl_note: "Note", lbl_note_opt: "(Optional)", ph_note: "Special requests...",
+    btn_submit: "Submit Booking", btn_clear: "Clear form", suc_title: "Request Sent!",
+    suc_detail_title: "Booking Details", btn_book_again: "+ Book another"
+  },
+  jp: {
+    headerSub: "予約", tabCal: "📅 スケジュール", tabForm: "📝 予約する", formTitle: "ベイを予約",
+    formHint: "カレンダーから時間を選択してください →", legPending: "⏳ 承認待ち", legBusy: "予約不可", legFree: "空き",
+    lbl_name: "氏名", ph_name: "フルネーム", err_name: "名前を入力してください",
+    lbl_phone: "電話番号", ph_phone: "電話番号", err_phone: "電話番号を入力してください",
+    lbl_bay: "ベイを選択", lbl_date: "日付", err_date: "日付を選択してください",
+    lbl_start: "開始時間", lbl_end: "終了時間", err_time: "時間を確認してください",
+    lbl_note: "備考", lbl_note_opt: "（任意）", ph_note: "その他の情報...",
+    btn_submit: "予約をリクエスト", btn_clear: "クリア", suc_title: "送信完了",
+    suc_detail_title: "予約の詳細", btn_book_again: "+ 追加予約"
+  },
+  cn: {
+    headerSub: "预订包厢", tabCal: "📅 日程表", tabForm: "📝 立即预订", formTitle: "预订包厢",
+    formHint: "在日历上选择时间 →", legPending: "⏳ 待确认", legBusy: "已满", legFree: "空闲",
+    lbl_name: "姓名", ph_name: "全名", err_name: "请输入姓名",
+    lbl_phone: "电话号码", ph_phone: "电话号码", err_phone: "请输入电话",
+    lbl_bay: "选择包厢", lbl_date: "日期", err_date: "请选择日期",
+    lbl_start: "开始时间", lbl_end: "结束时间", err_time: "请检查时间",
+    lbl_note: "备注", lbl_note_opt: "（可选）", ph_note: "其他要求...",
+    btn_submit: "提交预订", btn_clear: "清除表单", suc_title: "请求已发送！",
+    suc_detail_title: "预订详情", btn_book_again: "+ 再次预订"
+  }
+};
+
+function setLanguage(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) el.textContent = translations[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
+  });
+  
+  if(lang === 'th') {
+    document.getElementById('suc_msg').innerHTML = "เราได้รับคำขอจองของคุณแล้ว<br>รอเจ้าหน้าที่ยืนยันการจอง";
+    document.getElementById('suc_hint').innerHTML = 'สถานะ "⏳ รอยืนยัน" จะแสดงบนปฏิทินทันที<br>เมื่อยืนยันแล้วจะเปลี่ยนเป็น "ไม่ว่าง"';
+  } else if (lang === 'en') {
+    document.getElementById('suc_msg').innerHTML = "We have received your booking request.<br>Waiting for admin confirmation.";
+    document.getElementById('suc_hint').innerHTML = 'Status "⏳ Pending" will appear on the calendar.<br>Once confirmed, it will change to "Busy".';
+  } else if (lang === 'jp') {
+    document.getElementById('suc_msg').innerHTML = "予約リクエストを受け付けました。<br>管理者の承認をお待ちください。";
+    document.getElementById('suc_hint').innerHTML = 'カレンダーに「⏳ 承認待ち」が表示されます。<br>承認されると「予約不可」に変わります。';
+  } else if (lang === 'cn') {
+    document.getElementById('suc_msg').innerHTML = "我们已收到您的预订请求。<br>请等待管理员确认。";
+    document.getElementById('suc_hint').innerHTML = '状态“⏳ 待确认”将显示在日历上。<br>确认后，状态将变为“已满”。';
+  }
+}
 
 /* ════════════════════════════════════════════════════════════
    DATE HELPERS
    ════════════════════════════════════════════════════════════ */
 function todayStr() { return new Date().toISOString().slice(0, 10); }
-function maxDateStr() {
-  const d = new Date();
-  d.setDate(d.getDate() + 7);
-  return d.toISOString().slice(0, 10);
-}
-function validEndStr() {  // FullCalendar validRange end is exclusive (+8 days)
-  const d = new Date();
-  d.setDate(d.getDate() + 8);
-  return d.toISOString().slice(0, 10);
-}
+function maxDateStr() { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().slice(0, 10); }
+function validEndStr() { const d = new Date(); d.setDate(d.getDate() + 8); return d.toISOString().slice(0, 10); }
 function isSunday(dateStr) { return dateStr && new Date(dateStr + 'T00:00:00').getDay() === 0; }
 function fmtShort(d) {
   if (!d) return '—';
@@ -381,11 +421,10 @@ function fmtShort(d) {
 }
 
 /* ════════════════════════════════════════════════════════════
-   MOBILE TABS
+   MOBILE TABS & VIEWS
    ════════════════════════════════════════════════════════════ */
 let currentTab = 'cal';
 function isMobile() { return window.innerWidth <= 720; }
-
 function switchTab(tab) {
   currentTab = tab;
   document.getElementById('tab-cal').classList.toggle('active',  tab === 'cal');
@@ -404,13 +443,7 @@ window.addEventListener('resize', () => {
   } else { switchTab(currentTab); }
 });
 
-/* ════════════════════════════════════════════════════════════
-   PANEL VIEWS
-   ════════════════════════════════════════════════════════════ */
-function showFormView() {
-  document.getElementById('view-form').classList.add('active');
-  document.getElementById('view-success').classList.remove('active');
-}
+function showFormView() { document.getElementById('view-form').classList.add('active'); document.getElementById('view-success').classList.remove('active'); }
 function showSuccessView(booking) {
   const bay = booking.bay === 'A' ? '⛳ Bay A' : '⛳ Bay B';
   document.getElementById('s-bay').textContent   = bay;
@@ -434,9 +467,8 @@ function buildSlots() {
   return s;
 }
 function initTimeSelects() {
-  const slots    = buildSlots();
-  const startSel = document.getElementById('f-start');
-  startSel.innerHTML = slots.filter(t => t < '22:00').map(t => `<option value="${t}">${t}</option>`).join('');
+  const slots = buildSlots();
+  document.getElementById('f-start').innerHTML = slots.filter(t => t < '22:00').map(t => `<option value="${t}">${t}</option>`).join('');
   updateEndTimes();
 }
 function updateEndTimes(keepVal) {
@@ -453,21 +485,15 @@ function updateEndTimes(keepVal) {
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   DATE VALIDATION
-   ════════════════════════════════════════════════════════════ */
 function validateDate(input) {
   const errEl = document.getElementById('err-date');
   if (isSunday(input.value)) {
-    input.value = '';
-    input.classList.add('err');
-    errEl.textContent = 'ร้านปิดวันอาทิตย์';
-    errEl.classList.add('show');
+    input.value = ''; input.classList.add('err');
+    errEl.textContent = 'ร้านปิดวันอาทิตย์'; errEl.classList.add('show');
     setTimeout(() => { errEl.classList.remove('show'); input.classList.remove('err'); errEl.textContent = 'กรุณาเลือกวันที่'; }, 3000);
     return false;
   }
-  input.classList.remove('err'); errEl.classList.remove('show');
-  return true;
+  input.classList.remove('err'); errEl.classList.remove('show'); return true;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -495,8 +521,8 @@ function resetForm() {
   initTimeSelects();
   ['f-name','f-phone','f-date','f-start','f-end'].forEach(id => document.getElementById(id).classList.remove('err'));
   ['err-name','err-phone','err-date','err-time'].forEach(id => document.getElementById(id).classList.remove('show'));
-  document.getElementById('btn-submit').disabled = false;
-  document.getElementById('btn-submit').textContent = 'ส่งคำขอจอง';
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = false; btn.textContent = translations[document.getElementById('lang-select').value].btn_submit || 'ส่งคำขอจอง';
   clearSlot();
 }
 
@@ -511,9 +537,6 @@ function prefillForm(date, st, bayId) {
   setTimeout(() => document.getElementById('f-name').focus(), 80);
 }
 
-/* ════════════════════════════════════════════════════════════
-   OVERLAP CHECK
-   ════════════════════════════════════════════════════════════ */
 function hasOverlap(bay, date, st, et) {
   if (!calendarRef) return false;
   const ns = new Date(`${date}T${st}`), ne = new Date(`${date}T${et}`);
@@ -555,7 +578,7 @@ function toEvents(bookings) {
 
     return {
       id:    String(b.id || b.ID || Math.random()),
-      title: isPending ? '⏳ รอยืนยัน' : 'ไม่ว่าง',
+      title: isPending ? '⏳' : 'ไม่ว่าง',
       start: `${date}T${st}`, end: `${date}T${et}`,
       resourceId:      bay.toLowerCase(),
       backgroundColor: isPending ? 'rgba(210,153,34,0.18)' : 'rgba(139,26,26,0.55)',
@@ -629,20 +652,20 @@ async function submitBooking() {
   btn.disabled = true; btn.textContent = 'กำลังส่ง…';
 
   try {
-    await postBooking({ action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, status:'pending' });
+    // แนบ lineUserId ไปกับข้อมูลจอง
+    await postBooking({ 
+      action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, status:'pending', lineUserId: lineUserId
+    });
     showSuccessView({ bay, date, startTime:start, endTime:end, customerName:name, phone });
     await reload();
     goCalTab();
   } catch(e) {
     console.error(e);
     toast('error', 'ไม่สามารถส่งคำขอได้ กรุณาลองใหม่');
-    btn.disabled = false; btn.textContent = 'ส่งคำขอจอง';
+    btn.disabled = false; btn.textContent = translations[document.getElementById('lang-select').value].btn_submit || 'ส่งคำขอจอง';
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   TOAST
-   ════════════════════════════════════════════════════════════ */
 function toast(type, msg) {
   const el = document.getElementById('toast');
   document.getElementById('toast-icon').textContent = type === 'success' ? '✅' : '⚠️';
@@ -658,22 +681,33 @@ function toast(type, msg) {
 document.addEventListener('DOMContentLoaded', async () => {
   const loadEl = document.getElementById('loading');
 
-  // Set date constraints (next 7 days only)
+  // Set default lang
+  setLanguage('th');
+
+  // Initialize LIFF
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (liff.isLoggedIn()) {
+      const profile = await liff.getProfile();
+      lineUserId = profile.userId;
+      document.getElementById('f-name').value = profile.displayName; // ใส่ชื่อไลน์ลงในช่องชื่อให้เลย
+    }
+  } catch (err) {
+    console.warn("LIFF Init Error: ", err);
+  }
+
   const dateInput = document.getElementById('f-date');
   dateInput.min = todayStr();
   dateInput.max = maxDateStr();
 
-  // Init time selects
   initTimeSelects();
 
-  // Fetch bookings
   const bookings = await fetchBookings();
   const events   = toEvents(bookings);
 
   loadEl.classList.add('out');
   setTimeout(() => loadEl.style.display = 'none', 420);
 
-  // Init mobile tabs
   if (isMobile()) switchTab('cal');
 
   calendarRef = new FullCalendar.Calendar(document.getElementById('calendar'), {
@@ -685,26 +719,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       right:  'resourceTimeGridDay,timeGridWeek,dayGridMonth'
     },
     buttonText: { today:'Today', resourceTimeGridDay:'Day', timeGridWeek:'Week', dayGridMonth:'Month' },
-
-    resources: [
-      { id:'a', title:'Bay A' },
-      { id:'b', title:'Bay B' }
-    ],
-
-    // Business hours & restrictions
+    resources: [ { id:'a', title:'Bay A' }, { id:'b', title:'Bay B' } ],
     slotMinTime:  '13:00:00', slotMaxTime: '22:00:00',
     slotDuration: '00:30:00', slotLabelInterval: '01:00:00',
-    hiddenDays:   [0],  // Sunday
+    hiddenDays:   [0], 
     allDaySlot:   false, scrollTime: '13:00:00',
-
-    // Limit navigation to next 7 days
     validRange: { start: todayStr(), end: validEndStr() },
-
     height: 'auto', expandRows: true, nowIndicator: true,
-    events,
-    editable: false, selectable: true,
+    events, editable: false, selectable: true,
 
-    // Click empty slot → pre-fill form
     select(info) {
       const date  = info.startStr.slice(0,10);
       const st    = info.startStr.length > 10 ? info.startStr.slice(11,16) : '13:00';
@@ -715,11 +738,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       goFormTab();
     },
 
-    // Click event → show tooltip only (no detail modal for customers)
     eventClick(info) {
       const p = info.event.extendedProps;
       const status = p.status === 'pending' ? '⏳ รอยืนยัน' : '🔴 ไม่ว่าง';
-      toast(p.status === 'pending' ? 'error' : 'error', `Bay ${p.bay} · ${p.st}–${p.et} · ${status}`);
+      toast('error', `Bay ${p.bay} · ${p.st}–${p.et} · ${status}`);
     },
 
     eventDidMount(info) {
@@ -737,9 +759,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     eventContent(arg) {
       const p = arg.event.extendedProps;
       const isPending = p.status === 'pending';
+      const lang = document.getElementById('lang-select').value;
+      const txt = isPending ? translations[lang].legPending : translations[lang].legBusy;
       return { html:
         `<div style="padding:3px 7px;overflow:hidden;">
-           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;">${isPending ? '⏳' : '🔴'} ${isPending ? 'รอยืนยัน' : 'ไม่ว่าง'}</div>
+           <div style="font-size:11px;font-weight:600;font-family:Inter,sans-serif;">${txt}</div>
            <div style="font-size:10px;opacity:0.75;margin-top:1px;font-family:Inter,sans-serif;">${p.st}–${p.et}</div>
          </div>` };
     }
