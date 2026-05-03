@@ -291,6 +291,17 @@
         </div>
         <div class="form-err" id="err-time" style="margin-top:-6px;margin-bottom:12px;" data-i18n="err_time">กรุณาตรวจสอบเวลา</div>
         <div class="form-group">
+          <label class="form-label"><span data-i18n="lbl_guests">จำนวนลูกค้า</span> <span class="req">*</span></label>
+          <select id="f-guests" class="form-select">
+            <option value="1">1 คน</option>
+            <option value="2">2 คน</option>
+            <option value="3">3 คน</option>
+            <option value="4">4 คน</option>
+            <option value="5">5 คน</option>
+            <option value="6">6 คน</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label"><span data-i18n="lbl_note">หมายเหตุ</span> <span style="color:var(--text-3);font-weight:400;text-transform:none;" data-i18n="lbl_note_opt">(ถ้ามี)</span></label>
           <input id="f-note" class="form-input" type="text" data-i18n-placeholder="ph_note" placeholder="ข้อมูลเพิ่มเติม..." />
         </div>
@@ -306,7 +317,8 @@
         <div class="success-msg" id="suc_msg">เราได้รับคำขอจองของคุณแล้ว<br>รอเจ้าหน้าที่ยืนยันการจอง</div>
         <div class="success-detail" id="success-detail">
           <strong data-i18n="suc_detail_title">รายละเอียดการจอง</strong>
-          <span id="s-bay">—</span><br>
+          <span id="s-bookingno" style="font-size:13px;font-weight:700;color:var(--green);">—</span><br>
+          <span id="s-bay">—</span> · <span id="s-guests">—</span><br>
           <span id="s-date">—</span> · <span id="s-time">—</span><br>
           <span id="s-name">—</span> · <span id="s-phone">—</span>
         </div>
@@ -330,7 +342,7 @@
 /* ════════════════════════════════════════════════════════════
    ⚙  CONFIG & LIFF
    ════════════════════════════════════════════════════════════ */
-const API_URL = "https://script.google.com/macros/s/AKfycbyxDCp9xdsJ3DG8cI0UY8bjN2tjag5wJ_ElDfxGxiSe1UefnahmocdzcizDERMeCFG3/exec"; // นำ URL จาก Google Apps Script มาใส่
+const API_URL = "https://script.google.com/macros/s/AKfycbzPaw03RTvXFsfuBJ6Lyg1ze9FxE1GYWBqQHcCMnx_QgsdRR07zKT1OK6ddFQicaEEP/exec"; // นำ URL จาก Google Apps Script มาใส่
 const LIFF_ID = "2009962546-uLTZ7jx0"; // นำ LIFF ID จาก LINE Developers มาใส่
 
 let lineUserId = "";
@@ -446,11 +458,13 @@ window.addEventListener('resize', () => {
 function showFormView() { document.getElementById('view-form').classList.add('active'); document.getElementById('view-success').classList.remove('active'); }
 function showSuccessView(booking) {
   const bay = booking.bay === 'A' ? '⛳ Bay A' : '⛳ Bay B';
-  document.getElementById('s-bay').textContent   = bay;
-  document.getElementById('s-date').textContent  = fmtShort(booking.date);
-  document.getElementById('s-time').textContent  = `${booking.startTime} – ${booking.endTime}`;
-  document.getElementById('s-name').textContent  = booking.customerName;
-  document.getElementById('s-phone').textContent = booking.phone;
+  document.getElementById('s-bookingno').textContent = `📋 ${booking.bookingNo}`;
+  document.getElementById('s-bay').textContent       = bay;
+  document.getElementById('s-guests').textContent    = `👥 ${booking.guests} คน`;
+  document.getElementById('s-date').textContent      = fmtShort(booking.date);
+  document.getElementById('s-time').textContent      = `${booking.startTime} – ${booking.endTime}`;
+  document.getElementById('s-name').textContent      = booking.customerName;
+  document.getElementById('s-phone').textContent     = booking.phone;
   document.getElementById('view-form').classList.remove('active');
   document.getElementById('view-success').classList.add('active');
 }
@@ -516,8 +530,9 @@ function clearSlot() {
    ════════════════════════════════════════════════════════════ */
 function resetForm() {
   ['f-name','f-phone','f-note'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-date').value = '';
-  document.getElementById('bay-a').checked = true;
+  document.getElementById('f-date').value   = '';
+  document.getElementById('f-guests').value = '1';
+  document.getElementById('bay-a').checked  = true;
   initTimeSelects();
   ['f-name','f-phone','f-date','f-start','f-end'].forEach(id => document.getElementById(id).classList.remove('err'));
   ['err-name','err-phone','err-date','err-time'].forEach(id => document.getElementById(id).classList.remove('show'));
@@ -612,13 +627,14 @@ async function reload() {
    SUBMIT
    ════════════════════════════════════════════════════════════ */
 async function submitBooking() {
-  const name  = document.getElementById('f-name').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
-  const bay   = document.querySelector('input[name="bay"]:checked').value;
-  const date  = document.getElementById('f-date').value;
-  const start = document.getElementById('f-start').value;
-  const end   = document.getElementById('f-end').value;
-  const note  = document.getElementById('f-note').value.trim();
+  const name   = document.getElementById('f-name').value.trim();
+  const phone  = document.getElementById('f-phone').value.trim();
+  const bay    = document.querySelector('input[name="bay"]:checked').value;
+  const date   = document.getElementById('f-date').value;
+  const start  = document.getElementById('f-start').value;
+  const end    = document.getElementById('f-end').value;
+  const note   = document.getElementById('f-note').value.trim();
+  const guests = parseInt(document.getElementById('f-guests').value) || 1;
 
   let ok = true;
   const setE = (fid, eid, show) => { document.getElementById(fid).classList.toggle('err', show); document.getElementById(eid).classList.toggle('show', show); if (show) ok = false; };
@@ -652,11 +668,10 @@ async function submitBooking() {
   btn.disabled = true; btn.textContent = 'กำลังส่ง…';
 
   try {
-    // แนบ lineUserId ไปกับข้อมูลจอง
-    await postBooking({ 
-      action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, status:'pending', lineUserId: lineUserId
+    const res = await postBooking({
+      action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, guests, status:'pending', lineUserId
     });
-    showSuccessView({ bay, date, startTime:start, endTime:end, customerName:name, phone });
+    showSuccessView({ bay, date, startTime:start, endTime:end, customerName:name, phone, guests, bookingNo: res.bookingNo || '—' });
     await reload();
     goCalTab();
   } catch(e) {
