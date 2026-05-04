@@ -34,8 +34,6 @@
       --blue-dim:   rgba(88,166,255,0.12);
       --red:        #f85149;
       --red-dim:    rgba(248,81,73,0.14);
-      --pending-bg: rgba(210,153,34,0.15);
-      --pending-bd: #c49020;
       --radius:     12px;
       --radius-sm:  8px;
       --panel-w:    310px;
@@ -74,8 +72,7 @@
       cursor: pointer;
       -webkit-appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
+      background-repeat: no-repeat; background-position: right 8px center;
     }
 
     .mobile-tabs { display: none; position: sticky; top: var(--header-h); z-index: 150; background: var(--surface); border-bottom: 1px solid var(--border); height: var(--tabs-h); }
@@ -95,11 +92,15 @@
     .panel-view.active { display: block; }
 
     .panel-hd { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; background: var(--surface); }
-    .panel-hd-row { display: flex; align-items: center; gap: 10px; }
+    .panel-hd-row { display: flex; align-items: center; justify-content: space-between; }
+    .panel-hd-left { display: flex; align-items: center; gap: 10px; }
     .panel-hd-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
     .icon-green { background: var(--green-dim); }
-    .panel-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; flex: 1; }
+    .panel-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; }
     .panel-hint  { font-size: 11px; color: var(--text-3); margin-top: 2px; padding-left: 38px; }
+    
+    .btn-icon { background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text-2); border-radius: var(--radius-sm); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s; font-size: 14px; }
+    .btn-icon:hover { background: var(--surface-3); color: var(--text); }
 
     .legend-strip { display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--border); }
     .leg { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--text-2); }
@@ -121,7 +122,6 @@
     .form-label  { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
     .req { color: var(--green); }
     
-    /* UX Tap Target Upgrade */
     .form-input, .form-select {
       width: 100%; padding: 12px 14px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Inter',sans-serif; font-size: 13px; outline: none; transition: border-color .2s, box-shadow .2s; -webkit-appearance: none;
     }
@@ -130,7 +130,6 @@
     .form-input::placeholder { color: var(--text-3); font-size: 13px; }
     .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 34px; cursor: pointer; }
     .form-select option { background: #21262d; }
-    
     .form-err  { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
     .form-err.show { display: block; }
     .form-hint { font-size: 11px; color: var(--text-3); margin-top: 4px; }
@@ -150,6 +149,7 @@
     .reset-link { display: block; text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-3); cursor: pointer; transition: color .15s; }
     .reset-link:hover { color: var(--text-2); }
 
+    /* Success Panel */
     .success-body { padding: 28px 20px 24px; text-align: center; }
     .success-icon { font-size: 44px; margin-bottom: 14px; animation: popIn .4s ease; }
     @keyframes popIn { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
@@ -162,20 +162,20 @@
     .btn-close-liff { width: 100%; padding: 12px; background: transparent; border: none; color: var(--text-3); font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; margin-top: 4px; }
     .btn-close-liff:hover { color: var(--text-2); }
 
-    .cal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; min-width: 0; }
+    /* History Panel */
+    .history-card { background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; transition: border-color .2s; }
+    .history-card:hover { border-color: var(--border); }
+    .hc-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .hc-title { font-weight: 600; font-size: 13px; color: var(--text); display: block; margin-bottom: 2px; }
+    .hc-sub { font-size: 11px; color: var(--text-3); font-family: monospace; }
+    .hc-status { font-size: 10px; font-weight: 600; padding: 4px 6px; border-radius: 4px; white-space: nowrap; }
+    .hc-status.pending { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(210,153,34,0.2); }
+    .hc-status.confirmed { background: var(--green-dim); color: var(--green); border: 1px solid rgba(63,185,80,0.2); }
+    .hc-detail { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 12px; }
+    .hc-empty { text-align: center; color: var(--text-3); font-size: 12px; padding: 30px 0; background: var(--surface-2); border-radius: var(--radius-sm); border: 1px dashed var(--border-2); margin-top: 10px; }
 
-    .fc {
-      --fc-border-color:               rgba(255,255,255,0.07);
-      --fc-button-bg-color:            var(--surface-2);
-      --fc-button-border-color:        var(--border-2);
-      --fc-button-text-color:          var(--text-2);
-      --fc-button-hover-bg-color:      var(--surface-3);
-      --fc-button-active-bg-color:     var(--green);
-      --fc-today-bg-color:             rgba(63,185,80,0.04);
-      --fc-page-bg-color:              transparent;
-      --fc-neutral-bg-color:           var(--surface-2);
-      --fc-highlight-color:            rgba(63,185,80,0.12);
-    }
+    .cal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; min-width: 0; }
+    .fc { --fc-border-color: rgba(255,255,255,0.07); --fc-button-bg-color: var(--surface-2); --fc-button-border-color: var(--border-2); --fc-button-text-color: var(--text-2); --fc-button-hover-bg-color: var(--surface-3); --fc-button-active-bg-color: var(--green); --fc-today-bg-color: rgba(63,185,80,0.04); --fc-page-bg-color: transparent; --fc-neutral-bg-color: var(--surface-2); --fc-highlight-color: rgba(63,185,80,0.12); }
     .fc .fc-toolbar-title { font-size: 15px; font-weight: 600; color: var(--text); font-family: 'Inter',sans-serif; letter-spacing: -.3px; }
     .fc .fc-button { font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm) !important; padding: 6px 12px; transition: all .15s; text-transform: none; }
     .fc .fc-col-header-cell-cushion { font-family: 'Inter',sans-serif; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; text-decoration: none; }
@@ -211,7 +211,6 @@
 </head>
 <body>
 
-<!-- หน้าต่าง Loading อัปเดตโลโก้ -->
 <div id="loading">
   <img src="logo.png" alt="Loading" class="load-img" />
   <div class="load-bar"><div class="load-fill"></div></div>
@@ -253,11 +252,17 @@
 <div class="dashboard">
 
   <aside class="side-panel" id="side-panel">
+    
+    <!-- ฟอร์มการจอง -->
     <div id="view-form" class="panel-view active">
       <div class="panel-hd">
         <div class="panel-hd-row">
-          <div class="panel-hd-icon icon-green">📝</div>
-          <span class="panel-title" data-i18n="formTitle">Book a Bay</span>
+          <div class="panel-hd-left">
+            <div class="panel-hd-icon icon-green">📝</div>
+            <span class="panel-title" data-i18n="formTitle">Book a Bay</span>
+          </div>
+          <!-- ปุ่มเปิดประวัติการจอง -->
+          <button class="btn-icon" onclick="showHistoryView()" title="My Bookings">🕒</button>
         </div>
         <div class="panel-hint" data-i18n="formHint">Select a time on the calendar to pre-fill →</div>
       </div>
@@ -297,7 +302,6 @@
         <div class="form-group">
           <label class="form-label"><span data-i18n="lbl_date">วันที่</span> <span class="req">*</span></label>
           <input id="f-date" class="form-input" type="date" onchange="validateDate(this)" />
-          <!-- UX: เพิ่ม Hint แจ้งร้านปิดวันอาทิตย์ล่วงหน้า -->
           <div class="form-hint" data-i18n="lbl_closed_sun">*ร้านปิดทำการทุกวันอาทิตย์</div>
           <div class="form-err" id="err-date" data-i18n="err_date">กรุณาเลือกวันที่</div>
         </div>
@@ -332,6 +336,23 @@
       </div>
     </div>
 
+    <!-- หน้าต่างประวัติการจอง (เพิ่มใหม่) -->
+    <div id="view-history" class="panel-view">
+      <div class="panel-hd">
+        <div class="panel-hd-row">
+          <div class="panel-hd-left">
+            <div class="panel-hd-icon" style="background:var(--blue-dim);color:var(--blue);">🕒</div>
+            <span class="panel-title" data-i18n="histTitle">ประวัติการจอง</span>
+          </div>
+          <button class="btn-icon" onclick="showFormView()">✕</button>
+        </div>
+      </div>
+      <div class="panel-body" id="history-list">
+        <!-- ข้อมูลประวัติจะถูกสร้างด้วย JS -->
+      </div>
+    </div>
+
+    <!-- หน้าต่างสำเร็จ -->
     <div id="view-success" class="panel-view">
       <div class="success-body">
         <div class="success-icon">📬</div>
@@ -345,11 +366,9 @@
           <span id="s-name">—</span> · <span id="s-phone">—</span>
         </div>
         <p style="font-size:11px;color:var(--text-3);line-height:1.6;margin-bottom: 16px;" id="suc_hint">
-          สถานะ "⏳ รอยืนยัน" จะแสดงบนปฏิทินทันที<br>
-          เมื่อยืนยันแล้วจะเปลี่ยนเป็น "ไม่ว่าง"
+          สถานะ "⏳ รอยืนยัน" จะแสดงบนปฏิทินทันที<br>เมื่อยืนยันแล้วจะเปลี่ยนเป็น "ไม่ว่าง"
         </p>
         <button class="btn-book-again" onclick="showFormView()" data-i18n="btn_book_again">+ จองเพิ่ม</button>
-        <!-- ปุ่มปิดสำหรับ LINE LIFF -->
         <button class="btn-close-liff" onclick="closeLiff()" data-i18n="btn_close">ปิดหน้าต่างเพื่อกลับสู่แชท</button>
       </div>
     </div>
@@ -370,8 +389,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzPaw03RTvXFsfuBJ6Lyg1z
 const LIFF_ID = "2009962546-uLTZ7jx0"; // นำ LIFF ID จาก LINE Developers มาใส่
 
 let lineUserId = "";
+let globalBookings = []; // ตัวแปรเก็บข้อมูลการจองทั้งหมดสำหรับทำประวัติ
 
-// ── Multi-language Dictionary ──
 const translations = {
   th: {
     headerSub: "Book a Bay", tabCal: "📅 ปฏิทิน", tabForm: "📝 จองเบย์", formTitle: "จองเบย์",
@@ -382,7 +401,8 @@ const translations = {
     lbl_start: "เวลาเริ่ม", lbl_end: "เวลาสิ้นสุด", err_time: "กรุณาตรวจสอบเวลา",
     lbl_note: "หมายเหตุ", lbl_note_opt: "(ถ้ามี)", ph_note: "ข้อมูลเพิ่มเติม...",
     btn_submit: "ส่งคำขอจอง", btn_clear: "ล้างข้อมูล", suc_title: "ส่งคำขอจองแล้ว!",
-    suc_detail_title: "รายละเอียดการจอง", btn_book_again: "+ จองเพิ่ม", refreshing: "กำลังอัปเดตข้อมูล...", btn_close: "ปิดหน้าต่างเพื่อกลับสู่แชท"
+    suc_detail_title: "รายละเอียดการจอง", btn_book_again: "+ จองเพิ่ม", refreshing: "กำลังอัปเดตข้อมูล...", btn_close: "ปิดหน้าต่างเพื่อกลับสู่แชท",
+    histTitle: "ประวัติการจองของฉัน", histEmpty: "ยังไม่มีประวัติการจอง", histLogin: "เข้าสู่ระบบผ่าน LINE เพื่อดูประวัติ", stConf: "✅ ยืนยันแล้ว", stPend: "⏳ รอยืนยัน"
   },
   en: {
     headerSub: "Book a Bay", tabCal: "📅 Schedule", tabForm: "📝 Book Now", formTitle: "Book a Bay",
@@ -393,7 +413,8 @@ const translations = {
     lbl_start: "Start Time", lbl_end: "End Time", err_time: "Check start/end time",
     lbl_note: "Note", lbl_note_opt: "(Optional)", ph_note: "Special requests...",
     btn_submit: "Submit Booking", btn_clear: "Clear form", suc_title: "Request Sent!",
-    suc_detail_title: "Booking Details", btn_book_again: "+ Book another", refreshing: "Updating data...", btn_close: "Close Window"
+    suc_detail_title: "Booking Details", btn_book_again: "+ Book another", refreshing: "Updating data...", btn_close: "Close Window",
+    histTitle: "My Bookings", histEmpty: "No booking history", histLogin: "Please login via LINE", stConf: "✅ Confirmed", stPend: "⏳ Pending"
   },
   jp: {
     headerSub: "予約", tabCal: "📅 スケジュール", tabForm: "📝 予約する", formTitle: "ベイを予約",
@@ -404,7 +425,8 @@ const translations = {
     lbl_start: "開始時間", lbl_end: "終了時間", err_time: "時間を確認してください",
     lbl_note: "備考", lbl_note_opt: "（任意）", ph_note: "その他の情報...",
     btn_submit: "予約をリクエスト", btn_clear: "クリア", suc_title: "送信完了",
-    suc_detail_title: "予約の詳細", btn_book_again: "+ 追加予約", refreshing: "データを更新中...", btn_close: "閉じる"
+    suc_detail_title: "予約の詳細", btn_book_again: "+ 追加予約", refreshing: "データを更新中...", btn_close: "閉じる",
+    histTitle: "予約履歴", histEmpty: "予約履歴はありません", histLogin: "LINEでログインしてください", stConf: "✅ 確定済み", stPend: "⏳ 承認待ち"
   },
   cn: {
     headerSub: "预订包厢", tabCal: "📅 日程表", tabForm: "📝 立即预订", formTitle: "预订包厢",
@@ -415,7 +437,8 @@ const translations = {
     lbl_start: "开始时间", lbl_end: "结束时间", err_time: "请检查时间",
     lbl_note: "备注", lbl_note_opt: "（可选）", ph_note: "其他要求...",
     btn_submit: "提交预订", btn_clear: "清除表单", suc_title: "请求已发送！",
-    suc_detail_title: "预订详情", btn_book_again: "+ 再次预订", refreshing: "正在更新数据...", btn_close: "关闭窗口"
+    suc_detail_title: "预订详情", btn_book_again: "+ 再次预订", refreshing: "正在更新数据...", btn_close: "关闭窗口",
+    histTitle: "我的预订", histEmpty: "暂无预订历史", histLogin: "请通过LINE登录", stConf: "✅ 已确认", stPend: "⏳ 待确认"
   }
 };
 
@@ -445,23 +468,22 @@ function setLanguage(lang) {
     document.getElementById('suc_hint').innerHTML = '状态“⏳ 待确认”将显示在日历上。<br>确认后，状态将变为“已满”。';
   }
 
-  // อัปเดตภาษาบนปฏิทิน
   if (typeof calendarRef !== 'undefined' && calendarRef) {
     calendarRef.setOption('locale', fcLangMap[lang]);
   }
-}
 
-// ฟังก์ชันปิด LIFF Window
-function closeLiff() {
-  if (liff.isInClient()) {
-    liff.closeWindow();
-  } else {
-    window.close(); // สำหรับกรณีรันบนเบราว์เซอร์ปกติ
+  // อัปเดตภาษาในหน้าประวัติด้วยถ้าเปิดอยู่
+  if (document.getElementById('view-history').classList.contains('active')) {
+    renderHistory();
   }
 }
 
+function closeLiff() {
+  if (liff.isInClient()) liff.closeWindow(); else window.close();
+}
+
 /* ════════════════════════════════════════════════════════════
-   DATE HELPERS
+   DATE HELPERS & TABS
    ════════════════════════════════════════════════════════════ */
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function maxDateStr() { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().slice(0, 10); }
@@ -472,9 +494,6 @@ function fmtShort(d) {
   return new Date(d + 'T00:00:00').toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric' });
 }
 
-/* ════════════════════════════════════════════════════════════
-   MOBILE TABS & VIEWS
-   ════════════════════════════════════════════════════════════ */
 let currentTab = 'cal';
 function isMobile() { return window.innerWidth <= 720; }
 function switchTab(tab) {
@@ -495,7 +514,18 @@ window.addEventListener('resize', () => {
   } else { switchTab(currentTab); }
 });
 
-function showFormView() { document.getElementById('view-form').classList.add('active'); document.getElementById('view-success').classList.remove('active'); }
+/* Panel Switching */
+function showFormView() { 
+  document.getElementById('view-form').classList.add('active'); 
+  document.getElementById('view-success').classList.remove('active'); 
+  document.getElementById('view-history').classList.remove('active');
+}
+function showHistoryView() {
+  document.getElementById('view-form').classList.remove('active'); 
+  document.getElementById('view-success').classList.remove('active'); 
+  document.getElementById('view-history').classList.add('active');
+  renderHistory();
+}
 function showSuccessView(booking) {
   const bay = booking.bay === 'A' ? '⛳ Bay A' : '⛳ Bay B';
   document.getElementById('s-bookingno').textContent = `📋 ${booking.bookingNo}`;
@@ -506,11 +536,66 @@ function showSuccessView(booking) {
   document.getElementById('s-name').textContent      = booking.customerName;
   document.getElementById('s-phone').textContent     = booking.phone;
   document.getElementById('view-form').classList.remove('active');
+  document.getElementById('view-history').classList.remove('active');
   document.getElementById('view-success').classList.add('active');
 }
 
 /* ════════════════════════════════════════════════════════════
-   TIME SELECTS
+   HISTORY RENDERING
+   ════════════════════════════════════════════════════════════ */
+function renderHistory() {
+  const listEl = document.getElementById('history-list');
+  const lang = document.getElementById('lang-select').value;
+  const t = translations[lang];
+
+  if (!lineUserId) {
+     listEl.innerHTML = `<div class="hc-empty">${t.histLogin}</div>`;
+     return;
+  }
+
+  // กรองเอาเฉพาะข้อมูลของ User นี้
+  const myBookings = globalBookings.filter(b => {
+     const uid = b.lineUserId || b['Line User ID'] || b.line_user_id;
+     return uid && uid === lineUserId;
+  });
+
+  // เรียงวันที่ล่าสุดขึ้นก่อน
+  myBookings.sort((a,b) => new Date(b.date||b.Date) - new Date(a.date||a.Date));
+
+  if (myBookings.length === 0) {
+     listEl.innerHTML = `<div class="hc-empty">${t.histEmpty}</div>`;
+     return;
+  }
+
+  listEl.innerHTML = myBookings.map(b => {
+     const st = String(b.status || b.Status || 'confirmed').toLowerCase();
+     const isPending = st === 'pending';
+     const stClass = isPending ? 'pending' : 'confirmed';
+     const stText = isPending ? t.stPend : t.stConf;
+
+     const d = cleanDate(b.date || b.Date);
+     const start = cleanTime(b.startTime || b['Start Time'] || b.start_time);
+     const end = cleanTime(b.endTime || b['End Time'] || b.end_time);
+     const bay = String(b.bay || b.Bay || 'A').toUpperCase();
+     const bNo = b.bookingNo || b['Booking No'] || b.id || '—';
+
+     return `
+       <div class="history-card">
+          <div class="hc-header">
+            <div>
+              <span class="hc-title">Bay ${bay} · ${fmtShort(d)}</span>
+              <span class="hc-sub">No. ${bNo}</span>
+            </div>
+            <span class="hc-status ${stClass}">${stText}</span>
+          </div>
+          <div class="hc-detail"><span>⏰ ${start} – ${end}</span><span>👥 ${b.guests || 1} คน</span></div>
+       </div>
+     `;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TIME & FORM SELECTS
    ════════════════════════════════════════════════════════════ */
 function buildSlots() {
   const s = [];
@@ -551,9 +636,6 @@ function validateDate(input) {
   input.classList.remove('err'); errEl.classList.remove('show'); return true;
 }
 
-/* ════════════════════════════════════════════════════════════
-   SLOT INDICATOR
-   ════════════════════════════════════════════════════════════ */
 let calendarRef = null;
 function setSlotIndicator(date, st, et, bay) {
   document.getElementById('slot-text').textContent = `${fmtShort(date)}  ·  ${st}–${et}  ·  Bay ${bay}`;
@@ -566,9 +648,6 @@ function clearSlot() {
   calendarRef && calendarRef.unselect();
 }
 
-/* ════════════════════════════════════════════════════════════
-   FORM
-   ════════════════════════════════════════════════════════════ */
 function resetForm() {
   ['f-name','f-phone','f-note'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-date').value   = '';
@@ -603,7 +682,7 @@ function hasOverlap(bay, date, st, et) {
 }
 
 /* ════════════════════════════════════════════════════════════
-   API
+   API & SUBMIT
    ════════════════════════════════════════════════════════════ */
 function cleanDate(v) {
   if (!v) return '';
@@ -648,7 +727,8 @@ function toEvents(bookings) {
 async function fetchBookings() {
   try {
     const r = await fetch(API_URL, { cache: 'no-store' });
-    return normalise(await r.json());
+    globalBookings = normalise(await r.json()); // เซฟข้อมูลเข้า global ตัวแปร
+    return globalBookings;
   } catch(e) { console.error(e); return []; }
 }
 async function postBooking(payload) {
@@ -662,11 +742,9 @@ async function reload() {
   const ev = toEvents(await fetchBookings());
   calendarRef.removeAllEvents();
   calendarRef.addEventSource(ev);
+  if (document.getElementById('view-history').classList.contains('active')) renderHistory();
 }
 
-/* ════════════════════════════════════════════════════════════
-   SUBMIT
-   ════════════════════════════════════════════════════════════ */
 async function submitBooking() {
   const name   = document.getElementById('f-name').value.trim();
   const phone  = document.getElementById('f-phone').value.trim();
@@ -685,7 +763,7 @@ async function submitBooking() {
   if (!date || isSunday(date)) {
     document.getElementById('f-date').classList.add('err');
     const errEl = document.getElementById('err-date');
-    errEl.textContent = !date ? translations[document.getElementById('lang-select').value].err_date || 'กรุณาเลือกวันที่' : translations[document.getElementById('lang-select').value].lbl_closed_sun || 'ร้านปิดวันอาทิตย์';
+    errEl.textContent = !date ? (translations[document.getElementById('lang-select').value].err_date || 'กรุณาเลือกวันที่') : (translations[document.getElementById('lang-select').value].lbl_closed_sun || 'ร้านปิดวันอาทิตย์');
     errEl.classList.add('show');
     ok = false;
   } else {
@@ -713,7 +791,7 @@ async function submitBooking() {
       action:'create', date, startTime:start, endTime:end, bay, customerName:name, phone, note, guests, status:'pending', lineUserId
     });
     showSuccessView({ bay, date, startTime:start, endTime:end, customerName:name, phone, guests, bookingNo: res.bookingNo || '—' });
-    await reload();
+    await reload(); // อัปเดตคิวและประวัติใหม่ทันที
     goCalTab();
   } catch(e) {
     console.error(e);
@@ -736,11 +814,8 @@ function toast(type, msg) {
    ════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
   const loadEl = document.getElementById('loading');
-
-  // Set default lang
   setLanguage('th');
 
-  // Initialize LIFF
   try {
     await liff.init({ liffId: LIFF_ID });
     if (!liff.isLoggedIn()) {
@@ -773,7 +848,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     locale: fcLangMap[document.getElementById('lang-select').value] || 'th',
     initialView:  isMobile() ? 'timeGridDay' : 'resourceTimeGridDay',
     
-    // เพิ่มปุ่ม Refresh สำหรับโหลดคิวล่าสุด
     customButtons: {
       refreshBtn: {
         text: '🔄',
