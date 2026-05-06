@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swingbox Menu</title>
+    <style>
+        /* Import a marker-like font for the SWINGBOX text */
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+        
+        body {
+            background-color: #d1b894; /* Kraft paper color approximation */
+            color: #1a1a1a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .menu-container {
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #1a1a1a;
+            padding-bottom: 10px;
+            width: 60%;
+        }
+
+        .header h1 {
+            font-size: 4em;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .swingbox-logo {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 3.5em;
+            position: absolute;
+            right: -60%;
+            top: 20px;
+            transform: rotate(-10deg);
+        }
+
+        /* Layout Grid */
+        .content {
+            display: flex;
+            gap: 30px;
+            position: relative;
+        }
+
+        /* Vertical dividing line */
+        .content::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            background-color: #1a1a1a;
+            transform: translateX(-50%);
+        }
+
+        .column {
+            flex: 1;
+            padding: 10px 20px;
+        }
+
+        /* Typography Styling */
+        h2 {
+            font-size: 2em;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            font-weight: 800;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .thai-text {
+            display: block;
+            font-size: 0.9em;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+
+        .italic-text {
+            display: block;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: -5px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Visual Separators */
+        .horizontal-line {
+            height: 3px;
+            background-color: #1a1a1a;
+            margin: 30px 0;
+        }
+
+        /* Special text formats */
+        .star {
+            margin-left: 5px;
+        }
+        
+        .crossed-out {
+            text-decoration: line-through;
+            text-decoration-thickness: 3px;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 800;
+            margin-top: 50px;
+            letter-spacing: 1px;
+        }
+
+        .smiley {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 4em;
+            text-align: center;
+            margin-top: 20px;
+            transform: rotate(-15deg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            .content::after {
+                display: none;
+            }
+            .header {
+                width: 100%;
+                border-bottom: none;
+            }
+            .swingbox-logo {
+                position: static;
+                display: block;
+                transform: rotate(0);
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="menu-container">
+    <div class="header">
+        <h1>MENU</h1>
+        <div class="swingbox-logo">SWINGBOX</div>
+    </div>
+
+    <div class="content">
+        <!-- Left Column -->
+        <div class="column">
+            <h2>NON-ALCOHOL</h2>
+            
+            <h3>Soft Drinks</h3>
+            <p><span>Mont Fleur Mineral Water</span><span>— ฿20</span></p>
+            <p><span>Charles House Mineral Water</span><span>— ฿15</span></p>
+            <p><span>Coca-Cola (Can)</span><span>— ฿25</span></p>
+            <p><span>Schweppes Manao Soda</span><span>— ฿25</span></p>
+
+            <h3>Mixers & Extras</h3>
+            <p><span>Soda</span><span>— ฿15</span></p>
+            <p><span>Ice Bucket (Small)</span><span>— ฿25</span></p>
+            <p><span>Ice Bucket (Large)</span><span>— ฿50</span></p>
+
+            <div class="horizontal-line"></div>
+
+            <h2>SNACKS</h2>
+            <p><span>Fried Chicken Tendon</span><span>- ฿59 <span class="star">★</span></span></p>
+            <span class="thai-text">เอ็นไก่ทอด</span>
+            
+            <p class="crossed-out"><span>French Fries</span><span>- ฿69</span></p>
+            <span class="thai-text crossed-out">เฟรนช์ฟรายส์</span>
+            
+            <p><span>Edamame</span><span>- ฿39</span></p>
+            <span class="thai-text">ถั่วแระญี่ปุ่น</span>
+
+            <div class="horizontal-line"></div>
+            
+            <div class="smiley">:-)</div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column">
+            <h2>ALCOHOL</h2>
+            
+            <h3>Beer</h3>
+            <p><span>Singha Beer (Can 490 ml)</span><span>— ฿79</span></p>
+            <p><span>Singha Beer (Bottle 320 ml)</span><span>— ฿59</span></p>
+            <p><span>Singha Beer (Bottle 620 ml)</span><span>— ฿89 <span class="star">★</span></span></p>
+            <p><span>Budweiser (Bottle)</span><span>— ฿109</span></p>
+            <p><span>Hoegaarden Rosée</span><span>— ฿139</span></p>
+
+            <h3>Whisky & Spirits</h3>
+            <p><span>St. Henri VSOP</span><span>— ฿549</span></p>
+            <p><span>Suntory Kakubin Whisky</span><span>— ฿1,390</span></p>
+            <p><span>Jameson Irish Whiskey</span><span>— ฿1,690</span></p>
+            <p><span>Johnnie Walker Black Label</span><span>— ฿1,899</span></p>
+            <p><span>Chivas Regal 12 Years</span><span>— ฿2,299</span></p>
+
+            <div class="horizontal-line"></div>
+
+            <h2>WINE</h2>
+            <p><span>19 Crimes Red Blend</span><span>— ฿790</span></p>
+            <span class="italic-text">Served with Glasses & Ice Bucket</span>
+            
+            <p><span>Penfolds Koonunga Hill 2023</span><span>— ฿890</span></p>
+            <span class="italic-text">Served with Glasses & Ice Bucket</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        SWINGBOX GOLF SIMULATOR
+    </div>
+</div>
+
+</body>
+</html>
