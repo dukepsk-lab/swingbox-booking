@@ -517,7 +517,17 @@ function switchTab(tab) {
   if (tab==='form' || tab==='history') {
     document.getElementById('tab-badge').classList.remove('show');
   }
-  if (tab==='history') loadHistory();
+  if (tab==='history') {
+    ['view-form','view-success','view-history'].forEach(v => document.getElementById(v).classList.remove('active'));
+    document.getElementById('view-history').classList.add('active');
+    loadHistory();
+  } else if (tab==='form') {
+    // Return to form view only if history is currently showing
+    if (document.getElementById('view-history').classList.contains('active')) {
+      ['view-form','view-success','view-history'].forEach(v => document.getElementById(v).classList.remove('active'));
+      document.getElementById('view-form').classList.add('active');
+    }
+  }
 }
 function goFormTab() { if (isMobile()) switchTab('form'); }
 function goCalTab()  { if (isMobile()) switchTab('cal');  }
@@ -549,10 +559,13 @@ function showSuccessView(booking) {
   document.getElementById('view-success').classList.add('active');
 }
 function openHistoryView() {
-  ['view-form','view-success','view-history'].forEach(v => document.getElementById(v).classList.remove('active'));
-  document.getElementById('view-history').classList.add('active');
-  if (isMobile()) switchTab('history');
-  loadHistory();
+  if (isMobile()) {
+    switchTab('history'); // handles view activation + loadHistory
+  } else {
+    ['view-form','view-success','view-history'].forEach(v => document.getElementById(v).classList.remove('active'));
+    document.getElementById('view-history').classList.add('active');
+    loadHistory();
+  }
 }
 
 /* ── TIME SELECTS ────────────────────────────────────────────── */
