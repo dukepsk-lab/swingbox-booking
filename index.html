@@ -195,10 +195,19 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="logo" href="#">
+    <a class="logo" href="index.html">
       <div class="logo-mark">S</div>
-      <div><div class="logo-name">SwingBox Golf Simulator</div><div class="logo-sub" data-i18n="headerSub">Book a Bay</div></div>
+      <div><div class="logo-name">SwingBox</div><div class="logo-sub">Portal</div></div>
     </a>
+    
+    <div class="global-links">
+      <a href="index.html" style="color:var(--green)">Booking</a>
+      <a href="menu.html">Menu</a>
+      <a href="membership.html">Memberships</a>
+      <a href="challenge.html">Challenge</a>
+      <a href="promotion.html" class="promo-link">🔥 900฿ Promo</a>
+    </div>
+
     <div class="header-actions">
       <div class="lang-switcher">
         <select id="lang-select" onchange="setLanguage(this.value)">
@@ -211,6 +220,22 @@
     </div>
   </div>
 </header>
+
+<style>
+  .global-links { display: flex; gap: 16px; align-items: center; margin-left: 20px; flex: 1; }
+  .global-links a { color: var(--text-2); text-decoration: none; font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif; transition: color 0.2s; }
+  .global-links a:hover { color: var(--text); }
+  .global-links .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 800; }
+  @media (max-width: 768px) {
+    .global-links { display: none; }
+    /* Will add mobile nav bar at bottom or side if needed, but for now let's just make it scrollable below header */
+    .site-header { height: auto; flex-direction: column; padding: 10px 0; }
+    .header-inner { flex-wrap: wrap; gap: 10px; }
+    .global-links { display: flex; width: 100%; overflow-x: auto; padding-bottom: 5px; margin-left: 0; }
+    .global-links::-webkit-scrollbar { display: none; }
+    .global-links a { white-space: nowrap; }
+  }
+</style>
 
 <nav class="mobile-tabs" id="mobile-tabs">
   <div class="tab-inner">

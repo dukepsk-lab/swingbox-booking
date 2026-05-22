@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwingBox | 900 THB Flat Rate Promo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Noto+Sans+Thai:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --accent: #fbbf24;
+            --accent-glow: rgba(251, 191, 36, 0.2);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-mesh {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(251,191,36,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(239,68,68,0.15) 0%, transparent 50%);
+            z-index: 0;
+            filter: blur(40px);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            width: 90%;
+            margin: 40px auto;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 50px 40px;
+            text-align: center;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(251,191,36,0.2);
+        }
+
+        .currency { font-size: 1.5rem; font-weight: 700; color: #fbbf24; vertical-align: super; }
+
+        .subtitle {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .time-slot {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 24px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .desc {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.125rem;
+            text-decoration: none;
+            padding: 16px 40px;
+            border-radius: 99px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(251,191,36,0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -5px rgba(251,191,36,0.6);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #fff; }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 3rem; }
+            .glass-card { padding: 40px 20px; }
+            .subtitle { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<!-- GLOBAL NAVIGATION -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+.global-nav-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 60px;
+  background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; z-index: 9999; font-family: 'Outfit', sans-serif;
+  box-sizing: border-box;
+}
+.global-nav-bar .logo-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; font-size: 1.2rem; color: #fff; }
+.global-nav-bar .logo-brand span { background: linear-gradient(135deg, #3fb950, #58a6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.global-nav-bar .nav-links { display: flex; gap: 16px; align-items: center; }
+.global-nav-bar .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
+.global-nav-bar .nav-links a:hover, .global-nav-bar .nav-links a.active { color: #e6edf3; }
+.global-nav-bar .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; }
+body { padding-top: 60px !important; }
+@media (max-width: 768px) {
+  .global-nav-bar { flex-direction: column; height: auto; padding: 10px 0; gap: 10px; }
+  .global-nav-bar .nav-links { width: 100%; overflow-x: auto; padding: 0 10px 5px; justify-content: flex-start; }
+  .global-nav-bar .nav-links::-webkit-scrollbar { display: none; }
+  .global-nav-bar .nav-links a { white-space: nowrap; }
+  body { padding-top: 90px !important; }
+}
+</style>
+<nav class="global-nav-bar">
+  <a href="index.html" class="logo-brand">SWINGBOX <span>Portal</span></a>
+  <div class="nav-links">
+    <a href="index.html">Booking</a>
+    <a href="menu.html">Menu</a>
+    <a href="membership.html">Memberships</a>
+    <a href="challenge.html">Challenge</a>
+    <a href="promotion.html" class="promo-link" style="color:#000;">🔥 900฿ Promo</a>
+  </div>
+</nav>
+<!-- END GLOBAL NAVIGATION -->
+    <div class="bg-mesh"></div>
+
+    <div class="container">
+        <div class="glass-card">
+            <div class="badge">Limited Time Offer</div>
+            
+            <h1>900<span class="currency">฿</span></h1>
+            <div class="subtitle">แบบเหมา Flat Rate</div>
+            
+            <div class="time-slot">
+                <span>🕒</span> 1:00 PM – 5:00 PM
+            </div>
+            
+            <p class="desc">
+                สนุกกับการตีกอล์ฟแบบไม่อั้นในช่วงบ่ายด้วยราคาพิเศษสุดคุ้ม! จ่ายเพียง 900 บาท เล่นได้ยาวๆ ตั้งแต่บ่ายโมงถึงห้าโมงเย็น (Play unlimited during the afternoon for an unbeatable price!)
+            </p>
+            
+            <a href="booking.html" class="btn">Book Your Bay Now</a>
+            <br>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
