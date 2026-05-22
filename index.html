@@ -193,49 +193,78 @@
 <div id="tooltip"></div>
 <div id="toast"><span id="toast-icon"></span><span id="toast-msg"></span></div>
 
-<header class="site-header">
-  <div class="header-inner">
-    <a class="logo" href="index.html">
-      <div class="logo-mark">S</div>
-      <div><div class="logo-name">SwingBox</div><div class="logo-sub">Portal</div></div>
-    </a>
-    
-    <div class="global-links">
-      <a href="index.html" style="color:var(--green)">Booking</a>
-      <a href="menu.html">Menu</a>
-      <a href="membership.html">Memberships</a>
-      <a href="challenge.html">Challenge</a>
-      <a href="promotion.html" class="promo-link">🔥 900฿ Promo</a>
-    </div>
+<!-- GLOBAL NAVIGATION -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+.global-nav-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 60px;
+  background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; z-index: 9999; font-family: 'Outfit', sans-serif;
+  box-sizing: border-box;
+}
+.global-nav-bar .logo-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; font-size: 1.2rem; color: #fff; flex-shrink: 0; }
+.global-nav-bar .logo-brand span { background: linear-gradient(135deg, #3fb950, #58a6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    <div class="header-actions">
-      <div class="lang-switcher">
-        <select id="lang-select" onchange="setLanguage(this.value)">
-          <option value="th">🇹🇭 TH</option>
-          <option value="en">🇬🇧 EN</option>
-          <option value="jp">🇯🇵 JP</option>
-          <option value="cn">🇨🇳 CN</option>
-        </select>
-      </div>
+.global-nav-bar .nav-links { display: flex; gap: 16px; align-items: center; flex: 1; justify-content: center; }
+.global-nav-bar .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
+.global-nav-bar .nav-links a:hover, .global-nav-bar .nav-links a.active { color: #e6edf3; }
+.global-nav-bar .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; }
+
+.global-nav-bar .nav-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.global-nav-bar .user-profile { 
+  display: none; align-items: center; gap: 8px; 
+  background: rgba(255,255,255,0.05); padding: 4px 12px 4px 4px; 
+  border-radius: 99px; border: 1px solid rgba(255,255,255,0.1); 
+}
+.global-nav-bar .user-profile img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.global-nav-bar .user-profile span { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Language switcher standard styles */
+.global-nav-bar .lang-switcher select {
+  background-color: transparent; color: #e6edf3; border: 1px solid rgba(255,255,255,0.2); 
+  border-radius: 6px; padding: 4px 20px 4px 8px; font-size: 0.8rem; outline: none; cursor: pointer; 
+  -webkit-appearance: none; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 6px center;
+}
+.global-nav-bar .lang-switcher select option { background: #161b22; color: #fff; }
+
+body { padding-top: 60px !important; }
+@media (max-width: 900px) {
+  .global-nav-bar { flex-wrap: wrap; height: auto; padding: 10px; gap: 10px; justify-content: space-between; }
+  .global-nav-bar .nav-links { width: 100%; order: 3; overflow-x: auto; padding: 0 5px 5px; justify-content: flex-start; margin-top: 5px; }
+  .global-nav-bar .nav-links::-webkit-scrollbar { display: none; }
+  .global-nav-bar .nav-links a { white-space: nowrap; }
+  body { padding-top: 100px !important; }
+}
+</style>
+<nav class="global-nav-bar" id="global-nav-bar">
+  <a href="index.html" class="logo-brand">SWINGBOX <span>Portal</span></a>
+  <div class="nav-links">
+    <a href="index.html" id="nav-link-booking" class="active" style="color:var(--green)">Booking</a>
+    <a href="menu.html" id="nav-link-menu">Menu</a>
+    <a href="membership.html" id="nav-link-membership">Memberships</a>
+    <a href="challenge.html" id="nav-link-challenge">Challenge</a>
+    <a href="promotion.html" class="promo-link" style="color:#000!important;">🔥 900฿ Promo</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <select id="lang-select" onchange="if(typeof setLanguage === 'function') setLanguage(this.value)">
+        <option value="th">🇹🇭 TH</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="jp">🇯🇵 JP</option>
+        <option value="cn">🇨🇳 CN</option>
+      </select>
+    </div>
+    <div class="user-profile" id="nav-user-profile">
+      <img id="nav-user-img" src="" alt="User">
+      <span id="nav-user-name"></span>
     </div>
   </div>
-</header>
-
-<style>
-  .global-links { display: flex; gap: 16px; align-items: center; margin-left: 20px; flex: 1; }
-  .global-links a { color: var(--text-2); text-decoration: none; font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif; transition: color 0.2s; }
-  .global-links a:hover { color: var(--text); }
-  .global-links .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 800; }
-  @media (max-width: 768px) {
-    .global-links { display: none; }
-    /* Will add mobile nav bar at bottom or side if needed, but for now let's just make it scrollable below header */
-    .site-header { height: auto; flex-direction: column; padding: 10px 0; }
-    .header-inner { flex-wrap: wrap; gap: 10px; }
-    .global-links { display: flex; width: 100%; overflow-x: auto; padding-bottom: 5px; margin-left: 0; }
-    .global-links::-webkit-scrollbar { display: none; }
-    .global-links a { white-space: nowrap; }
-  }
-</style>
+</nav>
+<!-- END GLOBAL NAVIGATION -->
 
 <nav class="mobile-tabs" id="mobile-tabs">
   <div class="tab-inner">
@@ -855,6 +884,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = await liff.getProfile();
     lineUserId = profile.userId;
     document.getElementById('f-name').value = profile.displayName;
+    
+    // Update Global Nav Profile
+    const profileEl = document.getElementById('nav-user-profile');
+    if (profileEl) {
+      document.getElementById('nav-user-img').src = profile.pictureUrl || 'https://via.placeholder.com/32';
+      document.getElementById('nav-user-name').textContent = profile.displayName;
+      profileEl.style.display = 'flex';
+    }
   } catch (err) { console.warn("LIFF Init Error:", err); }
 
   const dateInput = document.getElementById('f-date');

@@ -148,43 +148,118 @@
     </style>
 </head>
 <body>
+
 <!-- GLOBAL NAVIGATION -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
 .global-nav-bar {
   position: fixed; top: 0; left: 0; right: 0; height: 60px;
-  background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px; z-index: 9999; font-family: 'Outfit', sans-serif;
   box-sizing: border-box;
 }
-.global-nav-bar .logo-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; font-size: 1.2rem; color: #fff; }
+.global-nav-bar .logo-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; font-size: 1.2rem; color: #fff; flex-shrink: 0; }
 .global-nav-bar .logo-brand span { background: linear-gradient(135deg, #3fb950, #58a6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.global-nav-bar .nav-links { display: flex; gap: 16px; align-items: center; }
+
+.global-nav-bar .nav-links { display: flex; gap: 16px; align-items: center; flex: 1; justify-content: center; }
 .global-nav-bar .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
-.global-nav-bar .nav-links a:hover, .global-nav-bar .nav-links a.active { color: #e6edf3; }
+.global-nav-bar .nav-links a:hover, .global-nav-bar .nav-links a.active { color: #10b981 !important; }
 .global-nav-bar .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; }
+
+.global-nav-bar .nav-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.global-nav-bar .user-profile { 
+  display: none; align-items: center; gap: 8px; 
+  background: rgba(255,255,255,0.05); padding: 4px 12px 4px 4px; 
+  border-radius: 99px; border: 1px solid rgba(255,255,255,0.1); 
+}
+.global-nav-bar .user-profile img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.global-nav-bar .user-profile span { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Language switcher standard styles */
+.global-nav-bar .lang-switcher select {
+  background-color: transparent; color: #e6edf3; border: 1px solid rgba(255,255,255,0.2); 
+  border-radius: 6px; padding: 4px 20px 4px 8px; font-size: 0.8rem; outline: none; cursor: pointer; 
+  -webkit-appearance: none; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 6px center;
+}
+.global-nav-bar .lang-switcher select option { background: #161b22; color: #fff; }
+
 body { padding-top: 60px !important; }
-@media (max-width: 768px) {
-  .global-nav-bar { flex-direction: column; height: auto; padding: 10px 0; gap: 10px; }
-  .global-nav-bar .nav-links { width: 100%; overflow-x: auto; padding: 0 10px 5px; justify-content: flex-start; }
+@media (max-width: 900px) {
+  .global-nav-bar { flex-wrap: wrap; height: auto; padding: 10px; gap: 10px; justify-content: space-between; }
+  .global-nav-bar .nav-links { width: 100%; order: 3; overflow-x: auto; padding: 0 5px 5px; justify-content: flex-start; margin-top: 5px; }
   .global-nav-bar .nav-links::-webkit-scrollbar { display: none; }
   .global-nav-bar .nav-links a { white-space: nowrap; }
-  body { padding-top: 90px !important; }
+  body { padding-top: 100px !important; }
 }
 </style>
-<nav class="global-nav-bar">
+<nav class="global-nav-bar" id="global-nav-bar">
   <a href="index.html" class="logo-brand">SWINGBOX <span>Portal</span></a>
   <div class="nav-links">
-    <a href="index.html">Booking</a>
-    <a href="menu.html">Menu</a>
-    <a href="membership.html">Memberships</a>
-    <a href="challenge.html">Challenge</a>
-    <a href="promotion.html" class="promo-link" style="color:#000;">🔥 900฿ Promo</a>
+    <a href="index.html" id="nav-link-booking">Booking</a>
+    <a href="menu.html" id="nav-link-menu">Menu</a>
+    <a href="membership.html" id="nav-link-membership">Memberships</a>
+    <a href="challenge.html" id="nav-link-challenge">Challenge</a>
+    <a href="promotion.html" class="promo-link" style="color:#000!important;">🔥 900฿ Promo</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <select id="lang-select" onchange="if(typeof setLanguage === 'function') setLanguage(this.value)">
+        <option value="th">🇹🇭 TH</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="jp">🇯🇵 JP</option>
+        <option value="cn">🇨🇳 CN</option>
+      </select>
+    </div>
+    <div class="user-profile" id="nav-user-profile">
+      <img id="nav-user-img" src="" alt="User">
+      <span id="nav-user-name"></span>
+    </div>
   </div>
 </nav>
+
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const path = window.location.pathname;
+    if(path.includes('menu.html')) document.getElementById('nav-link-menu')?.classList.add('active');
+    else if(path.includes('membership.html')) document.getElementById('nav-link-membership')?.classList.add('active');
+    else if(path.includes('challenge.html')) document.getElementById('nav-link-challenge')?.classList.add('active');
+    else if(path.includes('promotion.html')) {} 
+    else document.getElementById('nav-link-booking')?.classList.add('active');
+
+    const LIFF_ID = "2009962546-uLTZ7jx0";
+    try {
+      if (!window.liff) return;
+      if (!liff.isInClient() && !liff.isLoggedIn()) {
+        await liff.init({ liffId: LIFF_ID });
+      } else if (!liff.id) {
+        await liff.init({ liffId: LIFF_ID });
+      }
+
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        const profileEl = document.getElementById('nav-user-profile');
+        const imgEl = document.getElementById('nav-user-img');
+        const nameEl = document.getElementById('nav-user-name');
+        
+        if(profileEl && imgEl && nameEl) {
+          imgEl.src = profile.pictureUrl || 'https://via.placeholder.com/32';
+          nameEl.textContent = profile.displayName;
+          profileEl.style.display = 'flex';
+        }
+      }
+    } catch (err) {
+      console.warn("Global LIFF Init Error:", err);
+    }
+  });
+</script>
 <!-- END GLOBAL NAVIGATION -->
+
+
     <div class="bg-mesh"></div>
 
     <div class="container">
