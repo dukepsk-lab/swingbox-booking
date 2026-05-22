@@ -59,10 +59,21 @@
 
 body:not(.in-iframe) { padding-top: 60px !important; }
 @media (max-width: 900px) {
-  .global-nav-bar { flex-wrap: wrap; height: auto; padding: 10px; gap: 10px; justify-content: space-between; }
-  .global-nav-bar .nav-links { width: 100%; order: 3; overflow-x: auto; padding: 0 5px 5px; justify-content: flex-start; margin-top: 5px; }
+  .global-nav-bar { flex-wrap: wrap; height: auto; padding: 10px 10px 0 10px; gap: 10px; justify-content: space-between; }
+  .global-nav-bar .nav-links { 
+    width: calc(100% + 20px); 
+    margin-left: -10px; 
+    order: 3; 
+    overflow-x: auto; 
+    padding: 12px 15px; 
+    justify-content: flex-start; 
+    margin-top: 5px; 
+    background: rgba(0, 0, 0, 0.2); 
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    -webkit-overflow-scrolling: touch;
+  }
   .global-nav-bar .nav-links::-webkit-scrollbar { display: none; }
-  .global-nav-bar .nav-links a { white-space: nowrap; }
+  .global-nav-bar .nav-links a { white-space: nowrap; font-size: 0.95rem; }
   body:not(.in-iframe) { padding-top: 100px !important; }
 }
 </style>
