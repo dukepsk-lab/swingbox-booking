@@ -161,12 +161,11 @@
   box-sizing: border-box;
 }
 .global-nav-bar .logo-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; font-size: 1.2rem; color: #fff; flex-shrink: 0; }
-.global-nav-bar .logo-brand span { background: linear-gradient(135deg, #3fb950, #58a6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
 .global-nav-bar .nav-links { display: flex; gap: 16px; align-items: center; flex: 1; justify-content: center; }
-.global-nav-bar .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
+.global-nav-bar .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; cursor: pointer; }
 .global-nav-bar .nav-links a:hover, .global-nav-bar .nav-links a.active { color: #10b981 !important; }
-.global-nav-bar .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; }
+.global-nav-bar .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; cursor: pointer; }
 
 .global-nav-bar .nav-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .global-nav-bar .user-profile { 
@@ -187,19 +186,19 @@
 }
 .global-nav-bar .lang-switcher select option { background: #161b22; color: #fff; }
 
-body { padding-top: 60px !important; }
+body:not(.in-iframe) { padding-top: 60px !important; }
 @media (max-width: 900px) {
   .global-nav-bar { flex-wrap: wrap; height: auto; padding: 10px; gap: 10px; justify-content: space-between; }
   .global-nav-bar .nav-links { width: 100%; order: 3; overflow-x: auto; padding: 0 5px 5px; justify-content: flex-start; margin-top: 5px; }
   .global-nav-bar .nav-links::-webkit-scrollbar { display: none; }
   .global-nav-bar .nav-links a { white-space: nowrap; }
-  body { padding-top: 100px !important; }
+  body:not(.in-iframe) { padding-top: 100px !important; }
 }
 </style>
 <nav class="global-nav-bar" id="global-nav-bar">
-  <a href="index.html" class="logo-brand">SWINGBOX <span>Portal</span></a>
+  <a href="index.html" class="logo-brand">SWINGBOX</a>
   <div class="nav-links">
-    <a href="index.html" id="nav-link-booking">Booking</a>
+    <a href="booking.html" id="nav-link-booking">Booking</a>
     <a href="menu.html" id="nav-link-menu">Menu</a>
     <a href="membership.html" id="nav-link-membership">Memberships</a>
     <a href="challenge.html" id="nav-link-challenge">Challenge</a>
@@ -220,44 +219,55 @@ body { padding-top: 60px !important; }
     </div>
   </div>
 </nav>
+<script>
+  if (window !== window.top) {
+    document.getElementById('global-nav-bar').style.display = 'none';
+    document.body.classList.add('in-iframe');
+  }
+</script>
 
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const path = window.location.pathname;
-    if(path.includes('menu.html')) document.getElementById('nav-link-menu')?.classList.add('active');
-    else if(path.includes('membership.html')) document.getElementById('nav-link-membership')?.classList.add('active');
-    else if(path.includes('challenge.html')) document.getElementById('nav-link-challenge')?.classList.add('active');
-    else if(path.includes('promotion.html')) {} 
-    else document.getElementById('nav-link-booking')?.classList.add('active');
+  if (window === window.top) {
+    document.addEventListener('DOMContentLoaded', async () => {
+      const path = window.location.pathname;
+      if(path.includes('menu.html')) document.getElementById('nav-link-menu')?.classList.add('active');
+      else if(path.includes('membership.html')) document.getElementById('nav-link-membership')?.classList.add('active');
+      else if(path.includes('challenge.html')) document.getElementById('nav-link-challenge')?.classList.add('active');
+      else if(path.includes('promotion.html')) {} 
+      else document.getElementById('nav-link-booking')?.classList.add('active');
 
-    const LIFF_ID = "2009962546-uLTZ7jx0";
-    try {
-      if (!window.liff) return;
-      if (!liff.isInClient() && !liff.isLoggedIn()) {
-        await liff.init({ liffId: LIFF_ID });
-      } else if (!liff.id) {
-        await liff.init({ liffId: LIFF_ID });
-      }
-
-      if (liff.isLoggedIn()) {
-        const profile = await liff.getProfile();
-        const profileEl = document.getElementById('nav-user-profile');
-        const imgEl = document.getElementById('nav-user-img');
-        const nameEl = document.getElementById('nav-user-name');
-        
-        if(profileEl && imgEl && nameEl) {
-          imgEl.src = profile.pictureUrl || 'https://via.placeholder.com/32';
-          nameEl.textContent = profile.displayName;
-          profileEl.style.display = 'flex';
+      const LIFF_ID = "2009962546-uLTZ7jx0";
+      try {
+        if (!window.liff) return;
+        if (!liff.isInClient() && !liff.isLoggedIn()) {
+          await liff.init({ liffId: LIFF_ID });
+        } else if (!liff.id) {
+          await liff.init({ liffId: LIFF_ID });
         }
+
+        if (liff.isLoggedIn()) {
+          const profile = await liff.getProfile();
+          const profileEl = document.getElementById('nav-user-profile');
+          const imgEl = document.getElementById('nav-user-img');
+          const nameEl = document.getElementById('nav-user-name');
+          
+          if(profileEl && imgEl && nameEl) {
+            imgEl.src = profile.pictureUrl || 'https://via.placeholder.com/32';
+            nameEl.textContent = profile.displayName;
+            profileEl.style.display = 'flex';
+          }
+        }
+      } catch (err) {
+        console.warn("Global LIFF Init Error:", err);
       }
-    } catch (err) {
-      console.warn("Global LIFF Init Error:", err);
-    }
-  });
+    });
+  }
 </script>
 <!-- END GLOBAL NAVIGATION -->
+
+
+
 
 
     <div class="bg-mesh"></div>
@@ -282,5 +292,7 @@ body { padding-top: 60px !important; }
             <a href="index.html" class="back-link">← Back to Home</a>
         </div>
     </div>
+
+<script src="//instant.page/5.2.0" type="module" integrity="sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxK3jE058ZMcE8gta922u0e3e"></script>
 </body>
 </html>
