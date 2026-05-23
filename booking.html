@@ -937,20 +937,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   setLanguage('th');
 
   try {
-    await liff.init({ liffId: LIFF_ID });
-    if (!liff.isLoggedIn()) {
-      if (liff.isInClient()) {
-        // Inside LINE app — redirect to LINE login
+    let profile = null;
+
+    if (window !== window.top) {
+      // Loaded inside index.html iframe — reuse parent's LIFF session
+      // (avoids "URL not under endpoint URL" warning and double init).
+      try {
+        const parentLiff = window.parent.liff;
+        if (parentLiff && parentLiff.id && parentLiff.isLoggedIn()) {
+          profile = await parentLiff.getProfile();
+        }
+      } catch (e) { /* parent not ready or cross-origin */ }
+    } else {
+      // Standalone access
+      await liff.init({ liffId: LIFF_ID });
+      if (liff.isLoggedIn()) {
+        profile = await liff.getProfile();
+      } else if (liff.isInClient()) {
+        // Only auto-redirect to LINE login when actually inside the LINE app
         liff.login({ redirectUri: window.location.href });
         return;
       }
-      // Outside LINE app — allow form access without login
-    } else {
-      const profile = await liff.getProfile();
+    }
+
+    if (profile) {
       lineUserId = profile.userId;
       document.getElementById('f-name').value = profile.displayName;
-
-      // Update Global Nav Profile
       const profileEl = document.getElementById('nav-user-profile');
       if (profileEl) {
         document.getElementById('nav-user-img').src = profile.pictureUrl || 'https://via.placeholder.com/32';
@@ -1042,6 +1054,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 </script>
 
-<script src="//instant.page/5.2.0" type="module" integrity="sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxK3jE058ZMcE8gta922u0e3e"></script>
+<script src="//instant.page/5.2.0" type="module"></script>
 </body>
 </html>
