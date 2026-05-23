@@ -938,17 +938,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     await liff.init({ liffId: LIFF_ID });
-    if (!liff.isLoggedIn()) { liff.login({ redirectUri: window.location.href }); return; }
-    const profile = await liff.getProfile();
-    lineUserId = profile.userId;
-    document.getElementById('f-name').value = profile.displayName;
-    
-    // Update Global Nav Profile
-    const profileEl = document.getElementById('nav-user-profile');
-    if (profileEl) {
-      document.getElementById('nav-user-img').src = profile.pictureUrl || 'https://via.placeholder.com/32';
-      document.getElementById('nav-user-name').textContent = profile.displayName;
-      profileEl.style.display = 'flex';
+    if (!liff.isLoggedIn()) {
+      if (liff.isInClient()) {
+        // Inside LINE app — redirect to LINE login
+        liff.login({ redirectUri: window.location.href });
+        return;
+      }
+      // Outside LINE app — allow form access without login
+    } else {
+      const profile = await liff.getProfile();
+      lineUserId = profile.userId;
+      document.getElementById('f-name').value = profile.displayName;
+
+      // Update Global Nav Profile
+      const profileEl = document.getElementById('nav-user-profile');
+      if (profileEl) {
+        document.getElementById('nav-user-img').src = profile.pictureUrl || 'https://via.placeholder.com/32';
+        document.getElementById('nav-user-name').textContent = profile.displayName;
+        profileEl.style.display = 'flex';
+      }
     }
   } catch (err) { console.warn("LIFF Init Error:", err); }
 
