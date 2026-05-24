@@ -140,6 +140,18 @@
 
         if (liff.isLoggedIn()) {
           const profile = await liff.getProfile();
+
+          // Store globally so the booking iframe can read it synchronously
+          window.liffProfile = profile;
+
+          // Notify the iframe in case it already loaded before LIFF finished
+          try {
+            const f = document.getElementById('app-frame');
+            if (f && f.contentWindow) {
+              f.contentWindow.postMessage({ type: 'liff-profile', profile }, '*');
+            }
+          } catch(e) {}
+
           const profileEl = document.getElementById('nav-user-profile');
           const imgEl = document.getElementById('nav-user-img');
           const nameEl = document.getElementById('nav-user-name');

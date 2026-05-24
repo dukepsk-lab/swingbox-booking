@@ -479,6 +479,25 @@ const LIFF_ID = "2009962546-uLTZ7jx0";
 let lineUserId = "";
 let calendarRef = null;
 
+// Receive LIFF profile from parent iframe shell (handles the race where parent
+// finishes LIFF init after this page's DOMContentLoaded has already run).
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'liff-profile' && e.data.profile && !lineUserId) {
+    const p = e.data.profile;
+    lineUserId = p.userId;
+    const nameField = document.getElementById('f-name');
+    if (nameField && !nameField.value) nameField.value = p.displayName;
+    const profileEl = document.getElementById('nav-user-profile');
+    if (profileEl) {
+      const imgEl = document.getElementById('nav-user-img');
+      const nameEl = document.getElementById('nav-user-name');
+      if (imgEl) imgEl.src = p.pictureUrl || 'https://via.placeholder.com/32';
+      if (nameEl) nameEl.textContent = p.displayName;
+      profileEl.style.display = 'flex';
+    }
+  }
+});
+
 /* ── i18n ────────────────────────────────────────────────────── */
 const translations = {
   th:{
@@ -940,14 +959,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     let profile = null;
 
     if (window !== window.top) {
-      // Loaded inside index.html iframe — reuse parent's LIFF session
-      // (avoids "URL not under endpoint URL" warning and double init).
+      // Loaded inside index.html iframe — read profile stored by parent after LIFF init.
+      // (avoids "URL not under endpoint URL" error and double init).
+      // If parent LIFF finishes later, the 'message' listener above will fill lineUserId.
       try {
-        const parentLiff = window.parent.liff;
-        if (parentLiff && parentLiff.id && parentLiff.isLoggedIn()) {
-          profile = await parentLiff.getProfile();
+        if (window.parent.liffProfile) {
+          profile = window.parent.liffProfile;
         }
-      } catch (e) { /* parent not ready or cross-origin */ }
+      } catch (e) { /* cross-origin guard */ }
     } else {
       // Standalone access
       await liff.init({ liffId: LIFF_ID });
