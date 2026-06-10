@@ -32,14 +32,14 @@
         /* Dynamic background */
         .bg-mesh {
             position: fixed; inset: 0; z-index: 0;
-            background: 
+            background:
                 radial-gradient(circle at 10% 20%, rgba(16,185,129,0.08) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(59,130,246,0.08) 0%, transparent 40%),
                 radial-gradient(circle at 50% 50%, rgba(251,191,36,0.05) 0%, transparent 60%);
             filter: blur(40px);
         }
 
-        
+
 
         .container {
             position: relative; z-index: 10;
@@ -91,7 +91,7 @@
         .item-name { display: flex; align-items: center; gap: 8px; }
         .star { color: var(--gold); font-size: 0.9rem; }
         .item-price { color: var(--accent); font-weight: 700; white-space: nowrap; }
-        
+
         .item-desc {
             font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;
         }
@@ -135,19 +135,19 @@
 .global-nav-bar .promo-link { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000 !important; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 800; cursor: pointer; }
 
 .global-nav-bar .nav-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-.global-nav-bar .user-profile { 
-  display: none; align-items: center; gap: 8px; 
-  background: rgba(255,255,255,0.05); padding: 4px 12px 4px 4px; 
-  border-radius: 99px; border: 1px solid rgba(255,255,255,0.1); 
+.global-nav-bar .user-profile {
+  display: none; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.05); padding: 4px 12px 4px 4px;
+  border-radius: 99px; border: 1px solid rgba(255,255,255,0.1);
 }
 .global-nav-bar .user-profile img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 .global-nav-bar .user-profile span { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
 
 /* Language switcher standard styles */
 .global-nav-bar .lang-switcher select {
-  background-color: transparent; color: #e6edf3; border: 1px solid rgba(255,255,255,0.2); 
-  border-radius: 6px; padding: 4px 20px 4px 8px; font-size: 0.8rem; outline: none; cursor: pointer; 
-  -webkit-appearance: none; 
+  background-color: transparent; color: #e6edf3; border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px; padding: 4px 20px 4px 8px; font-size: 0.8rem; outline: none; cursor: pointer;
+  -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 6px center;
 }
@@ -156,15 +156,15 @@
 body:not(.in-iframe) { padding-top: 60px !important; }
 @media (max-width: 900px) {
   .global-nav-bar { flex-wrap: wrap; height: auto; padding: 10px 10px 0 10px; gap: 10px; justify-content: space-between; }
-  .global-nav-bar .nav-links { 
-    width: calc(100% + 20px); 
-    margin-left: -10px; 
-    order: 3; 
-    overflow-x: auto; 
-    padding: 12px 15px; 
-    justify-content: flex-start; 
-    margin-top: 5px; 
-    background: rgba(0, 0, 0, 0.2); 
+  .global-nav-bar .nav-links {
+    width: calc(100% + 20px);
+    margin-left: -10px;
+    order: 3;
+    overflow-x: auto;
+    padding: 12px 15px;
+    justify-content: flex-start;
+    margin-top: 5px;
+    background: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     -webkit-overflow-scrolling: touch;
   }
@@ -212,7 +212,7 @@ body:not(.in-iframe) { padding-top: 60px !important; }
       if(path.includes('menu.html')) document.getElementById('nav-link-menu')?.classList.add('active');
       else if(path.includes('membership.html')) document.getElementById('nav-link-membership')?.classList.add('active');
       else if(path.includes('challenge.html')) document.getElementById('nav-link-challenge')?.classList.add('active');
-      else if(path.includes('promotion.html')) {} 
+      else if(path.includes('promotion.html')) {}
       else document.getElementById('nav-link-booking')?.classList.add('active');
 
       const LIFF_ID = "2009962546-uLTZ7jx0";
@@ -229,7 +229,7 @@ body:not(.in-iframe) { padding-top: 60px !important; }
           const profileEl = document.getElementById('nav-user-profile');
           const imgEl = document.getElementById('nav-user-img');
           const nameEl = document.getElementById('nav-user-name');
-          
+
           if(profileEl && imgEl && nameEl) {
             imgEl.src = profile.pictureUrl || 'https://via.placeholder.com/32';
             nameEl.textContent = profile.displayName;
@@ -249,7 +249,7 @@ body:not(.in-iframe) { padding-top: 60px !important; }
 
     <div class="bg-mesh"></div>
 
-    
+
 
     <div class="container">
         <div class="header">
@@ -257,105 +257,133 @@ body:not(.in-iframe) { padding-top: 60px !important; }
             <p>Food & Drinks</p>
         </div>
 
-        <div class="menu-grid">
-            <!-- Left Column -->
-            <div class="menu-section">
-                <div class="section-title">Non-Alcohol & Snacks</div>
-                
-                <div class="category-title">Soft Drinks</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Mont Fleur Mineral Water</span><span class="item-price">฿20</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Charles House Mineral Water</span><span class="item-price">฿15</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Coca-Cola (Can)</span><span class="item-price">฿25</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Schweppes Manao Soda</span><span class="item-price">฿25</span></div>
-                </div>
-
-                <div class="category-title">Mixers & Extras</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Soda</span><span class="item-price">฿15</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Ice Bucket (Small)</span><span class="item-price">฿25</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Ice Bucket (Large)</span><span class="item-price">฿50</span></div>
-                </div>
-
-                <div class="category-title">Snacks</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Fried Chicken Tendon <span class="star">★</span></span><span class="item-price">฿59</span></div>
-                    <div class="item-desc">เอ็นไก่ทอด (Signature)</div>
-                </div>
-                <div class="menu-item crossed-out">
-                    <div class="item-row"><span class="item-name">French Fries</span><span class="item-price">฿69</span></div>
-                    <div class="item-desc">เฟรนช์ฟรายส์</div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Edamame</span><span class="item-price">฿39</span></div>
-                    <div class="item-desc">ถั่วแระญี่ปุ่น</div>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="menu-section">
-                <div class="section-title">Alcoholic Beverages</div>
-                
-                <div class="category-title">Beer</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Singha Beer (Can 490 ml)</span><span class="item-price">฿79</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Singha Beer (Bottle 320 ml)</span><span class="item-price">฿59</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Singha Beer (Bottle 620 ml) <span class="star">★</span></span><span class="item-price">฿89</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Budweiser (Bottle)</span><span class="item-price">฿109</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Hoegaarden Rosée</span><span class="item-price">฿139</span></div>
-                </div>
-
-                <div class="category-title">Whisky & Spirits</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">St. Henri VSOP</span><span class="item-price">฿549</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Suntory Kakubin Whisky</span><span class="item-price">฿1,390</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Jameson Irish Whiskey</span><span class="item-price">฿1,690</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Johnnie Walker Black Label</span><span class="item-price">฿1,899</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Chivas Regal 12 Years</span><span class="item-price">฿2,299</span></div>
-                </div>
-
-                <div class="category-title">Wine</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">19 Crimes Red Blend</span><span class="item-price">฿790</span></div>
-                    <div class="item-desc">Served with Glasses & Ice Bucket</div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Penfolds Koonunga Hill 2023</span><span class="item-price">฿890</span></div>
-                    <div class="item-desc">Served with Glasses & Ice Bucket</div>
-                </div>
-            </div>
+        <div class="menu-grid" id="menu-grid">
+            <!-- Rendered by JS -->
         </div>
 
         <div class="footer">
             SWINGBOX GOLF SIMULATOR
         </div>
     </div>
+
+<script>
+const DEFAULT_MENU = {
+  sections: [
+    {
+      id: "non-alcohol",
+      title: "Non-Alcohol & Snacks",
+      categories: [
+        {
+          id: "soft-drinks",
+          title: "Soft Drinks",
+          items: [
+            { id: 1, name: "Mont Fleur Mineral Water", price: 20, desc: "", star: false, crossedOut: false },
+            { id: 2, name: "Charles House Mineral Water", price: 15, desc: "", star: false, crossedOut: false },
+            { id: 3, name: "Coca-Cola (Can)", price: 25, desc: "", star: false, crossedOut: false },
+            { id: 4, name: "Schweppes Manao Soda", price: 25, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "mixers-extras",
+          title: "Mixers & Extras",
+          items: [
+            { id: 5, name: "Soda", price: 15, desc: "", star: false, crossedOut: false },
+            { id: 6, name: "Ice Bucket (Small)", price: 25, desc: "", star: false, crossedOut: false },
+            { id: 7, name: "Ice Bucket (Large)", price: 50, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "snacks",
+          title: "Snacks",
+          items: [
+            { id: 8, name: "Fried Chicken Tendon", price: 59, desc: "เอ็นไก่ทอด (Signature)", star: true, crossedOut: false },
+            { id: 9, name: "French Fries", price: 69, desc: "เฟรนช์ฟรายส์", star: false, crossedOut: true },
+            { id: 10, name: "Edamame", price: 39, desc: "ถั่วแระญี่ปุ่น", star: false, crossedOut: false }
+          ]
+        }
+      ]
+    },
+    {
+      id: "alcoholic",
+      title: "Alcoholic Beverages",
+      categories: [
+        {
+          id: "beer",
+          title: "Beer",
+          items: [
+            { id: 11, name: "Singha Beer (Can 490 ml)", price: 79, desc: "", star: false, crossedOut: false },
+            { id: 12, name: "Singha Beer (Bottle 320 ml)", price: 59, desc: "", star: false, crossedOut: false },
+            { id: 13, name: "Singha Beer (Bottle 620 ml)", price: 89, desc: "", star: true, crossedOut: false },
+            { id: 14, name: "Budweiser (Bottle)", price: 109, desc: "", star: false, crossedOut: false },
+            { id: 15, name: "Hoegaarden Rosée", price: 139, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "whisky-spirits",
+          title: "Whisky & Spirits",
+          items: [
+            { id: 16, name: "St. Henri VSOP", price: 549, desc: "", star: false, crossedOut: false },
+            { id: 17, name: "Suntory Kakubin Whisky", price: 1390, desc: "", star: false, crossedOut: false },
+            { id: 18, name: "Jameson Irish Whiskey", price: 1690, desc: "", star: false, crossedOut: false },
+            { id: 19, name: "Johnnie Walker Black Label", price: 1899, desc: "", star: false, crossedOut: false },
+            { id: 20, name: "Chivas Regal 12 Years", price: 2299, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "wine",
+          title: "Wine",
+          items: [
+            { id: 21, name: "19 Crimes Red Blend", price: 790, desc: "Served with Glasses & Ice Bucket", star: false, crossedOut: false },
+            { id: 22, name: "Penfolds Koonunga Hill 2023", price: 890, desc: "Served with Glasses & Ice Bucket", star: false, crossedOut: false }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+function fmtPrice(p) {
+  return '฿' + Number(p).toLocaleString();
+}
+
+function renderMenu(menuData) {
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = menuData.sections.map(section => {
+    const categoriesHtml = section.categories.map(cat => {
+      const itemsHtml = cat.items.map(item => {
+        const crossClass = item.crossedOut ? ' crossed-out' : '';
+        const starHtml = item.star ? ' <span class="star">&#9733;</span>' : '';
+        const descHtml = item.desc ? `<div class="item-desc">${item.desc}</div>` : '';
+        return `<div class="menu-item${crossClass}">
+          <div class="item-row"><span class="item-name">${item.name}${starHtml}</span><span class="item-price">${fmtPrice(item.price)}</span></div>
+          ${descHtml}
+        </div>`;
+      }).join('');
+      return `<div class="category-title">${cat.title}</div>${itemsHtml}`;
+    }).join('');
+    return `<div class="menu-section">
+      <div class="section-title">${section.title}</div>
+      ${categoriesHtml}
+    </div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  let menuData = DEFAULT_MENU;
+  try {
+    const stored = localStorage.getItem('sb_menu');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed && parsed.sections && parsed.sections.length > 0) {
+        menuData = parsed;
+      }
+    }
+  } catch(e) {
+    console.warn('Failed to load menu from localStorage, using default.', e);
+  }
+  renderMenu(menuData);
+});
+</script>
 
 <script src="//instant.page/5.2.0" type="module"></script>
 </body>

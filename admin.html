@@ -251,6 +251,7 @@
     </a>
     <div class="header-right">
       <span class="chip-admin">⚙ Admin</span>
+      <button class="btn-ghost" onclick="openMenuEditor()" style="background:var(--surface-2);border-color:rgba(251,191,36,0.3);color:#fbbf24;">🍽 Menu</button>
       <span class="refresh-dot" id="refresh-dot" style="display:none"></span>
       <button class="btn-ghost" onclick="logout()">Sign Out</button>
     </div>
@@ -456,6 +457,26 @@
 </div>
 
 <div id="toast"><span id="toast-icon"></span><span id="toast-msg"></span></div>
+
+<!-- MENU EDITOR OVERLAY -->
+<div id="menu-editor-overlay" style="display:none;position:fixed;inset:0;z-index:9980;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);" onclick="if(event.target===this)closeMenuEditor()"></div>
+<div id="menu-editor-panel" style="display:none;position:fixed;top:0;right:0;bottom:0;width:min(680px,100vw);z-index:9981;background:var(--surface);border-left:1px solid var(--border-2);overflow-y:auto;flex-direction:column;">
+  <div style="position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border-radius:8px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍽</div>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px;">Menu Manager</div>
+      <div style="font-size:11px;color:var(--text-2);margin-top:1px;">Edit items, prices, and availability</div>
+    </div>
+    <button onclick="closeMenuEditor()" style="background:var(--surface-2);border:1px solid var(--border-2);color:var(--text-2);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:6px 12px;border-radius:8px;cursor:pointer;">✕ Close</button>
+  </div>
+  <div style="padding:20px;" id="menu-editor-body">
+    <!-- Rendered by JS -->
+  </div>
+  <div style="position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--border);padding:14px 20px;display:flex;gap:10px;align-items:center;">
+    <button onclick="saveMenu()" style="flex:1;padding:11px;background:var(--green);border:none;border-radius:8px;color:#0d1117;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;">💾 Save Menu</button>
+    <button onclick="resetMenuToDefault()" style="padding:11px 16px;background:var(--red-dim);border:1px solid rgba(248,81,73,.25);border-radius:8px;color:var(--red);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;">Reset to Default</button>
+  </div>
+</div>
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwKZL6X_k6ZQcB3LSltZAJftapJneXcN9A5iE3kHhOxUv9Y6E7iXvt9aJw2-z6Wyoav/exec";
@@ -997,6 +1018,271 @@ async function boot() {
 
   // Auto-refresh every 45 seconds
   setInterval(reload, 45000);
+}
+</script>
+
+<script>
+/* ── MENU EDITOR ──────────────────────────────────────────────── */
+const MENU_DEFAULT = {
+  sections: [
+    {
+      id: "non-alcohol",
+      title: "Non-Alcohol & Snacks",
+      categories: [
+        {
+          id: "soft-drinks",
+          title: "Soft Drinks",
+          items: [
+            { id: 1, name: "Mont Fleur Mineral Water", price: 20, desc: "", star: false, crossedOut: false },
+            { id: 2, name: "Charles House Mineral Water", price: 15, desc: "", star: false, crossedOut: false },
+            { id: 3, name: "Coca-Cola (Can)", price: 25, desc: "", star: false, crossedOut: false },
+            { id: 4, name: "Schweppes Manao Soda", price: 25, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "mixers-extras",
+          title: "Mixers & Extras",
+          items: [
+            { id: 5, name: "Soda", price: 15, desc: "", star: false, crossedOut: false },
+            { id: 6, name: "Ice Bucket (Small)", price: 25, desc: "", star: false, crossedOut: false },
+            { id: 7, name: "Ice Bucket (Large)", price: 50, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "snacks",
+          title: "Snacks",
+          items: [
+            { id: 8, name: "Fried Chicken Tendon", price: 59, desc: "เอ็นไก่ทอด (Signature)", star: true, crossedOut: false },
+            { id: 9, name: "French Fries", price: 69, desc: "เฟรนช์ฟรายส์", star: false, crossedOut: true },
+            { id: 10, name: "Edamame", price: 39, desc: "ถั่วแระญี่ปุ่น", star: false, crossedOut: false }
+          ]
+        }
+      ]
+    },
+    {
+      id: "alcoholic",
+      title: "Alcoholic Beverages",
+      categories: [
+        {
+          id: "beer",
+          title: "Beer",
+          items: [
+            { id: 11, name: "Singha Beer (Can 490 ml)", price: 79, desc: "", star: false, crossedOut: false },
+            { id: 12, name: "Singha Beer (Bottle 320 ml)", price: 59, desc: "", star: false, crossedOut: false },
+            { id: 13, name: "Singha Beer (Bottle 620 ml)", price: 89, desc: "", star: true, crossedOut: false },
+            { id: 14, name: "Budweiser (Bottle)", price: 109, desc: "", star: false, crossedOut: false },
+            { id: 15, name: "Hoegaarden Rosée", price: 139, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "whisky-spirits",
+          title: "Whisky & Spirits",
+          items: [
+            { id: 16, name: "St. Henri VSOP", price: 549, desc: "", star: false, crossedOut: false },
+            { id: 17, name: "Suntory Kakubin Whisky", price: 1390, desc: "", star: false, crossedOut: false },
+            { id: 18, name: "Jameson Irish Whiskey", price: 1690, desc: "", star: false, crossedOut: false },
+            { id: 19, name: "Johnnie Walker Black Label", price: 1899, desc: "", star: false, crossedOut: false },
+            { id: 20, name: "Chivas Regal 12 Years", price: 2299, desc: "", star: false, crossedOut: false }
+          ]
+        },
+        {
+          id: "wine",
+          title: "Wine",
+          items: [
+            { id: 21, name: "19 Crimes Red Blend", price: 790, desc: "Served with Glasses & Ice Bucket", star: false, crossedOut: false },
+            { id: 22, name: "Penfolds Koonunga Hill 2023", price: 890, desc: "Served with Glasses & Ice Bucket", star: false, crossedOut: false }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+let menuData = null;
+let menuIdCounter = 100;
+
+function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+function loadMenuData() {
+  try {
+    const stored = localStorage.getItem('sb_menu');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed && parsed.sections) return parsed;
+    }
+  } catch(e) {}
+  return deepClone(MENU_DEFAULT);
+}
+
+function genId() { return ++menuIdCounter; }
+
+function openMenuEditor() {
+  menuData = loadMenuData();
+  renderMenuEditor();
+  document.getElementById('menu-editor-overlay').style.display = 'block';
+  document.getElementById('menu-editor-panel').style.display = 'flex';
+}
+
+function closeMenuEditor() {
+  document.getElementById('menu-editor-overlay').style.display = 'none';
+  document.getElementById('menu-editor-panel').style.display = 'none';
+}
+
+function collectMenuFromDOM() {
+  const sections = [];
+  document.querySelectorAll('.me-section').forEach(secEl => {
+    const sIdx = parseInt(secEl.dataset.sectionIdx);
+    const section = {
+      id: menuData.sections[sIdx].id,
+      title: secEl.querySelector('.me-section-title').textContent.trim(),
+      categories: []
+    };
+    secEl.querySelectorAll('.me-category').forEach(catEl => {
+      const cIdx = parseInt(catEl.dataset.catIdx);
+      const category = {
+        id: menuData.sections[sIdx].categories[cIdx].id,
+        title: catEl.querySelector('.me-cat-title').textContent.trim(),
+        items: []
+      };
+      catEl.querySelectorAll('.me-item-row').forEach(itemEl => {
+        const iIdx = parseInt(itemEl.dataset.itemIdx);
+        const origItem = menuData.sections[sIdx].categories[cIdx].items[iIdx];
+        category.items.push({
+          id: origItem.id,
+          name: itemEl.querySelector('.me-item-name').textContent.trim(),
+          price: parseInt(itemEl.querySelector('.me-item-price').value) || 0,
+          desc: itemEl.querySelector('.me-item-desc').textContent.trim(),
+          star: itemEl.querySelector('.me-item-star').checked,
+          crossedOut: itemEl.querySelector('.me-item-crossed').checked
+        });
+      });
+      section.categories.push(category);
+    });
+    sections.push(section);
+  });
+  return { sections };
+}
+
+function saveMenu() {
+  const data = collectMenuFromDOM();
+  try {
+    localStorage.setItem('sb_menu', JSON.stringify(data));
+    toast('success', 'Menu saved successfully!');
+  } catch(e) {
+    toast('error', 'Failed to save menu.');
+  }
+}
+
+function resetMenuToDefault() {
+  if (!confirm('Reset menu to default? All changes will be lost.')) return;
+  menuData = deepClone(MENU_DEFAULT);
+  renderMenuEditor();
+  toast('success', 'Menu reset to default.');
+}
+
+function addItem(sectionIdx, catIdx) {
+  const data = collectMenuFromDOM();
+  menuData = data;
+  // restore ids from original
+  menuData.sections[sectionIdx].id = loadMenuData().sections[sectionIdx]?.id || menuData.sections[sectionIdx].id;
+  menuData.sections[sectionIdx].categories[catIdx].items.push({
+    id: genId(), name: 'New Item', price: 0, desc: '', star: false, crossedOut: false
+  });
+  renderMenuEditor();
+}
+
+function deleteItem(sectionIdx, catIdx, itemIdx) {
+  const data = collectMenuFromDOM();
+  menuData = data;
+  menuData.sections[sectionIdx].categories[catIdx].items.splice(itemIdx, 1);
+  renderMenuEditor();
+}
+
+function addCategory(sectionIdx) {
+  const data = collectMenuFromDOM();
+  menuData = data;
+  menuData.sections[sectionIdx].categories.push({
+    id: 'cat-' + genId(), title: 'New Category', items: []
+  });
+  renderMenuEditor();
+}
+
+function deleteCategory(sectionIdx, catIdx) {
+  if (!confirm('Delete this category and all its items?')) return;
+  const data = collectMenuFromDOM();
+  menuData = data;
+  menuData.sections[sectionIdx].categories.splice(catIdx, 1);
+  renderMenuEditor();
+}
+
+function addSection() {
+  const data = collectMenuFromDOM();
+  menuData = data;
+  menuData.sections.push({
+    id: 'section-' + genId(), title: 'New Section', categories: []
+  });
+  renderMenuEditor();
+}
+
+function deleteSection(sectionIdx) {
+  if (!confirm('Delete this section and all its contents?')) return;
+  const data = collectMenuFromDOM();
+  menuData = data;
+  menuData.sections.splice(sectionIdx, 1);
+  renderMenuEditor();
+}
+
+function renderMenuEditor() {
+  const body = document.getElementById('menu-editor-body');
+  const S = menuData.sections;
+
+  const sectionsHtml = S.map((section, sIdx) => {
+    const catsHtml = section.categories.map((cat, cIdx) => {
+      const itemsHtml = cat.items.map((item, iIdx) => `
+        <div class="me-item-row" data-item-idx="${iIdx}" style="display:grid;grid-template-columns:1fr 80px auto auto auto;gap:8px;align-items:center;padding:7px 10px;background:var(--surface-2);border-radius:6px;margin-bottom:6px;">
+          <div contenteditable="true" class="me-item-name" spellcheck="false" style="color:var(--text);font-size:13px;font-weight:500;outline:none;padding:2px 4px;border-radius:4px;border:1px solid transparent;min-width:0;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='transparent'">${item.name}</div>
+          <input type="number" class="me-item-price" value="${item.price}" min="0" style="width:100%;padding:5px 8px;background:var(--surface-3);border:1px solid var(--border-2);border-radius:4px;color:var(--green);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;outline:none;text-align:right;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border-2)'">
+          <label title="Star (popular)" style="display:flex;align-items:center;gap:3px;cursor:pointer;color:#fbbf24;font-size:11px;font-weight:600;white-space:nowrap;">
+            <input type="checkbox" class="me-item-star" ${item.star?'checked':''} style="accent-color:#fbbf24;width:14px;height:14px;"> ★
+          </label>
+          <label title="Crossed out (unavailable)" style="display:flex;align-items:center;gap:3px;cursor:pointer;color:var(--text-2);font-size:11px;font-weight:600;white-space:nowrap;">
+            <input type="checkbox" class="me-item-crossed" ${item.crossedOut?'checked':''} style="accent-color:var(--red);width:14px;height:14px;"> ✕
+          </label>
+          <button onclick="deleteItem(${sIdx},${cIdx},${iIdx})" title="Delete item" style="background:var(--red-dim);border:1px solid rgba(248,81,73,.25);color:var(--red);font-size:11px;padding:4px 8px;border-radius:4px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">🗑</button>
+        </div>
+        <div style="padding:0 10px 4px;display:flex;align-items:center;gap:6px;">
+          <span style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;">Desc:</span>
+          <div contenteditable="true" class="me-item-desc" spellcheck="false" style="flex:1;color:var(--text-2);font-size:12px;outline:none;padding:2px 4px;border-radius:4px;border:1px solid transparent;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='transparent'">${item.desc}</div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="me-category" data-cat-idx="${cIdx}" style="background:var(--surface-3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <div contenteditable="true" class="me-cat-title" spellcheck="false" style="flex:1;color:#fbbf24;font-size:13px;font-weight:600;outline:none;padding:3px 6px;border-radius:4px;border:1px solid transparent;" onfocus="this.style.borderColor='#fbbf24'" onblur="this.style.borderColor='transparent'">${cat.title}</div>
+            <button onclick="deleteCategory(${sIdx},${cIdx})" style="background:var(--red-dim);border:1px solid rgba(248,81,73,.2);color:var(--red);font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer;font-family:'Inter',sans-serif;">Delete Cat</button>
+          </div>
+          ${itemsHtml}
+          <button onclick="addItem(${sIdx},${cIdx})" style="width:100%;margin-top:6px;padding:7px;background:transparent;border:1px dashed var(--border-2);border-radius:6px;color:var(--text-2);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border-2)';this.style.color='var(--text-2)'">+ Add Item</button>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="me-section" data-section-idx="${sIdx}" style="background:var(--surface-2);border:1px solid var(--border-2);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div contenteditable="true" class="me-section-title" spellcheck="false" style="flex:1;color:var(--text);font-size:15px;font-weight:700;letter-spacing:-.2px;outline:none;padding:4px 8px;border-radius:6px;border:1px solid transparent;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='transparent'">${section.title}</div>
+          <button onclick="deleteSection(${sIdx})" style="background:var(--red-dim);border:1px solid rgba(248,81,73,.25);color:var(--red);font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;">Delete Section</button>
+        </div>
+        ${catsHtml}
+        <button onclick="addCategory(${sIdx})" style="width:100%;margin-top:6px;padding:8px;background:transparent;border:1px dashed rgba(251,191,36,0.3);border-radius:8px;color:#fbbf24;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='rgba(251,191,36,0.07)'" onmouseout="this.style.background='transparent'">+ Add Category</button>
+      </div>
+    `;
+  }).join('');
+
+  body.innerHTML = sectionsHtml + `
+    <button onclick="addSection()" style="width:100%;padding:12px;background:transparent;border:1px dashed var(--border-2);border-radius:10px;color:var(--text-2);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;margin-top:4px;" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border-2)';this.style.color='var(--text-2)'">+ Add Section</button>
+  `;
 }
 </script>
 </body>
