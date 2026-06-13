@@ -156,6 +156,7 @@
     .fc{--fc-border-color:rgba(255,255,255,0.07);--fc-button-bg-color:var(--surface-2);--fc-button-border-color:var(--border-2);--fc-button-text-color:var(--text-2);--fc-button-hover-bg-color:var(--surface-3);--fc-button-active-bg-color:var(--green);--fc-today-bg-color:rgba(63,185,80,0.04);--fc-page-bg-color:transparent;--fc-neutral-bg-color:var(--surface-2);--fc-highlight-color:rgba(63,185,80,0.12)}
     .fc .fc-toolbar-title{font-size:15px;font-weight:600;color:var(--text);font-family:'Inter',sans-serif;letter-spacing:-.3px}
     .fc .fc-button{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;border-radius:var(--radius-sm)!important;padding:6px 12px;transition:all .15s;text-transform:none}
+    .fc .fc-col-header-cell{background:var(--surface-2);border-color:rgba(255,255,255,.07);padding:8px 0}
     .fc .fc-col-header-cell-cushion{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;text-decoration:none}
     .fc .fc-timegrid-slot{height:30px;border-color:rgba(255,255,255,.04)}
     .fc .fc-timegrid-slot-label{font-family:'Inter',sans-serif;font-size:10px;color:var(--text-3)}
@@ -184,6 +185,8 @@
       .panel-body{padding:10px 12px 16px}
       .fc .fc-toolbar{flex-wrap:wrap;gap:6px}
       .fc .fc-toolbar-title{font-size:14px}
+      .fc .fc-col-header-cell-cushion{font-size:10px;letter-spacing:0}
+      .fc .fc-timegrid-slot{height:28px}
     }
 
     /* When embedded in the index.html iframe shell, the global nav lives
@@ -1010,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   calendarRef = new FullCalendar.Calendar(document.getElementById('calendar'), {
     schedulerLicenseKey:'CC-Attribution-NonCommercial-NoDerivatives',
-    initialView: isMobile() ? 'timeGridDay' : 'resourceTimeGridDay',
+    initialView: 'resourceTimeGridDay',
     headerToolbar:{ left:'prev,next today', center:'title', right:'resourceTimeGridDay,timeGridWeek,dayGridMonth' },
     buttonText:{ today:'Today', resourceTimeGridDay:'Day', timeGridWeek:'Week', dayGridMonth:'Month' },
     resources:[{ id:'a', title:'Bay A' },{ id:'b', title:'Bay B' }],
