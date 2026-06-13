@@ -217,6 +217,8 @@
       .detail-info{padding:10px 12px}
       .fc .fc-toolbar{flex-wrap:wrap;gap:6px}
       .fc .fc-toolbar-title{font-size:14px}
+      .fc .fc-col-header-cell-cushion{font-size:10px;letter-spacing:0}
+      .fc .fc-timegrid-slot{height:28px}
     }
     @media(max-width:480px){
       .form-row-2{grid-template-columns:1fr}
@@ -961,7 +963,7 @@ async function boot() {
 
   calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
     schedulerLicenseKey:'CC-Attribution-NonCommercial-NoDerivatives',
-    initialView: isMobile() ? 'timeGridDay' : 'resourceTimeGridDay',
+    initialView: 'resourceTimeGridDay',
     headerToolbar:{ left:'prev,next today', center:'title', right:'resourceTimeGridDay,timeGridWeek,dayGridMonth' },
     buttonText:{ today:'Today', resourceTimeGridDay:'Day', timeGridWeek:'Week', dayGridMonth:'Month' },
     resources:[ { id:'a', title:'Bay A' }, { id:'b', title:'Bay B' } ],
