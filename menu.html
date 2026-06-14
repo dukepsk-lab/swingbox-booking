@@ -284,6 +284,10 @@ body:not(.in-iframe) { padding-top: 60px !important; }
   if (/\/pubhtml(\?|#|$)/.test(MENU_CSV_URL)) MENU_CSV_URL = MENU_CSV_URL.replace(/\/pubhtml.*$/, '/pub?output=csv');
   else if (MENU_CSV_URL && !/output=csv/.test(MENU_CSV_URL) && /\/pub\b/.test(MENU_CSV_URL)) MENU_CSV_URL += (MENU_CSV_URL.indexOf('?') < 0 ? '?' : '&') + 'output=csv';
 
+  // ถ้าดึงข้อมูลจากชีทไม่สำเร็จ จะแสดงเมนูสำรอง (hardcode) หรือไม่?
+  // false = แสดงข้อความแจ้งเตือนแทน (ไม่เอา hardcode มาบัง) / true = ใช้เมนูสำรอง
+  const USE_FALLBACK_ON_ERROR = false;
+
   const LANGS = ['th', 'en', 'jp', 'cn'];
   let currentLang = 'th';
 
@@ -308,6 +312,7 @@ body:not(.in-iframe) { padding-top: 60px !important; }
     subtitle: { th:'อาหาร & เครื่องดื่ม', en:'Food & Drinks', jp:'フード & ドリンク', cn:'美食与饮品' },
     loading:  { th:'กำลังโหลดเมนู…', en:'Loading menu…', jp:'メニューを読み込み中…', cn:'正在加载菜单…' },
     empty:    { th:'ยังไม่มีรายการเมนู', en:'No menu items yet', jp:'メニューがありません', cn:'暂无菜单' },
+    error:    { th:'โหลดเมนูไม่สำเร็จ กรุณารีเฟรชหน้าอีกครั้ง', en:'Failed to load menu. Please refresh.', jp:'メニューを読み込めませんでした。再読み込みしてください。', cn:'菜单加载失败，请刷新页面。' },
   };
 
   // ── เมนูสำรอง (ใช้เมื่อยังไม่ตั้งค่า URL หรือโหลดไม่สำเร็จ) ────────
@@ -345,7 +350,8 @@ body:not(.in-iframe) { padding-top: 60px !important; }
     fb('alcohol', 'wine', 'Penfolds Koonunga Hill 2023', '890', { desc_en: 'Served with Glasses & Ice Bucket', desc_th: 'เสิร์ฟพร้อมแก้ว & ถังน้ำแข็ง' }),
   ];
 
-  let MENU_ITEMS = FALLBACK_MENU;
+  let MENU_ITEMS = null;            // ข้อมูลเมนูจากชีท (null = ยังไม่โหลด)
+  let menuState = 'loading';        // 'loading' | 'ready' | 'empty' | 'error'
 
   // ── CSV parser (รองรับ comma / quote / newline ในเซลล์) ──────────
   function parseCSV(text) {
@@ -437,38 +443,63 @@ body:not(.in-iframe) { padding-top: 60px !important; }
     root.innerHTML = html;
   }
 
+  // แสดงข้อความสถานะ (loading / error / empty) แทนรายการเมนู
+  function showMessage(text, cls) {
+    const root = document.getElementById('menu-root');
+    if (root) root.innerHTML = '<div class="' + cls + '">' + esc(text) + '</div>';
+  }
+
+  // อัปเดตหัวเรื่อง + dropdown ภาษา (ไม่ยุ่งกับเนื้อหาเมนู)
+  function applyHeaderLang(lang) {
+    const sel = document.getElementById('lang-select');
+    if (sel && sel.value !== lang) sel.value = lang;
+    const h1 = document.querySelector('.header h1'); if (h1) h1.textContent = UI_I18N.title[lang];
+    const hp = document.querySelector('.header p'); if (hp) hp.textContent = UI_I18N.subtitle[lang];
+  }
+
+  // วาดเนื้อหาตามสถานะ + ภาษาปัจจุบัน
+  function paint() {
+    if (menuState === 'ready' && MENU_ITEMS && MENU_ITEMS.length) render(MENU_ITEMS, currentLang);
+    else if (menuState === 'error') showMessage(UI_I18N.error[currentLang], 'menu-empty');
+    else if (menuState === 'empty') showMessage(UI_I18N.empty[currentLang], 'menu-empty');
+    else showMessage(UI_I18N.loading[currentLang], 'menu-loading');
+  }
+
   // ── ผูกกับตัวสลับภาษาเดิม (navbar / index.html ฝัง iframe) ────────
   window.setLanguage = function (lang) {
     if (LANGS.indexOf(lang) < 0) return;
     currentLang = lang;
     try { localStorage.setItem('sb_lang', lang); } catch (e) {}
-    const sel = document.getElementById('lang-select');
-    if (sel && sel.value !== lang) sel.value = lang;
-    const h1 = document.querySelector('.header h1'); if (h1) h1.textContent = UI_I18N.title[lang];
-    const hp = document.querySelector('.header p'); if (hp) hp.textContent = UI_I18N.subtitle[lang];
-    render(MENU_ITEMS, lang);
+    applyHeaderLang(lang);
+    paint();
   };
 
   async function init() {
     let lang = 'th';
     try { lang = localStorage.getItem('sb_lang') || 'th'; } catch (e) {}
     if (LANGS.indexOf(lang) < 0) lang = 'th';
+    currentLang = lang;
 
-    const loadingEl = document.getElementById('menu-loading');
-    if (loadingEl) loadingEl.textContent = UI_I18N.loading[lang];
+    // โชว์ "กำลังโหลด…" ก่อน (ไม่แสดงเมนู hardcode)
+    menuState = 'loading';
+    applyHeaderLang(lang);
+    paint();
 
-    // แสดงเมนูสำรอง + หัวข้อทันที (กันหน้าเปล่า)
-    window.setLanguage(lang);
+    if (!MENU_CSV_URL) { menuState = 'error'; paint(); return; }
 
-    if (MENU_CSV_URL) {
-      try {
-        const res = await fetch(MENU_CSV_URL, { cache: 'no-store' });
-        if (res.ok) {
-          const items = rowsToItems(parseCSV(await res.text()));
-          if (items.length) { MENU_ITEMS = items; render(MENU_ITEMS, currentLang); }
-        }
-      } catch (e) { console.warn('Menu CSV load failed, using fallback:', e); }
+    try {
+      const res = await fetch(MENU_CSV_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const items = rowsToItems(parseCSV(await res.text()));
+      if (!items.length) throw new Error('no rows parsed from CSV');
+      MENU_ITEMS = items;
+      menuState = 'ready';
+    } catch (e) {
+      console.warn('Menu CSV load failed:', e);
+      if (USE_FALLBACK_ON_ERROR) { MENU_ITEMS = FALLBACK_MENU; menuState = 'ready'; }
+      else { menuState = 'error'; }
     }
+    paint();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
