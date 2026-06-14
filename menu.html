@@ -104,6 +104,11 @@
             font-size: 1rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;
         }
 
+        .menu-loading, .menu-empty {
+            grid-column: 1 / -1; text-align: center; padding: 60px 20px;
+            color: var(--text-muted); font-size: 1rem; font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             body { padding-top: 100px; }
             .container { margin-top: 10px; margin-bottom: 40px; }
@@ -257,105 +262,216 @@ body:not(.in-iframe) { padding-top: 60px !important; }
             <p>Food & Drinks</p>
         </div>
 
-        <div class="menu-grid">
-            <!-- Left Column -->
-            <div class="menu-section">
-                <div class="section-title">Non-Alcohol & Snacks</div>
-                
-                <div class="category-title">Soft Drinks</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Mont Fleur Mineral Water</span><span class="item-price">฿20</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Charles House Mineral Water</span><span class="item-price">฿15</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Coca-Cola (Can)</span><span class="item-price">฿25</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Schweppes Manao Soda</span><span class="item-price">฿25</span></div>
-                </div>
-
-                <div class="category-title">Mixers & Extras</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Soda</span><span class="item-price">฿15</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Ice Bucket (Small)</span><span class="item-price">฿25</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Ice Bucket (Large)</span><span class="item-price">฿50</span></div>
-                </div>
-
-                <div class="category-title">Snacks</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Fried Chicken Tendon <span class="star">★</span></span><span class="item-price">฿59</span></div>
-                    <div class="item-desc">เอ็นไก่ทอด (Signature)</div>
-                </div>
-                <div class="menu-item crossed-out">
-                    <div class="item-row"><span class="item-name">French Fries</span><span class="item-price">฿69</span></div>
-                    <div class="item-desc">เฟรนช์ฟรายส์</div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Edamame</span><span class="item-price">฿39</span></div>
-                    <div class="item-desc">ถั่วแระญี่ปุ่น</div>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="menu-section">
-                <div class="section-title">Alcoholic Beverages</div>
-                
-                <div class="category-title">Beer</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Singha Beer (Can 490 ml)</span><span class="item-price">฿79</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Singha Beer (Bottle 320 ml)</span><span class="item-price">฿59</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Singha Beer (Bottle 620 ml) <span class="star">★</span></span><span class="item-price">฿89</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Budweiser (Bottle)</span><span class="item-price">฿109</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Hoegaarden Rosée</span><span class="item-price">฿139</span></div>
-                </div>
-
-                <div class="category-title">Whisky & Spirits</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">St. Henri VSOP</span><span class="item-price">฿549</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Suntory Kakubin Whisky</span><span class="item-price">฿1,390</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Jameson Irish Whiskey</span><span class="item-price">฿1,690</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Johnnie Walker Black Label</span><span class="item-price">฿1,899</span></div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Chivas Regal 12 Years</span><span class="item-price">฿2,299</span></div>
-                </div>
-
-                <div class="category-title">Wine</div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">19 Crimes Red Blend</span><span class="item-price">฿790</span></div>
-                    <div class="item-desc">Served with Glasses & Ice Bucket</div>
-                </div>
-                <div class="menu-item">
-                    <div class="item-row"><span class="item-name">Penfolds Koonunga Hill 2023</span><span class="item-price">฿890</span></div>
-                    <div class="item-desc">Served with Glasses & Ice Bucket</div>
-                </div>
-            </div>
+        <div class="menu-grid" id="menu-root">
+            <div class="menu-loading" id="menu-loading">Loading menu…</div>
         </div>
 
         <div class="footer">
             SWINGBOX GOLF SIMULATOR
         </div>
     </div>
+
+<!-- ═══════════════ DYNAMIC MENU (Google Sheet → CSV) ═══════════════ -->
+<script>
+(function () {
+  // ── CONFIG ──────────────────────────────────────────────────────
+  // 1) ใน Google Sheets ของเมนู ไปที่ File ▸ Share ▸ Publish to web
+  //    เลือกชีท (tab) ของเมนู และเลือกรูปแบบ "Comma-separated values (.csv)"
+  // 2) กด Publish แล้วคัดลอกลิงก์มาวางในเครื่องหมายคำพูดด้านล่าง
+  // วิธีตั้งค่าแบบละเอียดดูได้ที่ MENU_SETUP.md
+  const MENU_CSV_URL = ""; // <<< วางลิงก์ CSV ที่ publish ตรงนี้
+
+  const LANGS = ['th', 'en', 'jp', 'cn'];
+  let currentLang = 'th';
+
+  // ── หัวข้อ section / category หลายภาษา ─────────────────────────
+  // key (คอลัมน์ section/category ในชีท) → คำแปลแต่ละภาษา
+  // ถ้าจะเพิ่มหมวดใหม่ ให้เพิ่ม key + คำแปลตรงนี้ (ไม่ใส่ก็ได้ จะโชว์ key แทน)
+  const HEADINGS_I18N = {
+    // sections (กล่องใหญ่)
+    non_alcohol: { th:'เครื่องดื่มไม่มีแอลกอฮอล์ & ของทานเล่น', en:'Non-Alcohol & Snacks', jp:'ノンアルコール & スナック', cn:'无酒精饮料 & 小吃' },
+    alcohol:     { th:'เครื่องดื่มแอลกอฮอล์', en:'Alcoholic Beverages', jp:'アルコール飲料', cn:'酒精饮料' },
+    // categories (หมวดย่อย)
+    soft_drinks: { th:'น้ำดื่ม & น้ำอัดลม', en:'Soft Drinks', jp:'ソフトドリンク', cn:'软饮料' },
+    mixers:      { th:'มิกเซอร์ & เพิ่มเติม', en:'Mixers & Extras', jp:'ミキサー & その他', cn:'调酒 & 附加' },
+    snacks:      { th:'ของทานเล่น', en:'Snacks', jp:'スナック', cn:'小吃' },
+    beer:        { th:'เบียร์', en:'Beer', jp:'ビール', cn:'啤酒' },
+    spirits:     { th:'วิสกี้ & สุรา', en:'Whisky & Spirits', jp:'ウイスキー & スピリッツ', cn:'威士忌 & 烈酒' },
+    wine:        { th:'ไวน์', en:'Wine', jp:'ワイン', cn:'葡萄酒' },
+  };
+
+  const UI_I18N = {
+    title:    { th:'เมนู', en:'MENU', jp:'メニュー', cn:'菜单' },
+    subtitle: { th:'อาหาร & เครื่องดื่ม', en:'Food & Drinks', jp:'フード & ドリンク', cn:'美食与饮品' },
+    loading:  { th:'กำลังโหลดเมนู…', en:'Loading menu…', jp:'メニューを読み込み中…', cn:'正在加载菜单…' },
+    empty:    { th:'ยังไม่มีรายการเมนู', en:'No menu items yet', jp:'メニューがありません', cn:'暂无菜单' },
+  };
+
+  // ── เมนูสำรอง (ใช้เมื่อยังไม่ตั้งค่า URL หรือโหลดไม่สำเร็จ) ────────
+  function fb(section, category, en, price, opts) {
+    opts = opts || {};
+    return {
+      order: 0, section: section, category: category,
+      name: { en: en, th: opts.th || en, jp: opts.jp || en, cn: opts.cn || en },
+      desc: { en: opts.desc_en || '', th: opts.desc_th || '', jp: opts.desc_jp || '', cn: opts.desc_cn || '' },
+      price: String(price), signature: !!opts.sig, soldout: !!opts.out,
+    };
+  }
+  const FALLBACK_MENU = [
+    fb('non_alcohol', 'soft_drinks', 'Mont Fleur Mineral Water', '20'),
+    fb('non_alcohol', 'soft_drinks', 'Charles House Mineral Water', '15'),
+    fb('non_alcohol', 'soft_drinks', 'Coca-Cola (Can)', '25'),
+    fb('non_alcohol', 'soft_drinks', 'Schweppes Manao Soda', '25'),
+    fb('non_alcohol', 'mixers', 'Soda', '15'),
+    fb('non_alcohol', 'mixers', 'Ice Bucket (Small)', '25'),
+    fb('non_alcohol', 'mixers', 'Ice Bucket (Large)', '50'),
+    fb('non_alcohol', 'snacks', 'Fried Chicken Tendon', '59', { sig: true, desc_th: 'เอ็นไก่ทอด (Signature)', desc_en: 'Signature' }),
+    fb('non_alcohol', 'snacks', 'French Fries', '69', { out: true, desc_th: 'เฟรนช์ฟรายส์', desc_en: 'French Fries' }),
+    fb('non_alcohol', 'snacks', 'Edamame', '39', { desc_th: 'ถั่วแระญี่ปุ่น', desc_en: 'Edamame' }),
+    fb('alcohol', 'beer', 'Singha Beer (Can 490 ml)', '79'),
+    fb('alcohol', 'beer', 'Singha Beer (Bottle 320 ml)', '59'),
+    fb('alcohol', 'beer', 'Singha Beer (Bottle 620 ml)', '89', { sig: true }),
+    fb('alcohol', 'beer', 'Budweiser (Bottle)', '109'),
+    fb('alcohol', 'beer', 'Hoegaarden Rosée', '139'),
+    fb('alcohol', 'spirits', 'St. Henri VSOP', '549'),
+    fb('alcohol', 'spirits', 'Suntory Kakubin Whisky', '1,390'),
+    fb('alcohol', 'spirits', 'Jameson Irish Whiskey', '1,690'),
+    fb('alcohol', 'spirits', 'Johnnie Walker Black Label', '1,899'),
+    fb('alcohol', 'spirits', 'Chivas Regal 12 Years', '2,299'),
+    fb('alcohol', 'wine', '19 Crimes Red Blend', '790', { desc_en: 'Served with Glasses & Ice Bucket', desc_th: 'เสิร์ฟพร้อมแก้ว & ถังน้ำแข็ง' }),
+    fb('alcohol', 'wine', 'Penfolds Koonunga Hill 2023', '890', { desc_en: 'Served with Glasses & Ice Bucket', desc_th: 'เสิร์ฟพร้อมแก้ว & ถังน้ำแข็ง' }),
+  ];
+
+  let MENU_ITEMS = FALLBACK_MENU;
+
+  // ── CSV parser (รองรับ comma / quote / newline ในเซลล์) ──────────
+  function parseCSV(text) {
+    const rows = []; let row = [], field = '', inQ = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQ) {
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false; }
+        else field += c;
+      } else {
+        if (c === '"') inQ = true;
+        else if (c === ',') { row.push(field); field = ''; }
+        else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+        else if (c === '\r') { /* skip */ }
+        else field += c;
+      }
+    }
+    if (field !== '' || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  function isTrue(v) { return /^(true|1|x|yes|y|✓)$/i.test((v || '').trim()); }
+
+  function rowsToItems(rows) {
+    if (!rows.length) return [];
+    const header = rows[0].map(h => h.trim().toLowerCase());
+    const idx = n => header.indexOf(n);
+    const items = [];
+    for (let r = 1; r < rows.length; r++) {
+      const cells = rows[r];
+      if (!cells || cells.every(c => !c || !c.trim())) continue; // ข้ามแถวว่าง
+      const get = n => { const i = idx(n); return i >= 0 && cells[i] != null ? cells[i].trim() : ''; };
+      const en = get('name_en'), th = get('name_th');
+      if (!en && !th) continue; // ต้องมีชื่ออย่างน้อย 1 ภาษา
+      const ord = parseFloat(get('order'));
+      items.push({
+        order: isNaN(ord) ? r : ord,
+        section: get('section') || 'other',
+        category: get('category'),
+        name: { en: en, th: th, jp: get('name_jp'), cn: get('name_cn') },
+        desc: { en: get('desc_en'), th: get('desc_th'), jp: get('desc_jp'), cn: get('desc_cn') },
+        price: get('price'),
+        signature: isTrue(get('signature')),
+        soldout: isTrue(get('soldout')),
+      });
+    }
+    return items;
+  }
+
+  // ── helpers ─────────────────────────────────────────────────────
+  function pick(obj, lang) { return (obj && (obj[lang] || obj.en || obj.th)) || ''; }
+  function heading(key, lang) { const h = HEADINGS_I18N[key]; return h ? (h[lang] || h.en || key) : key; }
+  function fmtPrice(p) { if (!p) return ''; const t = String(p).trim(); return /^[\d,]+(\.\d+)?$/.test(t) ? '฿' + t : t; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+  function render(items, lang) {
+    const root = document.getElementById('menu-root');
+    if (!root) return;
+    if (!items || !items.length) {
+      root.innerHTML = '<div class="menu-empty">' + esc(UI_I18N.empty[lang] || UI_I18N.empty.en) + '</div>';
+      return;
+    }
+    const sorted = items.slice().sort((a, b) => a.order - b.order);
+    const sections = [], map = {};
+    sorted.forEach(it => {
+      if (!map[it.section]) { map[it.section] = { key: it.section, cats: [], catMap: {} }; sections.push(map[it.section]); }
+      const sec = map[it.section];
+      if (!sec.catMap[it.category]) { sec.catMap[it.category] = { key: it.category, items: [] }; sec.cats.push(sec.catMap[it.category]); }
+      sec.catMap[it.category].items.push(it);
+    });
+    let html = '';
+    sections.forEach(sec => {
+      html += '<div class="menu-section">';
+      html += '<div class="section-title">' + esc(heading(sec.key, lang)) + '</div>';
+      sec.cats.forEach(cat => {
+        if (cat.key) html += '<div class="category-title">' + esc(heading(cat.key, lang)) + '</div>';
+        cat.items.forEach(it => {
+          const star = it.signature ? ' <span class="star">★</span>' : '';
+          const ds = pick(it.desc, lang);
+          html += '<div class="menu-item' + (it.soldout ? ' crossed-out' : '') + '">';
+          html += '<div class="item-row"><span class="item-name">' + esc(pick(it.name, lang)) + star + '</span>';
+          html += '<span class="item-price">' + esc(fmtPrice(it.price)) + '</span></div>';
+          if (ds) html += '<div class="item-desc">' + esc(ds) + '</div>';
+          html += '</div>';
+        });
+      });
+      html += '</div>';
+    });
+    root.innerHTML = html;
+  }
+
+  // ── ผูกกับตัวสลับภาษาเดิม (navbar / index.html ฝัง iframe) ────────
+  window.setLanguage = function (lang) {
+    if (LANGS.indexOf(lang) < 0) return;
+    currentLang = lang;
+    try { localStorage.setItem('sb_lang', lang); } catch (e) {}
+    const sel = document.getElementById('lang-select');
+    if (sel && sel.value !== lang) sel.value = lang;
+    const h1 = document.querySelector('.header h1'); if (h1) h1.textContent = UI_I18N.title[lang];
+    const hp = document.querySelector('.header p'); if (hp) hp.textContent = UI_I18N.subtitle[lang];
+    render(MENU_ITEMS, lang);
+  };
+
+  async function init() {
+    let lang = 'th';
+    try { lang = localStorage.getItem('sb_lang') || 'th'; } catch (e) {}
+    if (LANGS.indexOf(lang) < 0) lang = 'th';
+
+    const loadingEl = document.getElementById('menu-loading');
+    if (loadingEl) loadingEl.textContent = UI_I18N.loading[lang];
+
+    // แสดงเมนูสำรอง + หัวข้อทันที (กันหน้าเปล่า)
+    window.setLanguage(lang);
+
+    if (MENU_CSV_URL) {
+      try {
+        const res = await fetch(MENU_CSV_URL, { cache: 'no-store' });
+        if (res.ok) {
+          const items = rowsToItems(parseCSV(await res.text()));
+          if (items.length) { MENU_ITEMS = items; render(MENU_ITEMS, currentLang); }
+        }
+      } catch (e) { console.warn('Menu CSV load failed, using fallback:', e); }
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
 
 <script src="//instant.page/5.2.0" type="module"></script>
 </body>
